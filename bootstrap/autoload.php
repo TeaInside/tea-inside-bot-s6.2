@@ -9,7 +9,7 @@ if (!defined("__MY_AUTOLOAD")):
 	 */
 	function myInternalAutoload(string $class): void
 	{
-		if (file_exists($f = BASEPATH."/src/classes/".str_replace($class, "\\", "/").".php")) {
+		if (file_exists($f = BASEPATH."/src/classes/".str_replace("\\", "/", $class).".php")) {
 			require $f;
 		}
 	}

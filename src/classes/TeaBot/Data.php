@@ -31,6 +31,9 @@ final class Data implements ArrayAccess
 	{
 		$this->in = $data;
 		$this->container["in"] = &$this->in;
+		var_dump($data);
+
+		$this["msg_id"] = &$this->in["message"]["message_id"];
 	}
 
 	/**
@@ -47,7 +50,7 @@ final class Data implements ArrayAccess
 
 	/**
 	 * @param mixed $key
-	 * @param mixed $data
+	 * @param mixed &$data
 	 * @return void
 	 */
 	public function offsetSet($key, $data)

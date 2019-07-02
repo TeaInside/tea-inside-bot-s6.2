@@ -2,6 +2,7 @@
 
 namespace TeaBot\Responses;
 
+use TeaBot\Exe;
 use TeaBot\ResponseFoundation;
 
 /**
@@ -17,6 +18,12 @@ final class Start extends ResponseFoundation
 	 */
 	public function start(): bool
 	{
-		
+		Exe::sendMessage(
+			[
+				"text" => "test",
+				"chat_id" => $this->data["chat_id"]
+			]
+		);
+		return true;
 	}
 }

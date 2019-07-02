@@ -68,7 +68,7 @@ final class ConfigBuilder
 
 			$this->configFile .= "define(\"";
 			$this->configFile .= self::strEscape($k);
-			$this->configFile .= "\", ";
+			$this->configFile .= "\",";
 			$this->configFile .= self::buildData($v);
 			$this->configFile .= ");".PHP_EOL;
 		}
@@ -94,9 +94,24 @@ final class ConfigBuilder
 			case "string":
 				return "\"".self::strEscape($data)."\"";
 			break;
-			
+			case "array":
+				$r = "[";
+				$i = 0;
+				foreach ($data as $k => $v) {
+					if ($k !== $i) {
+						$r .= self::buildData($k)."=>".self::buildData($v).",";
+					} else {
+						$r .= self::buildData($v).",";
+					}
+					$i++;
+				}
+				return rtrim($r, ",")."]";
+			break;
+			case "integer":
+				return $data;
+			break;
 			default:
-				return "";
+				return "null";
 			break;
 		}
 	}

@@ -22,7 +22,7 @@ $json = '{
             "type": "supergroup"
         },
         "date": 1555600051,
-        "text": "/debug",
+        "text": "/start",
         "entities": [
             {
                 "offset": 0,

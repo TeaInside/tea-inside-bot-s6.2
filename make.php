@@ -32,15 +32,15 @@ build:
 		if (preg_match("/^.+\.php\.frag$/Si", $file)) {
 			$cmd = escapeshellarg(PHP_BINARY)." ".escapeshellarg($dir."/".$file);
 			print "Executing: {$cmd}...";
-			$sh = shell_exec($cmd." 2>&1 && echo exit_code:$?");
+			$sh = shell_exec($cmd." 2>&1; echo exit_code:$?");
 			if (preg_match("/exit_code:(\d+)/", $sh, $m)) {
 				if ($m[1] !== "0") {
-					print "Exit code for file ".$dir."/".$file." is not zero\n\n";
+					print "\n\nExit code for file ".$dir."/".$file." is not zero\n\n";
 					print "Output: ".$sh;
 					exit(1);
 				}
 			} else {
-				print "Couldn't get exit code for file ".$dir."/".$file."\n";
+				print "\n\nCouldn't get exit code for file ".$dir."/".$file."\n";
 				exit(1);
 			}
 			print " OK\n";
@@ -56,15 +56,15 @@ clean:
 		if (preg_match("/^.+\.php\.frag$/Si", $file)) {
 			$cmd = escapeshellarg(PHP_BINARY)." ".escapeshellarg($dir."/".$file)." clean";
 			print "Executing: {$cmd}...";
-			$sh = shell_exec($cmd." 2>&1 && echo exit_code:$?");
+			$sh = shell_exec($cmd." 2>&1; echo exit_code:$?");
 			if (preg_match("/exit_code:(\d+)/", $sh, $m)) {
 				if ($m[1] !== "0") {
-					print "Exit code for file ".$dir."/".$file." is not zero\n\n";
+					print "\n\nExit code for file ".$dir."/".$file." is not zero\n\n";
 					print "Output: ".$sh;
 					exit(1);
 				}
 			} else {
-				print "Couldn't get exit code for file ".$dir."/".$file."\n";
+				print "\n\nCouldn't get exit code for file ".$dir."/".$file."\n";
 				exit(1);
 			}
 			print " OK\n";

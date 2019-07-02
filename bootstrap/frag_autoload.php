@@ -5,6 +5,8 @@ if (!defined("__MY_AUTOLOAD")):
 
 	define("BASEPATH", realpath(__DIR__."/.."));
 
+	require BASEPATH."/config.php";
+
 	/**
 	 * @param string $class
 	 * @return void

@@ -24,6 +24,7 @@ final class ConfigBuilder
 	/**
 	 * @param array &$config
 	 * @throws \Exception
+	 *
 	 * Constructor.
 	 */
 	public function __construct(array &$config)

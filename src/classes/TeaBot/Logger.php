@@ -19,6 +19,8 @@ final class Logger
 
 	/**
 	 * @param \TeaBot\Data &$data
+	 *
+	 * Constructor.
 	 */
 	public function __construct(Data &$data)
 	{

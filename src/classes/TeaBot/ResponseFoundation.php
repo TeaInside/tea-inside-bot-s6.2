@@ -19,6 +19,8 @@ abstract class ResponseFoundation
 
 	/**
 	 * @param \TeaBot\Data &$data
+	 *
+	 * Constructor.
 	 */
 	public function __construct(Data &$data)
 	{

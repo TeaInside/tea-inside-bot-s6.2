@@ -12,6 +12,8 @@ use Exception;
  */
 final class Response
 {
+	use ResponseRoutes;
+
 	/**
 	 * @var \TeaBot\Data
 	 */
@@ -19,6 +21,8 @@ final class Response
 
 	/**
 	 * @param \TeaBot\Data &$data
+	 *
+	 * Constructor.
 	 */
 	public function __construct(Data &$data)
 	{
@@ -26,10 +30,32 @@ final class Response
 	}
 
 	/**
+	 * @param \TeaBot\ResponseFoundation
+	 * @param string $method
+	 * @param array  &$parameters
+	 * @return bool
+	 */
+	private function stExec(string $class, string $method, array &$parameters = []): bool
+	{
+		return $this->internalStExec(new $class, $method, $parameters);
+	}
+
+	/**
+	 * @param \TeaBot\ResponseFoundation
+	 * @param string $method
+	 * @param array  $parameters
+	 * @return bool
+	 */
+	private function internalStExec(ResponseFoundation $obj, string $method, array &$parameters): bool
+	{
+		return (bool)$obj->{$method}(...$parameters);
+	}
+
+	/**
 	 * @return void
 	 */
 	public function run(): void
 	{
-		
+		$this->execRoutes();
 	}
 }

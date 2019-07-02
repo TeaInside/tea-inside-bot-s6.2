@@ -53,6 +53,11 @@ final class ConfigBuilder
 	 */
 	public function build(): void
 	{
+		if (array_search("clean", $_SERVER["argv"]) !== false) {
+			@unlink($this->config["target_file"]);
+			return;
+		}
+
 		$this->configFile = "<?php".PHP_EOL;
 		foreach ($this->config["const"] as $k => $v) {
 

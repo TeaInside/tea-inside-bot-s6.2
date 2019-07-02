@@ -32,8 +32,8 @@ final class Data implements ArrayAccess
 		$this->in = $data;
 		$this->container["in"] = &$this->in;
 		var_dump($data);
-
-		$this["msg_id"] = &$this->in["message"]["message_id"];
+		$this->container["msg_id"] = &$this->in["message"]["message_id"];
+		$this->container["chat_id"] = &$this->in["message"]["chat"]["id"];
 	}
 
 	/**

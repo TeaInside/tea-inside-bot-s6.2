@@ -37,7 +37,7 @@ final class Response
 	 */
 	private function stExec(string $class, string $method, array &$parameters = []): bool
 	{
-		return $this->internalStExec(new $class, $method, $parameters);
+		return $this->internalStExec(new $class($this->data), $method, $parameters);
 	}
 
 	/**
@@ -56,6 +56,11 @@ final class Response
 	 */
 	public function run(): void
 	{
-		$this->execRoutes();
+		if (isset($this->data["msg_type"])) {
+			var_dump($this->data);
+			if ($this->data["msg_type"] === "text") {
+				$this->execRoutes();
+			}
+		}
 	}
 }

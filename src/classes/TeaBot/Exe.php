@@ -50,6 +50,7 @@ final class Exe
 		foreach ($opt as $k => $v) {
 			$optf[$k] = $v;
 		}
+		curl_setopt_array($ch, $optf);
 		$r["out"] = curl_exec($ch);
 		$r["info"] = curl_getinfo($ch);
 		$r["error"] = curl_error($ch);
@@ -86,6 +87,7 @@ final class Exe
 		foreach ($opt as $k => $v) {
 			$optf[$k] = $v;
 		}
+		curl_setopt_array($ch, $optf);
 		$r["out"] = curl_exec($ch);
 		$r["info"] = curl_getinfo($ch);
 		$r["error"] = curl_error($ch);

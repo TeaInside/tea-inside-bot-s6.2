@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__."/../config/global.php";
+require __DIR__."/../config/telegram_bot.php";
 require __DIR__."/../bootstrap/autoload.php";
 
 

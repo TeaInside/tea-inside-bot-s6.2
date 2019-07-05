@@ -35,7 +35,7 @@ final class Response
 	 * @param array  &$parameters
 	 * @return bool
 	 */
-	private function stExec(string $class, string $method, array &$parameters = []): bool
+	private function stExec(string $class, string $method, array $parameters = []): bool
 	{
 		return $this->internalStExec(new $class($this->data), $method, $parameters);
 	}
@@ -46,7 +46,7 @@ final class Response
 	 * @param array  $parameters
 	 * @return bool
 	 */
-	private function internalStExec(ResponseFoundation $obj, string $method, array &$parameters): bool
+	private function internalStExec(ResponseFoundation $obj, string $method, array $parameters): bool
 	{
 		return (bool)$obj->{$method}(...$parameters);
 	}
@@ -57,7 +57,6 @@ final class Response
 	public function run(): void
 	{
 		if (isset($this->data["msg_type"])) {
-			var_dump($this->data);
 			if ($this->data["msg_type"] === "text") {
 				$this->execRoutes();
 			}

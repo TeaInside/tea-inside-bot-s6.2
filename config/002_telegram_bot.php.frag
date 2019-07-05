@@ -15,6 +15,12 @@ $const["PDO_PARAM"] = [
 ];
 $const["SUDOERS"] = TELEGRAM_BOT_SUDOERS;
 
+
+is_dir(TELEGRAM_STORAGE_PATH) or mkdir(TELEGRAM_STORAGE_PATH, 0755);
+if (!file_exists(TELEGRAM_STORAGE_PATH."/.gitignore")) {
+	file_put_contents(TELEGRAM_STORAGE_PATH."/.gitignore", $ignoreAll);
+}
+
 $config = [
 	"const" => &$const,
 	"target_file" => __DIR__."/telegram_bot.php"

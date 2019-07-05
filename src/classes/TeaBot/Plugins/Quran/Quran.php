@@ -2,6 +2,8 @@
 
 namespace TeaBot\Plugins\Quran;
 
+use Exception;
+
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
  * @license MIT
@@ -21,6 +23,11 @@ final class Quran
 	private $ayat;
 
 	/**
+	 * @var string
+	 */
+	private $file;
+
+	/**
 	 * @param int $surat
 	 * @param int $ayat
 	 */
@@ -30,6 +37,13 @@ final class Quran
 		$this->ayat = $ayat;
 
 		loadConfig("quran");
+
+		if (!defined("QURAN_STORAGE_PATH")) {
+			throw new Exception("QURAN_STORAGE_PATH is not defined!");
+		}
+
+		is_dir(QURAN_STORAGE_PATH) or mkdir(QURAN_STORAGE_PATH);
+		$this->file = QURAN_STORAGE_PATH."/".sprintf("%03d%03d.mp3", $this->surat, $this->ayat);
 	}
 
 	/**
@@ -74,6 +88,20 @@ final class Quran
 			return false;
 		}
 
-		return true;
+		$ret = (bool)file_put_contents($this->file, $out);
+
+		if (!$ret) {
+			@unlink($this->file);
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFile(): string
+	{
+		return $this->file;
 	}
 }

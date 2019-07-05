@@ -4,14 +4,6 @@ require __DIR__."/../bootstrap/autoload.php";
 
 loadConfig("telegram_bot");
 
-use TeaBot\Lang;
-
-
-var_dump(Lang::getLang());
-$txt = Lang::get("start.group");
-var_dump($txt);
-die;
-
 $json = '{
     "update_id": 345237741,
     "message": {
@@ -30,7 +22,7 @@ $json = '{
             "type": "supergroup"
         },
         "date": 1555600051,
-        "text": "/start",
+        "text": "/quran 1:1",
         "entities": [
             {
                 "offset": 0,

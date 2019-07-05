@@ -7,7 +7,7 @@ typedef struct _lang_entry {
 	char *value;
 } lang_entry;
 
-#define ADD_LANG_ENTRY(_name, _value) \
+#define ADD_LE(_name, _value) \
 	{	\
 		.name = _name,	\
 		.value = _value	\
@@ -28,11 +28,11 @@ const char langlist[][2] = {"en", "id", "jp"};
 	}
 
 #define GET_LANG_FALLBACK(lang, target, key) \
-	for (size_t i = 0; i < (sizeof(lang##_lang_entry)/sizeof(lang##_lang_entry[0])); i++) { \
-		if (!strcmp(key, lang##_lang_entry[i].name)) { \
-			target = lang##_lang_entry[i].value; \
-			break; \
-		} \
+	if (!strcmp(lang, "en")) { \
+		GET_LANG(en, target, key) \
+	} else \
+	if (!strcmp(lang, "id")) { \
+		GET_LANG(id, target, key) \
 	}
 
 #endif

@@ -2,8 +2,8 @@
 
 require __DIR__."/../bootstrap/frag_autoload.php";
 
-$const["BASEPATH"] = realpath(__DIR__."/..");
-$const["STORAGE_PATH"] = $const["BASEPATH"]."/storage";
+$const["BASEPATH"] = BASEPATH;
+$const["STORAGE_PATH"] = STORAGE_PATH;
 
 $config = [
 	"const" => &$const,

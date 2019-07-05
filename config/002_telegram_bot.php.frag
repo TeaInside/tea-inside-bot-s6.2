@@ -2,6 +2,8 @@
 
 require __DIR__."/../bootstrap/frag_autoload.php";
 
+$const["TELEGRAM_STORAGE_PATH"] = TELEGRAM_STORAGE_PATH;
+
 $const["BOT_TOKEN"] = TELEGRAM_BOT_TOKEN;
 $const["PDO_PARAM"] = [
 	"mysql:host=".TELEGRAM_BOT_DB_HOST.";port=".TELEGRAM_BOT_DB_PORT.";dbname=".TELEGRAM_BOT_DB_NAME,

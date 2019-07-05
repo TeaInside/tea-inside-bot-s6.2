@@ -3,6 +3,9 @@
 if (!defined("__MY_AUTOLOAD")):
 	define("__MY_AUTOLOAD", true);
 
+	require __DIR__."/../config/global.php";
+	require BASEPATH."/src/helpers/global.php";
+
 	/**
 	 * @param string $class
 	 * @return void

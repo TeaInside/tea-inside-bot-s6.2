@@ -6,6 +6,7 @@ if (!defined("__MY_AUTOLOAD")):
 	define("BASEPATH", realpath(__DIR__."/.."));
 
 	require BASEPATH."/config.php";
+	require BASEPATH."/src/helpers/global.php";
 
 	/**
 	 * @param string $class

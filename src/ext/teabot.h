@@ -22,7 +22,10 @@
 
 	PHP_METHOD(TeaBot_Lang, __construct);
 	PHP_METHOD(TeaBot_Lang, init);
+	PHP_METHOD(TeaBot_Lang, setFallbackLang);
 	PHP_METHOD(TeaBot_Lang, get);
+	PHP_METHOD(TeaBot_Lang, getLang);
+	PHP_METHOD(TeaBot_Lang, getFallbackLang);
 
 
 	ZEND_BEGIN_MODULE_GLOBALS(teabot)

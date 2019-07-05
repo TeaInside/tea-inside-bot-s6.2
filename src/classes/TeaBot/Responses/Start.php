@@ -3,6 +3,7 @@
 namespace TeaBot\Responses;
 
 use TeaBot\Exe;
+use TeaBot\Lang;
 use TeaBot\ResponseFoundation;
 
 /**
@@ -18,12 +19,24 @@ final class Start extends ResponseFoundation
 	 */
 	public function start(): bool
 	{
-		Exe::sendMessage(
-			[
-				"text" => "test",
-				"chat_id" => $this->data["chat_id"]
-			]
-		);
+		if ($this->data["chat_type"] === "private") {
+			Exe::sendMessage(
+				[
+					"text" => Lang::get("start.private"),
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"]
+				]
+			);
+		} else {			
+			$o = Exe::sendMessage(
+				[
+					"text" => Lang::get("start.group"),
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"]
+				]
+			);
+			var_dump($o, Lang::get("start.group"));
+		}
 		return true;
 	}
 }

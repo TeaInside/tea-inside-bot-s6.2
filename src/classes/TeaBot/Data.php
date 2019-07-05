@@ -3,6 +3,7 @@
 namespace TeaBot;
 
 use ArrayAccess;
+use TeaBot\Lang;
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
@@ -41,8 +42,10 @@ final class Data implements ArrayAccess
 
 			if (isset($this->in["message"]["from"]["language_code"])) {
 				$this->container["lang"] = &$this->in["message"]["from"]["language_code"];
+				Lang::init($this->container["lang"]);
 			} else {
 				$this->container["lang"] = null;
+				Lang::init("en");
 			}
 
 			$this->container["update_id"]	= &$this->in["update_id"];

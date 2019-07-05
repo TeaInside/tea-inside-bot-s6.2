@@ -15,7 +15,10 @@ static zend_class_entry *teabot_class_entry;
 const zend_function_entry teabot_lang_class_methods[] = {
     PHP_ME(TeaBot_Lang, __construct, NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
     PHP_ME(TeaBot_Lang, init, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(TeaBot_Lang, setFallbackLang, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(TeaBot_Lang, get, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(TeaBot_Lang, getLang, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(TeaBot_Lang, getFallbackLang, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
@@ -152,8 +155,8 @@ PHP_METHOD(TeaBot_Lang, get)
             sizeof("fallbackLang")-1,
             1 TSRMLS_CC
         );
-
         
+        GET_LANG_FALLBACK(fallbackLang->value.str->val, ret, key)
     }
 
     if (ret != NULL) {
@@ -161,6 +164,43 @@ PHP_METHOD(TeaBot_Lang, get)
     }
 }
 
+/**
+ * TeaBot\Lang::getLang
+ *
+ * @return string
+ */
+PHP_METHOD(TeaBot_Lang, getLang)
+{
+    zval *lang;
+
+    lang = zend_read_static_property(
+        teabot_ce,
+        "lang",
+        sizeof("lang")-1,
+        1 TSRMLS_CC
+    );
+
+    RETURN_STRINGL(lang->value.str->val, strlen(lang->value.str->val))
+}
+
+/**
+ * TeaBot\Lang::getFallbackLang
+ *
+ * @return string
+ */
+PHP_METHOD(TeaBot_Lang, getFallbackLang)
+{
+    zval *fallbackLang;
+
+    fallbackLang = zend_read_static_property(
+        teabot_ce,
+        "fallbackLang",
+        sizeof("fallbackLang")-1,
+        1 TSRMLS_CC
+    );
+
+    RETURN_STRINGL(fallbackLang->value.str->val, strlen(fallbackLang->value.str->val))
+}
 
 /**
  * Shutdown.

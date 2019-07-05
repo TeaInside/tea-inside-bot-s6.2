@@ -5,6 +5,9 @@
  * @license MIT
  */
 
+$extDir = __DIR__."/src/ext";
+$buildDir = __DIR__."/build";
+
 if (!isset($argv[1])) {
 	goto build;
 }
@@ -18,8 +21,10 @@ switch ($argv[1]) {
 		goto clean;
 	break;
 	default:
-		print "Invalid command '{$argv[1]}'\n";
-		exit(1);
+		if ($argv[1][0] !== '-') {
+			print "Invalid command '{$argv[1]}'\n";
+			exit(1);
+		}
 	break;
 }
 
@@ -46,6 +51,34 @@ build:
 			print " OK\n";
 		}
 	}
+
+	$force = array_search("-f", $_SERVER["argv"]) !== false;
+
+	if (!file_exists($buildDir)) {
+		mkdir($buildDir, 0755);
+	}
+
+	if ((!file_exists($buildDir."/ext")) || $force) {
+		print shexec("cp -rfv ".escapeshellarg($extDir)." ".escapeshellarg($buildDir));	
+	}
+
+	$cwd = getcwd();
+	chdir($buildDir."/ext");
+
+	if (!file_exists($buildDir."/ext/phpized.lock")) {
+		shexec("phpize");
+		shexec("./configure");
+		file_put_contents($buildDir."/ext/phpized.lock", time());
+	}
+
+	if ($force) {
+		shexec("make clean");
+	}
+
+	shexec("make");
+	shexec("cp -rfv ".escapeshellarg($buildDir."/ext/modules/teabot.so")." ".escapeshellarg(__DIR__."/storage/lib"));
+
+	chdir($cwd);
 	exit(0);
 
 clean:
@@ -71,3 +104,13 @@ clean:
 		}
 	}
 	exit(0);
+
+/**
+ * @param string $cmd
+ * @return void
+ */
+function shexec(string $cmd): void
+{
+	$handle = proc_open($cmd, [], $pipes);
+	proc_close($handle);
+}

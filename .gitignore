@@ -4,5 +4,6 @@
 *.swp
 *.tmp
 *.lock
+/build/
 /.phpintel/
 /config.php

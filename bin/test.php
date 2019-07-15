@@ -22,7 +22,7 @@ $json = '{
             "type": "private"
         },
         "date": 1543988644,
-        "text": "/start",
+        "text": "/debug",
         "entities": [
             {
                 "offset": 0,
@@ -35,6 +35,4 @@ $json = '{
 
 $libDir = __DIR__."/../storage/lib";
 
-sh(
-	"/usr/bin/php7.3 -d extension='{$libDir}/teabot.so' ".__DIR__."/run.php ".escapeshellarg($json)
-);
+sh("/usr/bin/php7.3 -d extension='{$libDir}/teabot.so' ".__DIR__."/run.php ".escapeshellarg($json));

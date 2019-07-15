@@ -18,7 +18,7 @@ trait ResponseRoutes
 		/**
 		 * Start command.
 		 */
-		if (preg_match("/^(\/|\!|\~|\.)start$/i", $this->data["text"])) {
+		if (preg_match("/^(\/|\!|\~|\.)start$/Usi", $this->data["text"])) {
 			if ($this->stExec(Responses\Start::class, "start")) {
 				return true;
 			}
@@ -27,8 +27,17 @@ trait ResponseRoutes
 		/**
 		 * Qur'an command.
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)(?:quran )(\d{1,3}):(\d{1,3})$/", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)(?:quran )(\d{1,3}):(\d{1,3})$/Usi", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Quran::class, "quran", [(int)$m[1], (int)$m[2]])) {
+				return true;
+			}
+		}
+
+		/**
+		 * Debug command.
+		 */
+		if (preg_match("/^(?:\/|\!|\~|\.)(?:debug)$/Usi", $this->data["text"])) {
+			if ($this->stExec(Responses\Debug::class, "debug")) {
 				return true;
 			}
 		}

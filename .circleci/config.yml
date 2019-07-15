@@ -1,0 +1,39 @@
+#
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3.7-cli
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run: echo test
+      # - run: php php_syntax_checker.php
+
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "composer.json" }}
+      #     - v1-dependencies-      
+
+      # - run: cp -vf config/isolate.php.example config/isolate.php
+      # - run: cp -vf config/telegram/config.php.example config/telegram/config.php
+      # - run: echo 'define("ISOLATE_INSIDE_DOCKER", true);' >> tests/config.php
+      # - run: sudo apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+      # - run: sudo -E docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+      # - run: sudo -E docker-php-ext-install -j6 gd
+      # - run: composer install -vvv --prefer-dist
+
+      # - save_cache:
+      #     paths:
+      #     - vendor
+      #     - composer.lock
+      #     key: v1-dependencies-{{ checksum "composer.json" }}
+
+      # - run: sudo php vendor/bin/phpunit --verbose
+      # - run: sudo php php_syntax_checker.php
+      # - run: php deploy.php

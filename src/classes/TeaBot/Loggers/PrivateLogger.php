@@ -37,8 +37,6 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 			":first_name" => $this->data["first_name"],
 			":last_name" => $this->data["last_name"],
 			":photo" => null,
-			":is_bot" => ($this->data["is_bot"] ? '1' : '0'),
-			":group_msg_count" => 0,
 			":created_at" => date("Y-m-d H:i:s")
 		];
 
@@ -52,6 +50,8 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 				$createHistory = true;
 			}
 		} else {
+			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
+			$data[":group_msg_count"] = 0;
 			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`, `updated_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, :group_msg_count, 1, :created_at, NULL);")->execute($data);
 			unset($data[":is_bot"], $data[":group_msg_count"]);
 			$data[":user_id"] = $this->pdo->lastInsertId();

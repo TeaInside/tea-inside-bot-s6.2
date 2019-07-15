@@ -82,7 +82,7 @@ function build(bool $noExit = false): void
 	 * Build config.
 	 */
 	recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
-		if (preg_match("/^.+\.php\.frag$/S", $file)) {
+		if (preg_match("/^.+\.frag\.php$/S", $file)) {
 			sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg($dir."/".$file));
 		}
 	});

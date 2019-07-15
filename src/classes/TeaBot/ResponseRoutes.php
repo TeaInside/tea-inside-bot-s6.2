@@ -30,7 +30,7 @@ trait ResponseRoutes
 		if (preg_match("/^(?:\/|\!|\~|\.)(?:quran )(\d{1,3}):(\d{1,3})$/", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Quran::class, "quran", [(int)$m[1], (int)$m[2]])) {
 				return true;
-			}	
+			}
 		}
 
 		return false;

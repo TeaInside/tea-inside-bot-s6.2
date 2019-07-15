@@ -7,3 +7,4 @@
 /build/
 /.phpintel/
 /config.php
+/public/adminer.php

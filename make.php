@@ -119,6 +119,11 @@ function langFragBuilder(string $sourceFile): void
 {
 	require $sourceFile;
 
+	if (file_exists($targetFile) && (filemtime($sourceFile) < filemtime($targetFile))) {
+		return;
+	}
+
+	print "Executing {$sourceFile}...\n";
 	$handle = fopen($targetFile, "w");
 fwrite($handle, "
 /**

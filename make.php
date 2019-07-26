@@ -35,6 +35,9 @@ function build(bool $noExit = false): void
 	// Build webhook endpoint.
 	sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_webhook.php"));
 
+	// Make lib dir.
+	is_dir($libDir) or mkdir($libDir);
+
 	/**
 	 * Build extension.
 	 */

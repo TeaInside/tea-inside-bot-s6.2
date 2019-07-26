@@ -32,6 +32,9 @@ function build(bool $noExit = false): void
 {
 	global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
 
+	// Build webhook endpoint.
+	sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_webhook.php"));
+
 	/**
 	 * Build extension.
 	 */

@@ -110,7 +110,20 @@ function build(bool $noExit = false): void
  */
 function cleanBuiltData(): void
 {
+	global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
+
 	sh("rm -rfv build");
+	recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
+		if (($file !== ".gitignore") && (!preg_match("/^.+\.frag\.php$/S", $file))) {
+			print "Deleting {$file}...";
+			if (unlink($dir."/".$file)) {
+				print "OK!";
+			} else {
+				print "Error!";
+			}
+			print "\n";
+		}
+	});
 	exit(0);
 }
 

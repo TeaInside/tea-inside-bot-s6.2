@@ -160,7 +160,7 @@ PHP_METHOD(TeaBot_Lang, get)
     }
 
     if (ret != NULL) {
-        RETURN_STRINGL(ret, strlen(ret))   
+        RETURN_STRINGL(ret, strlen(ret))
     }
 }
 

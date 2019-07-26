@@ -6,7 +6,7 @@ $const["QURAN_STORAGE_PATH"] = STORAGE_PATH."/quran";
 
 if (!is_dir($const["QURAN_STORAGE_PATH"])) {
 	@unlink($const["QURAN_STORAGE_PATH"]);
-	mkdir($const, 0755);
+	mkdir($const["QURAN_STORAGE_PATH"], 0755);
 }
 
 if (!file_exists($const["QURAN_STORAGE_PATH"]."/.gitignore")) {

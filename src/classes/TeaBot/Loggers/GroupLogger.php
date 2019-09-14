@@ -158,6 +158,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logPhoto(): void
 	{
-		
+		var_dump($this->data["photo"]);
 	}
 }

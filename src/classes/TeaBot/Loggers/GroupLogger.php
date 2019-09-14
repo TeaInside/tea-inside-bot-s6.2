@@ -162,7 +162,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		$photo = end($this->data["photo"]);
 
 		// First, check whether file_id exists in database or not.
-		$st = $this->pdo->prepre("SELECT `id` FROM `files` WHERE `telegram_file_id` = :file_id LIMIT 1;");
+		$st = $this->pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :file_id LIMIT 1;");
 		$st->execute([":file_id" => $photo["file_id"]]);
 		if ($r = $st->fetch(PDO::FETCH_NUM)) {
 			// Increase hit counter.
@@ -225,7 +225,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			$md5_hash = md5_file($tmpFile, true);
 			$absolute_hash = $sha1_hash.$md5_hash;
 
-			$st = $this->pdo->prepre("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
+			$st = $this->pdo->prepare("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
 			$st->execute([":absolute_hash" => $absolute_hash]);
 			if ($r = $st->fetch(PDO::FETCH_NUM)) {
 				// Increase hit counter.

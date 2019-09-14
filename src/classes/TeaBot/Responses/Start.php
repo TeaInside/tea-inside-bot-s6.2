@@ -35,7 +35,6 @@ final class Start extends ResponseFoundation
 					"reply_to_message_id" => $this->data["msg_id"]
 				]
 			);
-			var_dump($o, Lang::get("start.group"));
 		}
 		return true;
 	}

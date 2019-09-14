@@ -4,7 +4,7 @@ namespace TeaBot\Loggers;
 
 use DB;
 use PDO;
-use Exe;
+use TeaBot\Exe;
 use TeaBot\LoggerFoundation;
 use TeaBot\Contracts\LoggerInterface;
 

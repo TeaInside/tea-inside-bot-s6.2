@@ -275,7 +275,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 					":reply_to_tmsg_id" => (
 						isset($this->data["reply"]) ? $this->data["reply"]["message_id"] : null
 					),
-					":msg_type" => "text",
+					":msg_type" => "photo",
 					":text" => $this->data["text"],
 					":text_entities" => (
 						isset($this->data["entities"]) ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null

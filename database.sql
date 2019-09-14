@@ -1,4 +1,4 @@
--- Adminer 4.7.1 MySQL dump
+-- Adminer 4.2.5 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -81,7 +81,7 @@ CREATE TABLE `groups_history` (
 DROP TABLE IF EXISTS `groups_messages`;
 CREATE TABLE `groups_messages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint(20) unsigned DEFAULT NULL,
+  `group_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `tmsg_id` bigint(20) unsigned DEFAULT NULL,
   `reply_to_tmsg_id` bigint(20) unsigned DEFAULT NULL,
@@ -103,8 +103,8 @@ CREATE TABLE `groups_messages` (
   KEY `tmsg_datetime` (`tmsg_datetime`),
   KEY `created_at` (`created_at`),
   FULLTEXT KEY `text` (`text`),
-  CONSTRAINT `groups_messages_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `groups_messages_ibfk_7` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `groups_messages_ibfk_10` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `groups_messages_ibfk_12` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `groups_messages_ibfk_8` FOREIGN KEY (`file`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
@@ -121,19 +121,19 @@ CREATE TABLE `private_messages` (
   `file` bigint(20) unsigned DEFAULT NULL,
   `is_edited` enum('0','1') CHARACTER SET latin1 NOT NULL DEFAULT '0',
   `tmsg_datetime` datetime DEFAULT NULL,
-  `datetime` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `tmsg_id` (`tmsg_id`),
   KEY `reply_to_tmsg_id` (`reply_to_tmsg_id`),
   KEY `msg_type` (`msg_type`),
   KEY `is_edited` (`is_edited`),
   KEY `tmsg_datetime` (`tmsg_datetime`),
-  KEY `datetime` (`datetime`),
+  KEY `datetime` (`created_at`),
   KEY `user_id` (`user_id`),
   KEY `file` (`file`),
   FULLTEXT KEY `text` (`text`),
-  CONSTRAINT `private_messages_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `private_messages_ibfk_4` FOREIGN KEY (`file`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `private_messages_ibfk_4` FOREIGN KEY (`file`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `private_messages_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
@@ -170,7 +170,7 @@ CREATE TABLE `users_history` (
   `user_id` bigint(20) unsigned NOT NULL,
   `username` varchar(72) CHARACTER SET latin1 DEFAULT NULL,
   `first_name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `last_name` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
   `photo` bigint(20) unsigned DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -185,4 +185,4 @@ CREATE TABLE `users_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
--- 2019-07-15 19:55:30
+-- 2019-09-14 08:49:31

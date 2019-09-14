@@ -20,7 +20,43 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function run(): void
 	{
+		$this->saveGroupInfo();
 		$this->saveUserInfo();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function saveGroupInfo(): void
+	{
+		$createHistory = false;
+		$st = $this->pdo->prepare("SELECT `name`, `username`, `link`, `photo` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
+		$st->execute([":group_id" => $this->data["chat_id"]]);
+		$data = [
+			":group_id" => $this->data["chat_id"],
+			":name" => $this->data["group_name"],
+			":username" => $this->data["group_username"],
+			":link" => null,
+			":photo" => null,
+			":created_at" => date("Y-m-d H:i:s")
+		];
+
+		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+			$this->pdo->prepare("UPDATE `groups` SET `msg_count` = `msg_count` + 1 WHERE `group_id` = :group_id LIMIT 1;")->execute([":group_id" => $this->data["chat_id"]]);
+			if (
+				($this->data["group_name"] !== $r["name"]) ||
+				($this->data["group_username"] !== $r["username"])
+			) {
+				$createHistory = true;
+			}
+		} else {
+			$this->pdo->prepare("INSERT INTO `groups` (`group_id`, `name`, `username`, `link`, `photo`, `msg_count`, `created_at`) VALUES (:group_id, :name, :username, :link, :photo, 1, :created_at);")->execute($data);
+			$createHistory = true;
+		}
+
+		if ($createHistory) {
+			$this->pdo->prepare("INSERT INTO `groups_history` (`group_id`, `name`, `username`, `link`, `photo`, `created_at`) VALUES (:group_id, :name, :username, :link, :photo, :created_at);")->execute($data);
+		}
 	}
 
 	/**
@@ -53,7 +89,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
 			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`, `updated_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, 1, 0, :created_at, NULL);")->execute($data);
 			unset($data[":is_bot"]);
-			$data[":user_id"] = $this->pdo->lastInsertId();
 			$createHistory = true;
 		}
 
@@ -68,9 +103,10 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	public function logText(): void
 	{
 		$this->pdo
-			->prepare("INSERT INTO `groups_messages` (`user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, NULL, :is_edited, :tmsg_datetime, :created_at);")
+			->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, NULL, :is_edited, :tmsg_datetime, :created_at);")
 			->execute(
 				[
+					":group_id" => $this->data["chat_id"],
 					":user_id" => $this->data["user_id"],
 					":tmsg_id" => $this->data["msg_id"],
 					":reply_to_tmsg_id" => (

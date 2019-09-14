@@ -76,6 +76,8 @@ final class Data implements ArrayAccess
 				$this->container["chat_type"] = "private";
 			} else {
 				$this->container["chat_type"] = "group";
+				$this->container["group_name"] = &$this->in["message"]["chat"]["title"];
+				$this->container["group_username"] = &$this->in["message"]["chat"]["username"];
 			}
 		}
 	}

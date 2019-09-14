@@ -263,7 +263,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			$fileId = $this->pdo->lastInsertId();
 		}
 
-
 		save_message:
 		$this->pdo
 			->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")

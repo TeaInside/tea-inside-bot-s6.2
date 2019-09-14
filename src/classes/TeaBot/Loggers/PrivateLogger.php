@@ -136,6 +136,9 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 			is_dir(STORAGE_PATH."/telegram/files") or mkdir(STORAGE_PATH."/telegram/files");
 			is_dir("/tmp/telegram_download") or mkdir("/tmp/telegram_download");
 
+			file_exists(STORAGE_PATH."/telegram/.gitignore") or
+			file_get_contents(STORAGE_PATH."/telegram/.gitignore", "*\n!.gitignore\n");
+
 			$ext = explode(".", $o["file_path"]);
 			if (count($ext) > 1) {
 				$ext = strtolower(end($ext));
@@ -211,7 +214,6 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 				);
 			$fileId = $this->pdo->lastInsertId();
 		}
-
 
 		save_message:
 		$this->pdo

@@ -24,6 +24,7 @@ final class DB
 	private function __construct()
 	{
 		$this->pdo = new \PDO(...PDO_PARAM);
+		$this->pdo->exec("SET NAMES utf8mb4;");
 	}
 
 	/**

@@ -61,7 +61,7 @@ CREATE TABLE `groups` (
 DROP TABLE IF EXISTS `groups_history`;
 CREATE TABLE `groups_history` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `username` varchar(72) CHARACTER SET latin1 DEFAULT NULL,
   `link` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE `groups_history` (
   KEY `name` (`name`),
   KEY `username` (`username`),
   KEY `created_at` (`created_at`),
-  CONSTRAINT `groups_history_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `groups_history_ibfk_4` FOREIGN KEY (`photo`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `groups_history_ibfk_4` FOREIGN KEY (`photo`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `groups_history_ibfk_5` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
@@ -181,8 +181,8 @@ CREATE TABLE `users_history` (
   KEY `last_name` (`last_name`),
   KEY `created_at` (`created_at`),
   CONSTRAINT `users_history_ibfk_3` FOREIGN KEY (`photo`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
-  CONSTRAINT `users_history_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `users_history_ibfk_6` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
--- 2019-09-14 08:49:31
+-- 2019-09-14 08:53:19

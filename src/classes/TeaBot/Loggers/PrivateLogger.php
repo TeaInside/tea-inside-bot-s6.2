@@ -74,11 +74,13 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 				[
 					":user_id" => $this->data["user_id"],
 					":tmsg_id" => $this->data["msg_id"],
-					":reply_to_tmsg_id" => null,
+					":reply_to_tmsg_id" => (
+						isset($this->data["reply"]) ? $this->data["reply"]["message_id"] : null
+					),
 					":msg_type" => "text",
 					":text" => $this->data["text"],
 					":text_entities" => (
-						$this->data["entities"] ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
+						isset($this->data["entities"]) ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
 					),
 					":is_edited" => '0',
 					":tmsg_datetime" => date("Y-m-d H:i:s", $this->data["date"]),

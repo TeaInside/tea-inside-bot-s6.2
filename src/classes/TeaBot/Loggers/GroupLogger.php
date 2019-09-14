@@ -161,8 +161,8 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	{
 		$photo = end($this->data["photo"]);
 		$o = json_decode(Exe::getFile(["file_id" => $photo["file_id"]])["out"], true)["result"];
-		if (isset($o["file_path"])) {
-			$o = Exe::($o["file_path"])()["out"];
+		if (isset($o[["file_path"])) {
+			$o = Exe::{$o["file_path"]}()["out"];
 			print $o;
 		}
 	}

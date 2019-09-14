@@ -160,12 +160,27 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	public function logPhoto(): void
 	{
 		$photo = end($this->data["photo"]);
-		$o = json_decode(
-			Exe::getFile(["file_id" => $photo["file_id"]])["out"],
-			true
-		)["result"];
 
-		if (isset($o["file_path"])) {
+		// First, check whether file_id exists in database or not.
+		$st = $this->pdo->preapre("SELECT `id` FROM `files` WHERE `telegram_file_id` = :file_id LIMIT 1;");
+		$st->execute([":file_id" => $photo["file_id"]]);
+		if ($r = $st->fetch(PDO::FETCH_NUM)) {
+			// Increase hit counter.
+			$this->pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
+					[
+						":id" => $r[0],
+						":updated_at" => date("Y-m-d H:i:s")
+					]
+				);
+
+			$fileId = $r[0];
+			goto save_message;
+		}
+
+		$o = json_decode(Exe::getFile(["file_id" => $photo["file_id"]])["out"], true);
+		if (isset($o["result"]["file_path"])) {
+
+			$o = $o["result"];
 
 			is_dir(STORAGE_PATH) or mkdir(STORAGE_PATH);
 			is_dir(STORAGE_PATH."/telegram") or mkdir(STORAGE_PATH."/telegram");
@@ -210,13 +225,27 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			$md5_hash = md5_file($tmpFile, true);
 			$absolute_hash = $sha1_hash.$md5_hash;
 
+			$st = $this->pdo->preapre("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
+			$st->execute([":absolute_hash" => $absolute_hash]);
+			if ($r = $st->fetch(PDO::FETCH_NUM)) {
+				// Increase hit counter.
+				$this->pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
+						[
+							":id" => $r[0],
+							":updated_at" => date("Y-m-d H:i:s")
+						]
+					);
+
+				$fileId = $r[0];
+				goto save_message;
+			}
+
 			$targetFile = STORAGE_PATH."/telegram/files/".
 				bin2hex($md5_hash)."_".bin2hex($sha1_hash).(isset($ext) ? ".".$ext : "");
 
 			rename($tmpFile, $targetFile);
 
-			$this
-				->pdo
+			$this->pdo
 				->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `absolute_hash`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :absolute_hash, :file_type, :extension, :size, :hit_count, :created_at);")
 				->execute(
 					[
@@ -231,6 +260,31 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 						":created_at" => date("Y-m-d H:i:s")
 					]
 				);
+			$fileId = $this->pdo->lastInsertId();
 		}
+
+
+		save_message:
+		$this->pdo
+			->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")
+			->execute(
+				[
+					":group_id" => $this->data["chat_id"],
+					":user_id" => $this->data["user_id"],
+					":tmsg_id" => $this->data["msg_id"],
+					":reply_to_tmsg_id" => (
+						isset($this->data["reply"]) ? $this->data["reply"]["message_id"] : null
+					),
+					":msg_type" => "text",
+					":text" => $this->data["text"],
+					":text_entities" => (
+						isset($this->data["entities"]) ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
+					),
+					":file" => $fileId,
+					":is_edited" => '0',
+					":tmsg_datetime" => date("Y-m-d H:i:s", $this->data["date"]),
+					":created_at" => date("Y-m-d H:i:s")
+				]
+			);
 	}
 }

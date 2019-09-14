@@ -14,9 +14,10 @@ CREATE TABLE `files` (
   `md5_sum` binary(16) NOT NULL,
   `sha1_sum` binary(20) NOT NULL,
   `absolute_hash` binary(36) NOT NULL,
-  `hit_count` bigint(20) unsigned NOT NULL DEFAULT '1',
   `file_type` varchar(32) CHARACTER SET latin1 NOT NULL DEFAULT 'unknown',
   `extension` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
+  `size` bigint(20) unsigned DEFAULT NULL,
+  `hit_count` bigint(20) unsigned NOT NULL DEFAULT '1',
   `description` text COLLATE utf8mb4_unicode_520_ci,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -185,4 +186,4 @@ CREATE TABLE `users_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
--- 2019-09-14 09:02:57
+-- 2019-09-14 16:33:51

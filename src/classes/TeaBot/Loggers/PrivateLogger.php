@@ -68,7 +68,23 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logText(): void
 	{
-		
+		$this->pdo
+			->prepare("INSERT INTO `private_messages` (`user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, NULL, :is_edited, :tmsg_datetime, :created_at);")
+			->execute(
+				[
+					":user_id" => $this->data["user_id"],
+					":tmsg_id" => $this->data["msg_id"],
+					":reply_to_tmsg_id" => null,
+					":msg_type" => "text",
+					":text" => $this->data["text"],
+					":text_entities" => (
+						$this->data["entities"] ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
+					),
+					":is_edited" => '0',
+					":tmsg_datetime" => date("Y-m-d H:i:s", $this->data["date"]),
+					":created_at" => date("Y-m-d H:i:s")
+				]
+			);
 	}
 
 	/**

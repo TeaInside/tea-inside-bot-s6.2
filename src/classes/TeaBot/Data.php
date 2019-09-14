@@ -56,7 +56,7 @@ final class Data implements ArrayAccess
 			$this->container["user_id"]		= &$this->in["message"]["from"]["id"];
 			$this->container["is_bot"]		= &$this->in["message"]["from"]["is_bot"];
 			$this->container["first_name"]	= &$this->in["message"]["from"]["first_name"];
-			$this->container["data"]		= &$this->in["message"]["date"];
+			$this->container["date"]		= &$this->in["message"]["date"];
 			$this->container["msg_type"]	= "text";
 
 			if (isset($this->in["message"]["from"]["last_name"])) {

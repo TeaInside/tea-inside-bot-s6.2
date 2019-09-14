@@ -166,8 +166,39 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		)["result"];
 
 		if (isset($o["file_path"])) {
-			$o = Exe::{$o["file_path"]}()["out"];
-			print $o;
+
+			is_dir("/tmp/telegram_download") or mkdir("/tmp/telegram_download");
+
+			$ext = explode(".", $o["file_path"]);
+			$ext = strtolower(end($ext));
+
+			$tmpFile = "/tmp/telegram_download/".time()."_".rand(100000, 999999).".".$ext;
+			$handle = fopen($tmpFile, "wb+");
+			$bufferSize = 4096;
+			$writtenBytes = 0;
+
+			$ch = curl_init("https://api.telegram.org/file/bot".BOT_TOKEN."/".$o["file_path"]);
+			curl_setopt_array($ch,
+				[
+					CURLOPT_VERBOSE => 0,
+					CURLOPT_RETURNTRANSFER => false,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_SSL_VERIFYHOST => false,
+					CURLOPT_WRITEFUNCTION => function ($ch, $str) use (&$handle, &$writtenBytes, $bufferSize) {
+						$bytes = fwrite($handle, $str);
+						$writtenBytes += $bytes;
+						if ($writtenBytes >= $bufferSize) {
+							fflush($handle);
+						}
+						return $bytes;
+					}
+				]
+			);
+			curl_exec($ch);
+			curl_close($ch);
+			fclose($handle);
+
+			print "Download OK!\n";
 		}
 	}
 }

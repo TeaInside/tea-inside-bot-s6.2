@@ -55,8 +55,17 @@ final class Logger
 	{
 		$logger->run();
 
-		if ($this->data["msg_type"] === "text") {
-			$logger->logText();
+		switch ($this->data["msg_type"]) {
+			case "text":
+				$logger->logText();
+			break;
+
+			case "photo":
+				$logger->logPhoto();
+			break;
+
+			default:
+			break;
 		}
 	}
 }

@@ -97,7 +97,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 				($this->data["last_name"] !== $r["last_name"])
 			) {
 				$createHistory = true;
-				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name, `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name, `group_msg_count` = `group_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
 					[
 						":username" => $this->data["username"],
 						":first_name" => $this->data["first_name"],
@@ -107,7 +107,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 					]
 				);
 			} else {
-				$this->pdo->prepare("UPDATE `users` SET `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+				$this->pdo->prepare("UPDATE `users` SET `group_msg_count` = `group_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
 					[
 						":updated_at" => $data[":created_at"],
 						":user_id" => $data[":user_id"]
@@ -158,5 +158,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logPhoto(): void
 	{
+		
 	}
 }

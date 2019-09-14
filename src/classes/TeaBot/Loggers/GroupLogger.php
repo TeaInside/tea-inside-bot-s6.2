@@ -222,7 +222,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 					[
 						":telegram_file_id" => $photo["file_id"],
 						":md5_sum" => $md5_hash,
-						":sha1_hash" => $sha1_hash,
+						":sha1_sum" => $sha1_hash,
 						":absolute_hash" => $absolute_hash,
 						":file_type" => "photo",
 						":extension" => $ext,

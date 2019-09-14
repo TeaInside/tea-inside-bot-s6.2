@@ -61,10 +61,12 @@ final class Logger
 			break;
 
 			case "photo":
+				var_dump("OK");
 				$logger->logPhoto();
 			break;
 
 			default:
+				var_dump($this->data["msg_type"]);
 			break;
 		}
 	}

@@ -215,7 +215,22 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 
 			rename($tmpFile, $targetFile);
 
-			print $targetFile."\n";
+			$this
+				->pdo
+				->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `absolute_hash`, `file_type`, `extension`, `size`, `hit_count`, `created_at`, `updated_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :absolute_hash, :file_type, :extension, :size, :hit_count, :created_at);")
+				->execute(
+					[
+						":telegram_file_id" => $photo["file_id"],
+						":md5_sum" => $md5_hash,
+						":sha1_hash" => $sha1_hash,
+						":absolute_hash" => $absolute_hash,
+						":file_type" => "photo",
+						":extension" => $ext,
+						":size" => (isset($photo["file_size"]) ? $photo["file_size"] : null),
+						":hit_count" => 1,
+						":created_at" => date("Y-m-d H:i:s")
+					]
+				);
 		}
 	}
 }

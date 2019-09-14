@@ -4,6 +4,7 @@ namespace TeaBot\Loggers;
 
 use DB;
 use PDO;
+use Exe;
 use TeaBot\LoggerFoundation;
 use TeaBot\Contracts\LoggerInterface;
 
@@ -158,6 +159,8 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logPhoto(): void
 	{
-		var_dump($this->data["photo"]);
+		$photo = end($this->data["photo"]);
+		$o = Exe::getFile(["file_id" => $photo["file_id"]]);
+		var_dump($o->out);
 	}
 }

@@ -4,6 +4,7 @@ namespace TeaBot\Loggers;
 
 use DB;
 use PDO;
+use Exe;
 use TeaBot\LoggerFoundation;
 use TeaBot\Contracts\LoggerInterface;
 
@@ -107,5 +108,6 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logPhoto(): void
 	{
+		
 	}
 }

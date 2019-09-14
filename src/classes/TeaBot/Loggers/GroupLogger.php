@@ -167,12 +167,18 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 
 		if (isset($o["file_path"])) {
 
+			is_dir(STORAGE_PATH) or mkdir(STORAGE_PATH);
+			is_dir(STORAGE_PATH."/telegram") or mkdir(STORAGE_PATH."/telegram");
+			is_dir(STORAGE_PATH."/telegram/files") or mkdir(STORAGE_PATH."/telegram/files");
 			is_dir("/tmp/telegram_download") or mkdir("/tmp/telegram_download");
 
 			$ext = explode(".", $o["file_path"]);
-			$ext = strtolower(end($ext));
+			if (count($ext) > 2) {
+				$ext = strtolower(end($ext));
+			}
 
-			$tmpFile = "/tmp/telegram_download/".time()."_".rand(100000, 999999).".".$ext;
+			$tmpFile = "/tmp/telegram_download/".time()."_".sha1($photo["file_id"])."_".rand(100000, 999999).
+				(isset($ext) ? ".".$ext : "");
 			$handle = fopen($tmpFile, "wb+");
 			$bufferSize = 4096;
 			$writtenBytes = 0;
@@ -198,7 +204,16 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			curl_close($ch);
 			fclose($handle);
 
-			print "Download OK!\n";
+			$sha1_hash = sha1_file($tmpFile, true);
+			$md5_hash = md5_file($tmpFile, true);
+			$absolute_hash = $sha1_hash.$md5_hash;
+
+			$targetFile = STORAGE_PATH."/telegram/files/".
+				bin2hex($md5_hash)."_".bin2hex($sha1_hash).(isset($ext) ? ".".$ext : "");
+
+			rename($tmpFile, $targetFile);
+
+			print $targetFile."\n";
 		}
 	}
 }

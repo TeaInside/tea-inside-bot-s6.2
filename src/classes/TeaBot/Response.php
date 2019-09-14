@@ -56,10 +56,8 @@ final class Response
 	 */
 	public function run(): void
 	{
-		if (isset($this->data["msg_type"])) {
-			if ($this->data["msg_type"] === "text") {
-				$this->execRoutes();
-			}
+		if (isset($this->data["msg_type"], $this->data["text"])) {
+			$this->execRoutes();
 		}
 	}
 }

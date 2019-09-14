@@ -32,53 +32,66 @@ final class Data implements ArrayAccess
 	{
 		$this->in = $data;
 		$this->container["in"] = &$this->in;
-		if (isset($this->in["message"]["text"])) {
 
-			if (isset($this->in["message"]["from"]["username"])) {
-				$this->container["username"] = &$this->in["message"]["from"]["username"];
-			} else {
-				$this->container["username"] = null;
-			}
+		if (isset($this->in["message"]["photo"])) {
+			$this->container["photo"] = &$this->in["message"]["photo"];
+			$this->container["text"]  = &$this->in["message"]["caption"];
+			$this->container["msg_type"] = "photo";
+			$this->buildGeneralMessage();
+		} else if (isset($this->in["message"]["text"])) {
+			$this->container["text"]  	 = &$this->in["message"]["text"];
+			$this->container["msg_type"] = "text";
+			$this->buildGeneralMessage();
+		}
+	}
 
-			if (isset($this->in["message"]["from"]["language_code"])) {
-				$this->container["lang"] = &$this->in["message"]["from"]["language_code"];
-				Lang::init($this->container["lang"]);
-			} else {
-				$this->container["lang"] = null;
-				Lang::init("en");
-			}
+	/**
+	 * @return void
+	 */
+	private function buildGeneralMessage()
+	{
+		if (isset($this->in["message"]["from"]["username"])) {
+			$this->container["username"] = &$this->in["message"]["from"]["username"];
+		} else {
+			$this->container["username"] = null;
+		}
 
-			$this->container["update_id"]	= &$this->in["update_id"];
-			$this->container["text"]		= &$this->in["message"]["text"];
-			$this->container["msg_id"]		= &$this->in["message"]["message_id"];
-			$this->container["chat_id"]		= &$this->in["message"]["chat"]["id"];
-			$this->container["chat_title"]	= &$this->in["message"]["chat"]["title"];
-			$this->container["user_id"]		= &$this->in["message"]["from"]["id"];
-			$this->container["is_bot"]		= &$this->in["message"]["from"]["is_bot"];
-			$this->container["first_name"]	= &$this->in["message"]["from"]["first_name"];
-			$this->container["date"]		= &$this->in["message"]["date"];
-			$this->container["reply"]		= &$this->in["message"]["reply_to_message"];
-			$this->container["msg_type"]	= "text";
+		if (isset($this->in["message"]["from"]["language_code"])) {
+			$this->container["lang"] = &$this->in["message"]["from"]["language_code"];
+			Lang::init($this->container["lang"]);
+		} else {
+			$this->container["lang"] = null;
+			Lang::init("en");
+		}
 
-			if (isset($this->in["message"]["from"]["last_name"])) {
-				$this->container["last_name"] = &$this->in["message"]["from"]["last_name"];
-			} else {
-				$this->container["last_name"] = null;
-			}
+		$this->container["update_id"]	= &$this->in["update_id"];
+		$this->container["msg_id"]		= &$this->in["message"]["message_id"];
+		$this->container["chat_id"]		= &$this->in["message"]["chat"]["id"];
+		$this->container["chat_title"]	= &$this->in["message"]["chat"]["title"];
+		$this->container["user_id"]		= &$this->in["message"]["from"]["id"];
+		$this->container["is_bot"]		= &$this->in["message"]["from"]["is_bot"];
+		$this->container["first_name"]	= &$this->in["message"]["from"]["first_name"];
+		$this->container["date"]		= &$this->in["message"]["date"];
+		$this->container["reply"]		= &$this->in["message"]["reply_to_message"];
 
-			if (isset($this->in["message"]["entities"])) {
-				$this->container["entities"] = &$this->in["message"]["entities"];
-			} else {
-				$this->container["entities"] = null;
-			}
+		if (isset($this->in["message"]["from"]["last_name"])) {
+			$this->container["last_name"] = &$this->in["message"]["from"]["last_name"];
+		} else {
+			$this->container["last_name"] = null;
+		}
 
-			if ($this->in["message"]["chat"]["type"] === "private") {
-				$this->container["chat_type"] = "private";
-			} else {
-				$this->container["chat_type"] = "group";
-				$this->container["group_name"] = &$this->in["message"]["chat"]["title"];
-				$this->container["group_username"] = &$this->in["message"]["chat"]["username"];
-			}
+		if (isset($this->in["message"]["entities"])) {
+			$this->container["entities"] = &$this->in["message"]["entities"];
+		} else {
+			$this->container["entities"] = null;
+		}
+
+		if ($this->in["message"]["chat"]["type"] === "private") {
+			$this->container["chat_type"] = "private";
+		} else {
+			$this->container["chat_type"] = "group";
+			$this->container["group_name"] = &$this->in["message"]["chat"]["title"];
+			$this->container["group_username"] = &$this->in["message"]["chat"]["username"];
 		}
 	}
 

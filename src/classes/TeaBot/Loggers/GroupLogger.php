@@ -173,8 +173,10 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			is_dir("/tmp/telegram_download") or mkdir("/tmp/telegram_download");
 
 			$ext = explode(".", $o["file_path"]);
-			if (count($ext) > 2) {
+			if (count($ext) > 1) {
 				$ext = strtolower(end($ext));
+			} else {
+				$ext = null;
 			}
 
 			$tmpFile = "/tmp/telegram_download/".time()."_".sha1($photo["file_id"])."_".rand(100000, 999999).

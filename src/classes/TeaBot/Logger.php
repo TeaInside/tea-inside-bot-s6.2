@@ -33,8 +33,7 @@ final class Logger
 	 */
 	public function run(): void
 	{
-		$catch = ["text"];
-		if (in_array($this->data["msg_type"], $catch)) {
+		if ($this->data["event_type"] === Data::GENERAL_MSG) {
 			if ($this->data["chat_type"] === "group") {
 				$logger = new GroupLogger($this->data);
 			} else if ($this->data["chat_type"] === "private") {
@@ -61,12 +60,10 @@ final class Logger
 			break;
 
 			case "photo":
-				var_dump("OK");
 				$logger->logPhoto();
 			break;
 
 			default:
-				var_dump($this->data["msg_type"]);
 			break;
 		}
 	}

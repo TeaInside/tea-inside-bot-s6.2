@@ -13,6 +13,8 @@ use TeaBot\Lang;
  */
 final class Data implements ArrayAccess
 {
+	public const GENERAL_MSG = 1;
+
 	/**
 	 * @var array
 	 */
@@ -50,6 +52,8 @@ final class Data implements ArrayAccess
 	 */
 	private function buildGeneralMessage()
 	{
+		$this->container["event_type"] = self::GENERAL_MSG;
+
 		if (isset($this->in["message"]["from"]["username"])) {
 			$this->container["username"] = &$this->in["message"]["from"]["username"];
 		} else {

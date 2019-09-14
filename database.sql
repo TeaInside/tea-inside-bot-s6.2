@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `telegram_file_id` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `md5_sum` char(32) CHARACTER SET latin1 NOT NULL,
-  `sha1_sum` char(40) CHARACTER SET latin1 NOT NULL,
-  `absolute_hash` char(72) CHARACTER SET latin1 NOT NULL,
+  `md5_sum` binary(16) NOT NULL,
+  `sha1_sum` binary(20) NOT NULL,
+  `absolute_hash` binary(36) NOT NULL,
   `hit_count` bigint(20) unsigned NOT NULL DEFAULT '1',
   `file_type` varchar(32) CHARACTER SET latin1 NOT NULL DEFAULT 'unknown',
   `extension` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
@@ -185,4 +185,4 @@ CREATE TABLE `users_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
--- 2019-09-14 08:53:19
+-- 2019-09-14 09:02:57

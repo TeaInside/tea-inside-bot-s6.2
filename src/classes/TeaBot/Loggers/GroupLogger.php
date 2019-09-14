@@ -42,12 +42,26 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		];
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
-			$this->pdo->prepare("UPDATE `groups` SET `msg_count` = `msg_count` + 1 WHERE `group_id` = :group_id LIMIT 1;")->execute([":group_id" => $this->data["chat_id"]]);
 			if (
 				($this->data["group_name"] !== $r["name"]) ||
 				($this->data["group_username"] !== $r["username"])
 			) {
 				$createHistory = true;
+				$this->pdo->prepare("UPDATE `groups` SET `username` = :username, `name` = :name, `msg_count` = `msg_count` + 1, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
+					[
+						":name" => $this->data["group_name"],
+						":username" => $this->data["group_username"],
+						":updated_at" => $data[":created_at"],
+						":group_id" => $this->data["chat_id"]
+					]
+				);
+			} else {
+				$this->pdo->prepare("UPDATE `groups` SET `msg_count` = `msg_count` + 1, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
+					[
+						":updated_at" => $data[":created_at"],
+						":group_id" => $this->data["chat_id"]
+					]
+				);
 			}
 		} else {
 			$this->pdo->prepare("INSERT INTO `groups` (`group_id`, `name`, `username`, `link`, `photo`, `msg_count`, `created_at`) VALUES (:group_id, :name, :username, :link, :photo, 1, :created_at);")->execute($data);
@@ -77,13 +91,28 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		];
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
-			$this->pdo->prepare("UPDATE `users` SET `group_msg_count` = `group_msg_count` + 1 WHERE `user_id` = :user_id LIMIT 1;")->execute([":user_id" => $data[":user_id"]]);
 			if (
 				($this->data["username"] !== $r["username"]) ||
 				($this->data["first_name"] !== $r["first_name"]) ||
 				($this->data["last_name"] !== $r["last_name"])
 			) {
 				$createHistory = true;
+				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name, `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+					[
+						":username" => $this->data["username"],
+						":first_name" => $this->data["first_name"],
+						":last_name" => $this->data["last_name"],
+						":updated_at" => $data[":created_at"],
+						":user_id" => $data[":user_id"]
+					]
+				);
+			} else {
+				$this->pdo->prepare("UPDATE `users` SET `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+					[
+						":updated_at" => $data[":created_at"],
+						":user_id" => $data[":user_id"]
+					]
+				);
 			}
 		} else {
 			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');

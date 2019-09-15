@@ -143,7 +143,7 @@ abstract class LoggerFoundation
 						":absolute_hash" => $absolute_hash,
 						":file_type" => "photo",
 						":extension" => $ext,
-						":size" => (isset($photo["file_size"]) ? $photo["file_size"] : null),
+						":size" => filesize($targetFile),
 						":hit_count" => 1,
 						":created_at" => date("Y-m-d H:i:s")
 					]

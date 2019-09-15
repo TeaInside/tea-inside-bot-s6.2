@@ -77,9 +77,7 @@ abstract class LoggerFoundation
 	 */
 	public static function fileResolve(string $telegramFileId): ?int
 	{
-		var_dump("resolving {$telegramFileId}");
 		$o = json_decode(Exe::getFile(["file_id" => $telegramFileId])["out"], true);
-		var_dump($o);
 		if (isset($o["result"]["file_path"])) {
 
 			$o = $o["result"];

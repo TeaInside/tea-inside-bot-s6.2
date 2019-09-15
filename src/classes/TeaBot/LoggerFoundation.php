@@ -72,7 +72,7 @@ abstract class LoggerFoundation
 			}
 
 			// Prepare temporary file handler.
-			$tmpFile = "/tmp/telegram_download/".time()."_".sha1($photo["file_id"])."_".rand(100000, 999999).
+			$tmpFile = "/tmp/telegram_download/".time()."_".sha1($telegramFileId)."_".rand(100000, 999999).
 				(isset($ext) ? ".".$ext : "");
 			$handle = fopen($tmpFile, "wb+");
 			$bufferSize = 4096;

@@ -26,18 +26,22 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	}
 
 	/**
-	 * @param int $photoId
+	 * @param ?int $photoId
 	 * @return ?int
 	 */
 	private function groupPhotoResolve(?int $photoId): ?int
 	{
 		$o = json_decode(Exe::getChat(["chat_id" => $this->data["chat_id"]])["out"], true);
 		$currentFileId = $o["result"]["photo"]["big_file_id"] ?? null;
-		$st = $this->pdo->prepare("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
-		$st->execute([":id" => $photoId]);
-		if ($r = $st->fetch(PDO::FETCH_ASSOC) &&  ($r["telegram_file_id"] === $currentFileId)) {
-			return $photoId;
+
+		if (!is_null($photoId)) {
+			$st = $this->pdo->prepare("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
+			$st->execute([":id" => $photoId]);
+			if ($r = $st->fetch(PDO::FETCH_ASSOC) && ($r["telegram_file_id"] === $currentFileId)) {
+				return $photoId;
+			}
 		}
+
 		return static::fileResolve($currentFileId);
 	}
 
@@ -60,12 +64,8 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 
-			if (($r["msg_count"] % 10) === 0) {
-				var_dump("photo resolved");
-				$resolvedPhoto = $this->groupPhotoResolve((int)$r['photo']);
-				var_dump($resolvedPhoto);
-			} else {
-				var_dump($r["msg_count"]);
+			if (($r["msg_count"] % 4) === 0) {
+				$resolvedPhoto = $this->groupPhotoResolve($r['photo']);
 			}
 
 			$r["msg_count"]++;
@@ -96,6 +96,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 				);
 			}
 		} else {
+			$data["photo"] = $this->groupPhotoResolve(null);
 			$this->pdo->prepare("INSERT INTO `groups` (`group_id`, `name`, `username`, `link`, `photo`, `msg_count`, `created_at`) VALUES (:group_id, :name, :username, :link, :photo, 1, :created_at);")->execute($data);
 			$createHistory = true;
 		}

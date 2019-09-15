@@ -81,5 +81,6 @@ final class Logger
 		if ($logger instanceof GroupLogger) {
 			LoggerFoundation::groupUnlock($logger->groupHash);
 		}
+		throw $e;
 	}
 }

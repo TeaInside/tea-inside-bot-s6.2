@@ -44,6 +44,34 @@ abstract class LoggerFoundation
 	abstract public function saveUserInfo(): void;
 
 	/**
+	 * @param string $groupId
+	 * @return void
+	 */
+	public static function groupLock(string $groupId): void
+	{
+		is_dir("/tmp/telegram_lock") or mkdir("/tmp/telegram_lock");
+		file_put_contents("/tmp/telegram_lock/{$groupId}", time());
+	}
+
+	/**
+	 * @param string $groupId
+	 * @return void
+	 */
+	public static function groupUnlock(string $groupId): void
+	{
+		@unlink("/tmp/telegram_lock/{$groupId}");
+	}
+
+	/**
+	 * @param string $groupId
+	 * @return bool
+	 */
+	public static function groupIsLocked(string $groupId): bool
+	{
+		return file_exists($groupId);
+	}
+
+	/**
 	 * @param string $telegramFileId
 	 * @return ?int
 	 */

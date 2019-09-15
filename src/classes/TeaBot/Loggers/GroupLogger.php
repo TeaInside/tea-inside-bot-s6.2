@@ -17,6 +17,11 @@ use TeaBot\Contracts\LoggerInterface;
 final class GroupLogger extends LoggerFoundation implements LoggerInterface
 {
 	/**
+	 * @var string
+	 */
+	public $groupHash;
+
+	/**
 	 * @return void
 	 */
 	public function run(): void
@@ -46,10 +51,24 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	}
 
 	/**
+	 * Destructor.
+	 */
+	public function __destruct()
+	{
+		static::groupUnlock($this->groupHash);
+	}
+
+	/**
 	 * @return void
 	 */
 	public function saveGroupInfo(): void
 	{
+		$this->groupHash = sha1($this->data["group_id"]);
+		while (static::groupIsLocked($this->groupHash)) {
+			sleep(2);
+		}
+		static::groupLock($this->groupHash);
+
 		$createHistory = false;
 		$st = $this->pdo->prepare("SELECT `name`, `username`, `link`, `photo`, `msg_count` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
 		$st->execute([":group_id" => $this->data["chat_id"]]);

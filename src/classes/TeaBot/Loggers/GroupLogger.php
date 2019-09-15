@@ -26,12 +26,28 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	}
 
 	/**
+	 * @param int $photoId
+	 * @return ?int
+	 */
+	private function groupPhotoResolve(int $photoId): ?int
+	{
+		$o = json_decode(Exe::getChat(["chat_id" => $this->data["chat_id"]])["out"], true);
+		$currentFileId = $o["result"]["photo"]["big_file_id"] ?? null;
+		$st = $this->pdo->preapre("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
+		$st->execute([":id" => $photoId]);
+		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+			return ($r["telegram_file_id"] === $currentFileId) ? $photoId : static::fileResolve($photo["file_id"]);
+		}
+		return null;
+	}
+
+	/**
 	 * @return void
 	 */
 	public function saveGroupInfo(): void
 	{
 		$createHistory = false;
-		$st = $this->pdo->prepare("SELECT `name`, `username`, `link`, `photo` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
+		$st = $this->pdo->prepare("SELECT `name`, `username`, `link`, `photo`, `msg_count` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
 		$st->execute([":group_id" => $this->data["chat_id"]]);
 		$data = [
 			":group_id" => $this->data["chat_id"],
@@ -43,22 +59,33 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		];
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+
+			if (($r["msg_count"] % 10) === 0) {
+				$resolvedPhoto = $this->groupPhotoResolve((int)$r['photo']);
+			}
+
+			$r["msg_count"]++;
+
 			if (
 				($this->data["group_name"] !== $r["name"]) ||
-				($this->data["group_username"] !== $r["username"])
+				($this->data["group_username"] !== $r["username"]) ||
+				(isset($resolvedPhoto) && ($resolvedPhoto !== $r["photo"]))
 			) {
 				$createHistory = true;
-				$this->pdo->prepare("UPDATE `groups` SET `username` = :username, `name` = :name, `msg_count` = `msg_count` + 1, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
+				$this->pdo->prepare("UPDATE `groups` SET `username` = :username, `name` = :name, `photo` = :photo, `msg_count` = :msg_count, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
 					[
 						":name" => $this->data["group_name"],
 						":username" => $this->data["group_username"],
+						":photo" => $resolvedPhoto,
+						":msg_count" => $r["msg_count"],
 						":updated_at" => $data[":created_at"],
-						":group_id" => $this->data["chat_id"]
+						":group_id" => $this->data["chat_id"],
 					]
 				);
 			} else {
-				$this->pdo->prepare("UPDATE `groups` SET `msg_count` = `msg_count` + 1, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
+				$this->pdo->prepare("UPDATE `groups` SET `msg_count` = :msg_count, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
 					[
+						":msg_count" => $r["msg_count"],
 						":updated_at" => $data[":created_at"],
 						":group_id" => $this->data["chat_id"]
 					]
@@ -177,94 +204,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 			goto save_message;
 		}
 
-		$o = json_decode(Exe::getFile(["file_id" => $photo["file_id"]])["out"], true);
-		if (isset($o["result"]["file_path"])) {
-
-			$o = $o["result"];
-
-			is_dir(STORAGE_PATH) or mkdir(STORAGE_PATH);
-			is_dir(STORAGE_PATH."/telegram") or mkdir(STORAGE_PATH."/telegram");
-			is_dir(STORAGE_PATH."/telegram/files") or mkdir(STORAGE_PATH."/telegram/files");
-			is_dir("/tmp/telegram_download") or mkdir("/tmp/telegram_download");
-
-			// file_exists(STORAGE_PATH."/telegram/.gitignore") or
-			// file_get_contents(STORAGE_PATH."/telegram/.gitignore", "*\n!.gitignore\n");
-
-			$ext = explode(".", $o["file_path"]);
-			if (count($ext) > 1) {
-				$ext = strtolower(end($ext));
-			} else {
-				$ext = null;
-			}
-
-			$tmpFile = "/tmp/telegram_download/".time()."_".sha1($photo["file_id"])."_".rand(100000, 999999).
-				(isset($ext) ? ".".$ext : "");
-			$handle = fopen($tmpFile, "wb+");
-			$bufferSize = 4096;
-			$writtenBytes = 0;
-
-			$ch = curl_init("https://api.telegram.org/file/bot".BOT_TOKEN."/".$o["file_path"]);
-			curl_setopt_array($ch,
-				[
-					CURLOPT_VERBOSE => 0,
-					CURLOPT_RETURNTRANSFER => false,
-					CURLOPT_SSL_VERIFYPEER => false,
-					CURLOPT_SSL_VERIFYHOST => false,
-					CURLOPT_WRITEFUNCTION => function ($ch, $str) use (&$handle, &$writtenBytes, $bufferSize) {
-						$bytes = fwrite($handle, $str);
-						$writtenBytes += $bytes;
-						if ($writtenBytes >= $bufferSize) {
-							fflush($handle);
-						}
-						return $bytes;
-					}
-				]
-			);
-			curl_exec($ch);
-			curl_close($ch);
-			fclose($handle);
-
-			$sha1_hash = sha1_file($tmpFile, true);
-			$md5_hash = md5_file($tmpFile, true);
-			$absolute_hash = $sha1_hash.$md5_hash;
-
-			$st = $this->pdo->prepare("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
-			$st->execute([":absolute_hash" => $absolute_hash]);
-			if ($r = $st->fetch(PDO::FETCH_NUM)) {
-				// Increase hit counter.
-				$this->pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
-						[
-							":id" => $r[0],
-							":updated_at" => date("Y-m-d H:i:s")
-						]
-					);
-
-				$fileId = $r[0];
-				goto save_message;
-			}
-
-			$targetFile = STORAGE_PATH."/telegram/files/".
-				bin2hex($md5_hash)."_".bin2hex($sha1_hash).(isset($ext) ? ".".$ext : "");
-
-			rename($tmpFile, $targetFile);
-
-			$this->pdo
-				->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `absolute_hash`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :absolute_hash, :file_type, :extension, :size, :hit_count, :created_at);")
-				->execute(
-					[
-						":telegram_file_id" => $photo["file_id"],
-						":md5_sum" => $md5_hash,
-						":sha1_sum" => $sha1_hash,
-						":absolute_hash" => $absolute_hash,
-						":file_type" => "photo",
-						":extension" => $ext,
-						":size" => (isset($photo["file_size"]) ? $photo["file_size"] : null),
-						":hit_count" => 1,
-						":created_at" => date("Y-m-d H:i:s")
-					]
-				);
-			$fileId = $this->pdo->lastInsertId();
-		}
+		$fileId = static::fileResolve($photo["file_id"]);
 
 		save_message:
 		$this->pdo

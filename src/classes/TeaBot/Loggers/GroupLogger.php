@@ -37,7 +37,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		if (!is_null($photoId)) {
 			$st = $this->pdo->prepare("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
 			$st->execute([":id" => $photoId]);
-			if ($r = $st->fetch(PDO::FETCH_ASSOC) && ($r["telegram_file_id"] === $currentFileId)) {
+			if (($r = $st->fetch(PDO::FETCH_ASSOC)) && ($r["telegram_file_id"] === $currentFileId)) {
 				return $photoId;
 			}
 		}

@@ -33,7 +33,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	{
 		$o = json_decode(Exe::getChat(["chat_id" => $this->data["chat_id"]])["out"], true);
 		$currentFileId = $o["result"]["photo"]["big_file_id"] ?? null;
-		$st = $this->pdo->preapre("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
+		$st = $this->pdo->prepare("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
 		$st->execute([":id" => $photoId]);
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 			return ($r["telegram_file_id"] === $currentFileId) ? $photoId : static::fileResolve($photo["file_id"]);

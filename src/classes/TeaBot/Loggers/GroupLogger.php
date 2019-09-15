@@ -61,7 +61,11 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 
 			if (($r["msg_count"] % 10) === 0) {
+				var_dump("photo resolved");
 				$resolvedPhoto = $this->groupPhotoResolve((int)$r['photo']);
+				var_dump($resolvedPhoto);
+			} else {
+				var_dump($r["msg_count"]);
 			}
 
 			$r["msg_count"]++;

@@ -129,14 +129,14 @@ class GetGroupMessages
 
 		$i = 0;
 		while ($r = $st->fetch(PDO::FETCH_NUM)) {
-			$r["id"] = (int)$r["id"];
-			$r["group_id"] = (int)$r["group_id"];
-			$r["user_id"] = (int)$r["user_id"];
-			$r["tmsg_id"] = (int)$r["tmsg_id"];
-			$r["file"] = (int)$r["file"];
-			$r["is_edited"] = (bool)$r["is_edited"];
-			$r["reply_to_tmsg_id"] = (int)$r["reply_to_tmsg_id"];
-			$r["text_entities"] = is_null($r["text_entities"]) ? [] : json_decode($r["text_entities"], true);
+			$r[0] = (int)$r[0];
+			$r[1] = (int)$r[1];
+			$r[2] = (int)$r[2];
+			$r[3] = (int)$r[3];
+			$r[4] = (int)$r[4];
+			$r[7] = is_null($r[7]) ? [] : json_decode($r[7], true);
+			is_null($r[8]) or $r[8] = (int)$r[8];
+			$r[9] = (bool)$r[9];
 			echo ($i ? "," : "").json_encode($r, JSON_UNESCAPED_SLASHES);
 			$i++;
 		}

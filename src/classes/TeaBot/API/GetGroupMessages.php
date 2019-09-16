@@ -133,7 +133,7 @@ class GetGroupMessages
 			$r[1] = (int)$r[1];
 			$r[2] = (int)$r[2];
 			$r[3] = (int)$r[3];
-			$r[4] = (int)$r[4];
+			is_null($r[4]) or $r[4] = (int)$r[4];
 			$r[7] = is_null($r[7]) ? [] : json_decode($r[7], true);
 			is_null($r[8]) or $r[8] = (int)$r[8];
 			$r[9] = (bool)$r[9];

@@ -112,8 +112,7 @@ class GetGroupMessages
 			$r["is_edited"] = (bool)$r["is_edited"];
 			$r["reply_to_tmsg_id"] = (int)$r["reply_to_tmsg_id"];
 			is_null($r["text_entities"]) or $r["text_entities"] = json_decode($r["text_entities"], true);
-			print ($i ? "," : "").json_encode($r, JSON_UNESCAPED_SLASHES);
-			flush();
+			echo ($i ? "," : "").json_encode($r, JSON_UNESCAPED_SLASHES);
 			$i++;
 		}
 		print "]}";

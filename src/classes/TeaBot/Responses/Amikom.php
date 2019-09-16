@@ -16,11 +16,12 @@ use TeaBot\ResponseFoundation;
 final class Amikom extends ResponseFoundation
 {
 	/**
-	 * @param string $nim
-	 * @param string $pass
+	 * @param string  $nim
+	 * @param string  $pass
+	 * @param string  $hari
 	 * @return bool
 	 */
-	public function jadwal(string $nim, string $pass): bool
+	public function jadwal(string $nim, string $pass, ?string $_hari = ""): bool
 	{
 		$debugData = json_encode($this->data->in, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
@@ -67,7 +68,12 @@ final class Amikom extends ResponseFoundation
 
 		$r = "";
 		$i = 0;
+		$hh = ($_hari !== "");
+		$_hari = trim(strtolower($_hari));
 		foreach ($jadwal as $hari => $v) {
+			if ($hh && (strolower($hari) !== $_hari)) {
+				continue;
+			}
 			$i and $r .= "\n\n";
 			$r .= "<b>{$hari}:</b>\n";
 			foreach ($v as $vv) {

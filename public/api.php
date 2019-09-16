@@ -2,6 +2,8 @@
 
 require __DIR__."/../bootstrap/autoload.php";
 
+loadConfig("telegram_bot");
+
 use TeaBot\API\GetGroupMessages;
 
 if (isset($_GET["action"], $_GET["key"]) && is_string($_GET["action"]) && is_string($_GET["key"])) {

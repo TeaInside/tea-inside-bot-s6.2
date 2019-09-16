@@ -55,12 +55,12 @@ class GetGroupMessages
 		$allowedField = ["id", "group_id", "user_id", "tmsg_id", "reply_to_tmsg_id", "msg_type", "text", "text_entities", "file", "is_edited", "tmsg_datetime", "created_at"];
 
 		if (!in_array($orderBy, $allowedField)) {
-			throw new Exception("Invalid field {$orderBy}");
+			throw new Exception("Invalid field \"{$orderBy}\"");
 			return;
 		}
 
 		if (($orderType !== "asc") && ($orderType !== "desc")) {
-			throw new Exception("Invalid order type {$orderType}");
+			throw new Exception("Invalid order type \"{$orderType}\"");
 			return;
 		}
 

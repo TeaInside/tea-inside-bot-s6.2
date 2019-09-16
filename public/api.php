@@ -19,6 +19,7 @@ if (isset($_GET["action"], $_GET["key"]) && is_string($_GET["action"]) && is_str
 			break;
 				
 			default:
+				throw new Exception("Invalid action \"{$_GET["action"]}\"")
 			break;
 		}
 		$st->dispatch();
@@ -39,3 +40,13 @@ print json_encode(
 	]
 );
 exit;
+
+error:
+header("Content-Type: application/json");
+http_response_code(400);
+print json_encode(
+	[
+		"error_code" => 400,
+		"error_message" => $e->getMessages()
+	]
+);

@@ -4,6 +4,7 @@ namespace TeaBot\API;
 
 use DB;
 use PDO;
+use Exception;
 
 class GetGroupMessages
 {
@@ -39,14 +40,39 @@ class GetGroupMessages
 			$offset = 0;
 		}
 
+		if (isset($_GET["order_by"]) && is_string($_GET["order_by"])) {
+			$orderBy = strtolower($_GET["order_by"]);
+		} else {
+			$orderBy = "id";
+		}
+
+		if (isset($_GET["order_type"]) && is_string($_GET["order_type"])) {
+			$orderType = strtolower($_GET["order_type"]);
+		} else {
+			$orderType = "asc";
+		}
+
+		$allowedField = ["id", "group_id", "user_id", "tmsg_id", "reply_to_tmsg_id", "msg_type", "text", "text_entities", "file", "is_edited", "tmsg_datetime", "created_at"];
+
+		if (!in_array($orderBy, $allowedField)) {
+			throw new Exception("Invalid field {$orderBy}");
+			return;
+		}
+
+		if (($orderType !== "asc") && ($orderType !== "desc")) {
+			throw new Exception("Invalid order type {$orderType}");
+			return;
+		}
+
 		print "{\"success\":true,\"param\":{\"limit\":{$limit},\"offset\":{$offset}},\"data\":[";
 
-		$st = $this->pdo->prepare("SELECT * FROM `groups_messages` LIMIT {$limit} OFFSET {$offset};");
+		$st = $this->pdo->prepare("SELECT * FROM `groups_messages` ORDER BY {$orderBy} {$orderType} LIMIT {$limit} OFFSET {$offset};");
 		$st->execute();
 
 		$i = 0;
 		while ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 			print ($i ? "," : "").json_encode($r, JSON_UNESCAPED_SLASHES);
+			flush();
 			$i++;
 		}
 

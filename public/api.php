@@ -12,16 +12,20 @@ if (isset($_GET["action"], $_GET["key"]) && is_string($_GET["action"]) && is_str
 		goto forbidden;
 	}
 
-	switch ($_GET["action"]) {
-		case "get_group_messages":
-			$st = new GetGroupMessages();
-		break;
-			
-		default:
-		break;
+	try {
+		switch ($_GET["action"]) {
+			case "get_group_messages":
+				$st = new GetGroupMessages();
+			break;
+				
+			default:
+			break;
+		}
+		$st->dispatch();
+		exit;	
+	} catch (Exception $e) {
+		goto error;
 	}
-	$st->dispatch();
-	exit;
 }
 
 

@@ -70,6 +70,28 @@ class GetGroupMessages
 		$i = 0;
 		foreach ($allowedField as $v) {
 			if (isset($_GET[$v]) && is_string($_GET[$v])) {
+				if ($v === "id") {
+				    $_GET["id"] = (int)$_GET["id"];
+				} else if ($v === "group_id") {
+				    $_GET["group_id"] = (int)$_GET["group_id"];
+				} else if ($v === "user_id") {
+				    $_GET["user_id"] = (int)$_GET["user_id"];
+				} else if ($v === "tmsg_id") {
+				    $_GET["tmsg_id"] = (int)$_GET["tmsg_id"];
+				} else if ($v === "file") {
+				    $_GET["file"] = (int)$_GET["file"];
+				} else if ($v === "is_edited") {
+				    $_GET["is_edited"] = (
+				    	($_GET["is_edited"] === "false" ? false : (
+				    		$_GET["is_edited"] === "true" ? true :
+				    			(bool)$_GET["is_edited"]
+				    	))
+				    );
+				} else if ($v === "reply_to_tmsg_id") {
+				    $_GET["reply_to_tmsg_id"] = (int)$_GET["reply_to_tmsg_id"];
+				} else if ($v === "text_entities") {
+				    $_GET["text_entities"] = is_null($_GET["text_entities"]) ? [] : json_decode($_GET["text_entities"], true);
+				}
 				$queryFields[$i] = $v;
 				$whereClause = ($i ? " AND " : "")."`{$v}` = :{$v}";
 				$queryDataBind[$v] = $_GET[$v];
@@ -100,6 +122,8 @@ class GetGroupMessages
 		$query = "SELECT * FROM `groups_messages` {$whereClause} ORDER BY {$orderBy} {$orderType} LIMIT {$limit} OFFSET {$offset};";
 
 		$st = $this->pdo->prepare($query);
+
+		isset($queryDataBind["is_edited"]) && $queryDataBind["is_edited"] = (string)((int)$queryDataBind["is_edited"]);
 		$st->execute($queryDataBind);
 
 		$i = 0;
@@ -111,7 +135,7 @@ class GetGroupMessages
 			$r["file"] = (int)$r["file"];
 			$r["is_edited"] = (bool)$r["is_edited"];
 			$r["reply_to_tmsg_id"] = (int)$r["reply_to_tmsg_id"];
-			is_null($r["text_entities"]) or $r["text_entities"] = json_decode($r["text_entities"], true);
+			$r["text_entities"] = is_null($r["text_entities"]) ? [] : json_decode($r["text_entities"], true);
 			echo ($i ? "," : "").json_encode($r, JSON_UNESCAPED_SLASHES);
 			$i++;
 		}

@@ -71,7 +71,7 @@ final class Amikom extends ResponseFoundation
 		$hh = ($_hari !== "");
 		$_hari = trim(strtolower($_hari));
 		foreach ($jadwal as $hari => $v) {
-			if ($hh && (strolower($hari) !== $_hari)) {
+			if ($hh && (strtolower($hari) !== $_hari)) {
 				continue;
 			}
 			$i and $r .= "\n\n";

@@ -106,7 +106,8 @@ class GetGroupMessages
 				"limit" => $limit,
 				"offset" => $offset,
 				"order_by" => $orderBy,
-				"order_type" => $orderType
+				"order_type" => $orderType,
+				"data_fields" => $allowedField,
 			]
 		);
 		print ",\"data\":[";
@@ -127,7 +128,7 @@ class GetGroupMessages
 		$st->execute($queryDataBind);
 
 		$i = 0;
-		while ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+		while ($r = $st->fetch(PDO::FETCH_NUM)) {
 			$r["id"] = (int)$r["id"];
 			$r["group_id"] = (int)$r["group_id"];
 			$r["user_id"] = (int)$r["user_id"];

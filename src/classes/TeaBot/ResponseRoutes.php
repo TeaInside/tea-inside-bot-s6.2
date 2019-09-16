@@ -42,6 +42,12 @@ trait ResponseRoutes
 			}
 		}
 
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(\d{2}\.\d{2}\.\d{4})(?:.)(\d+)/", $this->data["text"], $m)) {
+			if ($this->stExec(Response\Amikom::class, "jadwal", [$m[1], $m[2]])) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 }

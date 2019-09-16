@@ -71,15 +71,15 @@ final class Amikom extends ResponseFoundation
 			$i and $r .= "\n\n";
 			$r .= "<b>{$hari}:</b>\n";
 			foreach ($v as $vv) {
-				$vv["Keterangan"] = htmlspecialchars(trim($vv["Keterangan"], ENT_QUOTES, "UTF-8"));
-				$vv["Ruang"] = htmlspecialchars(trim($vv["Ruang"], ENT_QUOTES, "UTF-8"));
-				$vv["Waktu"] = htmlspecialchars(trim($vv["Waktu"], ENT_QUOTES, "UTF-8"));
-				$vv["MataKuliah"] = htmlspecialchars(trim($vv["MataKuliah"], ENT_QUOTES, "UTF-8"));
-				$vv["JenisKuliah"] = htmlspecialchars(trim($vv["JenisKuliah"], ENT_QUOTES, "UTF-8"));
-				$vv["Kelas"] = htmlspecialchars(trim($vv["Kelas"], ENT_QUOTES, "UTF-8"));
-				$vv["Jenjang"] = htmlspecialchars(trim($vv["Jenjang"], ENT_QUOTES, "UTF-8"));
-				$vv["Nik"] = htmlspecialchars(trim($vv["Nik"], ENT_QUOTES, "UTF-8"));
-				$vv["NamaDosen"] = htmlspecialchars(trim($vv["NamaDosen"], ENT_QUOTES, "UTF-8"));
+				$vv["Keterangan"] = htmlspecialchars(trim($vv["Keterangan"]), ENT_QUOTES, "UTF-8");
+				$vv["Ruang"] = htmlspecialchars(trim($vv["Ruang"]), ENT_QUOTES, "UTF-8");
+				$vv["Waktu"] = htmlspecialchars(trim($vv["Waktu"]), ENT_QUOTES, "UTF-8");
+				$vv["MataKuliah"] = htmlspecialchars(trim($vv["MataKuliah"]), ENT_QUOTES, "UTF-8");
+				$vv["JenisKuliah"] = htmlspecialchars(trim($vv["JenisKuliah"]), ENT_QUOTES, "UTF-8");
+				$vv["Kelas"] = htmlspecialchars(trim($vv["Kelas"]), ENT_QUOTES, "UTF-8");
+				$vv["Jenjang"] = htmlspecialchars(trim($vv["Jenjang"]), ENT_QUOTES, "UTF-8");
+				$vv["Nik"] = htmlspecialchars(trim($vv["Nik"]), ENT_QUOTES, "UTF-8");
+				$vv["NamaDosen"] = htmlspecialchars(trim($vv["NamaDosen"]), ENT_QUOTES, "UTF-8");
 
 				$r .= "[".$vv["IdKuliah"]."]\n";
 				$r .= "Mata Kuliah: ".$vv["MataKuliah"]." ({$vv["JenisKuliah"]})\n";
@@ -98,7 +98,7 @@ final class Amikom extends ResponseFoundation
 			[
 				"chat_id" => $this->data["chat_id"],
 				"reply_to_message_id" => $this->data["msg_id"],
-				"text" => $rr,
+				"text" => $r,
 				"parse_mode" => "HTML"
 			]
 		);

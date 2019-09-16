@@ -64,10 +64,44 @@ class GetGroupMessages
 			return;
 		}
 
-		print "{\"success\":true,\"param\":{\"limit\":{$limit},\"offset\":{$offset}},\"data\":[";
+		$queryFields = [];
+		$queryDataBind = [];
+		$whereClause = "";
+		$i = 0;
+		foreach ($allowedField as $v) {
+			if (isset($_GET[$v]) && is_string($_GET[$v])) {
+				$queryFields[$i] = $v;
+				$whereClause = ($i ? " AND " : "")."`{$v}` = :{$v}";
+				$queryDataBind[$v] = $_GET[$v];
+				$i++;
+			}
+		}
 
-		$st = $this->pdo->prepare("SELECT * FROM `groups_messages` ORDER BY {$orderBy} {$orderType} LIMIT {$limit} OFFSET {$offset};");
-		$st->execute();
+		print "{\"success\":true,\"param\":";
+		print json_encode(
+			[
+				"query_field" => $queryFields,
+				"query_data_bind" => $queryDataBind,
+				"limit" => $limit,
+				"offset" => $offset,
+				"order_by" => $orderBy,
+				"order_type" => $orderType
+			]
+		);
+		print ",\"data\":[";
+
+		if (count($queryFields) > 0) {
+			
+		}
+
+		if ($whereClause !== "") {
+			$whereClause = "WHERE ".$whereClause;
+		}
+
+		$query = "SELECT * FROM `groups_messages` {$whereClause} ORDER BY {$orderBy} {$orderType} LIMIT {$limit} OFFSET {$offset};";
+
+		$st = $this->pdo->prepare($query);
+		$st->execute($queryDataBind);
 
 		$i = 0;
 		while ($r = $st->fetch(PDO::FETCH_ASSOC)) {
@@ -75,7 +109,8 @@ class GetGroupMessages
 			flush();
 			$i++;
 		}
-
 		print "]}";
+		$this->pdo = null;
+		DB::close();
 	}
 }

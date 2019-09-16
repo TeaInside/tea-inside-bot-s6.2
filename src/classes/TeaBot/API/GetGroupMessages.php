@@ -41,7 +41,7 @@ class GetGroupMessages
 
 		print "{\"success\":true,\"param\":{\"limit\":{$limit},\"offset\":{$offset}},\"data\":[";
 
-		$st = $this->pdo->prepare("SELECT * FROM `group_messages` LIMIT {$limit} OFFSET {$offset};");
+		$st = $this->pdo->prepare("SELECT * FROM `groups_messages` LIMIT {$limit} OFFSET {$offset};");
 		$st->execute();
 
 		$i = 0;

@@ -88,13 +88,13 @@ final class Amikom extends ResponseFoundation
 				$vv["NamaDosen"] = htmlspecialchars(trim($vv["NamaDosen"]), ENT_QUOTES, "UTF-8");
 
 				$r .= "[".$vv["IdKuliah"]."]\n";
-				$r .= "Mata Kuliah: ".$vv["MataKuliah"]." ({$vv["JenisKuliah"]})\n";
-				$r .= "Keterangan: ".($vv["Keterangan"] === "()" ? "-" : $vv["Keterangan"])."\n";
-				$r .= "Ruang: ".$vv["Ruang"]."\n";
-				$r .= "Waktu: ".$vv["Waktu"]."\n";
-				$r .= "Kelas: ".$vv["Kelas"]." ({$vv["Jenjang"]})\n";
-				$r .= "NIK: ".$vv["Nik"]."\n";
-				$r .= "Nama Dosen: ".$vv["NamaDosen"]."\n";
+				$r .= "<b>Mata Kuliah</b>: ".$vv["MataKuliah"]." ({$vv["JenisKuliah"]})\n";
+				$r .= "<b>Keterangan</b>: ".($vv["Keterangan"] === "()" ? "-" : $vv["Keterangan"])."\n";
+				$r .= "<b>Ruang</b>: <code>".$vv["Ruang"]."</code>\n";
+				$r .= "<b>Waktu</b>: <code>".$vv["Waktu"]."</code>\n";
+				$r .= "<b>Kelas</b>: ".$vv["Kelas"]." ({$vv["Jenjang"]})\n";
+				$r .= "<b>NIK</b>: <code>".$vv["Nik"]."</code>\n";
+				$r .= "<b>Nama Dosen</b>: ".$vv["NamaDosen"]."\n";
 				$r .= "--\n";
 			}
 			$i++;

@@ -24,7 +24,7 @@ final class Amikom extends ResponseFoundation
 	{
 		$debugData = json_encode($this->data->in, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-		$o = curl(
+		$o = $this->curl(
 			"http://mhsmobile.amikom.ac.id/login",
 			[
 				CURLOPT_POST => true,
@@ -48,7 +48,7 @@ final class Amikom extends ResponseFoundation
 
 		$bearer = ["Authorization: {$o["access_token"]}"];
 
-		$o = curl(
+		$o = $this->curl(
 			"http://mhsmobile.amikom.ac.id/api/personal/jadwal_kuliah",
 			[
 				CURLOPT_POST => true,

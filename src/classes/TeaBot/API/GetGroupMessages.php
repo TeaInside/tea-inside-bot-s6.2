@@ -80,7 +80,6 @@ class GetGroupMessages
 		print "{\"success\":true,\"param\":";
 		print json_encode(
 			[
-				"query_field" => $queryFields,
 				"query_data_bind" => $queryDataBind,
 				"limit" => $limit,
 				"offset" => $offset,

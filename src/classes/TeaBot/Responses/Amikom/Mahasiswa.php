@@ -67,7 +67,7 @@ final class Mahasiswa extends ResponseFoundation
 				$this->storagePath."/token.json",
 				json_encode(
 					[
-						"token" => $o["access_token"],
+						"access_token" => $o["access_token"],
 						"nim" => $nim,
 						"expired" => (time() + $o["expires_in"] - 300)
 					],
@@ -163,7 +163,6 @@ final class Mahasiswa extends ResponseFoundation
 			$reply .= "<b>Periode Akademik:</b> {$oo["PeriodeAkademik"]["TahunAkademik"]}\n";
 			$reply .= "<b>Semester:</b> {$oo["PeriodeAkademik"]["Semester"]}";
 
-			is_dir($this->storagePath."/{$oo["Mhs"]["Npm"]}") or mkdir($o["Mhs"]["Npm"]);
 			file_put_contents(
 				$this->storagePath."/info.json",
 				json_encode($oo, JSON_UNESCAPED_SLASHES)

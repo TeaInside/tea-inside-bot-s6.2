@@ -111,11 +111,9 @@ final class Mahasiswa extends ResponseFoundation
 	}
 
 	/**
-	 * @param string $nim
-	 * @param string $pass
 	 * @return bool
 	 */
-	public function login(string $nim, string $pass): bool
+	public function profile(bool $isLogin = false): bool
 	{
 		$token = $this->loginPrivate($nim, $pass);
 
@@ -132,7 +130,7 @@ final class Mahasiswa extends ResponseFoundation
 		$oo = json_decode($oo->out, true);
 
 		if (isset($oo["Mhs"], $oo["PeriodeAkademik"])) {
-			Exe::sendMessage(
+			$isLogin and Exe::sendMessage(
 				[
 					"chat_id" => $this->data["chat_id"],
 					"reply_to_message_id" => $this->data["msg_id"],
@@ -167,13 +165,31 @@ final class Mahasiswa extends ResponseFoundation
 				$this->storagePath."/info.json",
 				json_encode($oo, JSON_UNESCAPED_SLASHES)
 			);
-			goto ret;
+
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => $reply,
+					"parse_mode" => "HTML"
+				]
+			);
+			return true;
 		}
+		return false;
+	}
 
-		login_failed:
-		$reply = "Login Failed";
-
-		ret:
+	/**
+	 * @param string $nim
+	 * @param string $pass
+	 * @return bool
+	 */
+	public function login(string $nim, string $pass): bool
+	{
+		if ($this->profile(true)) {
+			return true;	
+		}
+		$reply = "Login Failed";		
 		Exe::sendMessage(
 			[
 				"chat_id" => $this->data["chat_id"],
@@ -211,7 +227,7 @@ final class Mahasiswa extends ResponseFoundation
 			"http://mhsmobile.amikom.ac.id/api/personal/jadwal_kuliah",
 			[
 				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => http_build_query(["npm" => $nim, "semester" => 0]),
+				CURLOPT_POSTFIELDS => http_build_query(["npm" => null, "semester" => 0]),
 				CURLOPT_HTTPHEADER => ["Authorization: {$token}"]
 			]
 		);
@@ -247,7 +263,7 @@ final class Mahasiswa extends ResponseFoundation
 
 				$r .= "[".$vv["IdKuliah"]."]\n";
 				$r .= "<b>Mata Kuliah</b>: ".$vv["MataKuliah"]." ({$vv["JenisKuliah"]})\n";
-				 $r .= "<b>Keterangan</b>: ".($vv["Keterangan"] === "()" ? "-" : $vv["Keterangan"])."\n";
+				$r .= "<b>Keterangan</b>: ".($vv["Keterangan"] === "()" ? "-" : $vv["Keterangan"])."\n";
 				$r .= "<b>Ruang</b>: <code>".$vv["Ruang"]."</code>\n";
 				$r .= "<b>Waktu</b>: <code>".$vv["Waktu"]."</code>\n";
 				$r .= "<b>Kelas</b>: ".$vv["Kelas"]." ({$vv["Jenjang"]})\n";

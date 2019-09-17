@@ -21,11 +21,13 @@ final class Mahasiswa extends ResponseFoundation
 	private $storagePath;
 
 	/**
+	 * @param \TeaBot\Data &$data
+	 *
 	 * Constructor.
 	 */
-	public function __construct()
+	public function __construct(Data &$data)
 	{
-		parent::__construct();
+		parent::__construct($data);
 		$this->storagePath = STORAGE_PATH."/telegram/amikom/mahasiswa/{$this->data["user_id"]}";
 		is_dir(STORAGE_PATH) or mkdir(STORAGE_PATH);
 		is_dir(STORAGE_PATH."/telegram") or mkdir(STORAGE_PATH."/telegram");

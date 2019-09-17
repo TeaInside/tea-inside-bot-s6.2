@@ -118,7 +118,8 @@ final class Mahasiswa extends ResponseFoundation
 		$token = $this->loginPrivate($nim, $pass);
 
 		if (is_null($token)) {
-			goto login_failed;
+			$reply = $isLogin ? "Login Failed!" : "Invalid credentials!\n\nPlease login again!";
+			goto ret;
 		}
 
 		$oo = $this->curl(
@@ -165,18 +166,18 @@ final class Mahasiswa extends ResponseFoundation
 				$this->storagePath."/info.json",
 				json_encode($oo, JSON_UNESCAPED_SLASHES)
 			);
-
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"text" => $reply,
-					"parse_mode" => "HTML"
-				]
-			);
-			return true;
 		}
-		return false;
+
+		ret:
+		Exe::sendMessage(
+			[
+				"chat_id" => $this->data["chat_id"],
+				"reply_to_message_id" => $this->data["msg_id"],
+				"text" => $reply,
+				"parse_mode" => "HTML"
+			]
+		);
+		return true;
 	}
 
 	/**

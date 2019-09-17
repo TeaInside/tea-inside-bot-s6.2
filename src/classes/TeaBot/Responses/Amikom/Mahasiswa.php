@@ -155,7 +155,7 @@ final class Mahasiswa extends ResponseFoundation
 			}
 			unset($v);
 
-			$reply .= "<b>[Informasi Akun]</b>\n";
+			$reply = "<b>[Informasi Akun]</b>\n";
 			$reply .= "<b>NIM:</b> {$oo["Mhs"]["Npm"]}\n";
 			$reply .= "<b>Nama:</b> {$oo["Mhs"]["Nama"]}\n";
 			$reply .= "<b>Angkatan:</b> {$oo["Mhs"]["Angkatan"]}\n";

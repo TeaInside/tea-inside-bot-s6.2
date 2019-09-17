@@ -111,11 +111,18 @@ final class Mahasiswa extends ResponseFoundation
 	}
 
 	/**
+	 * @param bool   $isLogin
+	 * @param string $nim
+	 * @param string $pass
 	 * @return bool
 	 */
-	public function profile(bool $isLogin = false): bool
+	public function profile(bool $isLogin = false, string $nim = "", string $pass = ""): bool
 	{
-		$token = $this->loginPrivate($nim, $pass);
+		if ($isLogin) {
+			$token = $this->loginPrivate($nim, $pass);
+		} else {
+			$token = $this->getToken();
+		}
 
 		if (is_null($token)) {
 			$reply = $isLogin ? "Login Failed!" : "Invalid credentials!\n\nPlease login again!";
@@ -129,7 +136,6 @@ final class Mahasiswa extends ResponseFoundation
 			]
 		);
 		$oo = json_decode($oo->out, true);
-
 		if (isset($oo["Mhs"], $oo["PeriodeAkademik"])) {
 			$isLogin and Exe::sendMessage(
 				[
@@ -166,6 +172,8 @@ final class Mahasiswa extends ResponseFoundation
 				$this->storagePath."/info.json",
 				json_encode($oo, JSON_UNESCAPED_SLASHES)
 			);
+		} else {
+			$reply = "Invalid credentials!\n\nPlease login again!";
 		}
 
 		ret:
@@ -187,7 +195,7 @@ final class Mahasiswa extends ResponseFoundation
 	 */
 	public function login(string $nim, string $pass): bool
 	{
-		if ($this->profile(true)) {
+		if ($this->profile(true, $nim, $pass)) {
 			return true;	
 		}
 		$reply = "Login Failed";		

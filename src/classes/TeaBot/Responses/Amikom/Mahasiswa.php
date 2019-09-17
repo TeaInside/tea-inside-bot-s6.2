@@ -4,6 +4,7 @@ namespace TeaBot\Responses\Amikom;
 
 use stdClass;
 use TeaBot\Exe;
+use TeaBot\Data;
 use TeaBot\Lang;
 use TeaBot\ResponseFoundation;
 

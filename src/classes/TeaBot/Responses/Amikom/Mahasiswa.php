@@ -68,7 +68,7 @@ final class Mahasiswa extends ResponseFoundation
 				json_encode(
 					[
 						"token" => $o["access_token"],
-						"username" => $o["username"],
+						"nim" => $nim,
 						"expired" => (time() + $o["expires_in"] - 300)
 					],
 					JSON_UNESCAPED_SLASHES
@@ -155,6 +155,7 @@ final class Mahasiswa extends ResponseFoundation
 			}
 			unset($v);
 
+			$reply .= "<b>[Informasi Akun]</b>\n";
 			$reply .= "<b>NIM:</b> {$oo["Mhs"]["Npm"]}\n";
 			$reply .= "<b>Nama:</b> {$oo["Mhs"]["Nama"]}\n";
 			$reply .= "<b>Angkatan:</b> {$oo["Mhs"]["Angkatan"]}\n";

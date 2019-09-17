@@ -63,6 +63,17 @@ final class Mahasiswa extends ResponseFoundation
 					JSON_UNESCAPED_SLASHES
 				)
 			);
+			file_put_contents(
+				$this->storagePath."/token.json",
+				json_encode(
+					[
+						"token" => $o["access_token"],
+						"username" => $o["username"],
+						"expired" => (time() + $o["expires_in"] - 300)
+					],
+					JSON_UNESCAPED_SLASHES
+				)
+			);
 			return $o["access_token"];
 		}
 		return null;
@@ -152,17 +163,6 @@ final class Mahasiswa extends ResponseFoundation
 			$reply .= "<b>Semester:</b> {$oo["PeriodeAkademik"]["Semester"]}";
 
 			is_dir($this->storagePath."/{$oo["Mhs"]["Npm"]}") or mkdir($o["Mhs"]["Npm"]);
-			file_put_contents(
-				$this->storagePath."/token.json",
-				json_encode(
-					[
-						"token" => $o["access_token"],
-						"username" => $o["username"],
-						"expired" => (time() + $o["expires_in"] - 300)
-					],
-					JSON_UNESCAPED_SLASHES
-				)
-			);
 			file_put_contents(
 				$this->storagePath."/info.json",
 				json_encode($oo, JSON_UNESCAPED_SLASHES)

@@ -132,11 +132,11 @@ final class Mahasiswa extends ResponseFoundation
 				[
 					"chat_id" => $this->data["chat_id"],
 					"reply_to_message_id" => $this->data["msg_id"],
-					"photo" => $oo["Mhs"]["Img"]
+					"photo" => $oo["Mhs"]["NpmImg"]
 				]
 			);
 
-			foreach ($o["Mhs"] as &$v) {
+			foreach ($oo["Mhs"] as &$v) {
 				$v = empty($v) ? "-" : htmlspecialchars($v, ENT_QUOTES, "UTF-8");
 			}
 			foreach ($oo["PeriodeAkademik"] as &$v) {

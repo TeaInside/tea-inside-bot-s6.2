@@ -112,7 +112,7 @@ final class Mahasiswa extends ResponseFoundation
 			goto login_failed;
 		}
 
-		$oo = curl(
+		$oo = $this->curl(
 			"http://mhsmobile.amikom.ac.id/api/personal/init_data_mhs",
 			[
 				CURLOPT_HTTPHEADER => ["Authorization: {$token}"]

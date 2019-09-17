@@ -118,7 +118,7 @@ final class Mahasiswa extends ResponseFoundation
 				CURLOPT_HTTPHEADER => ["Authorization: {$token}"]
 			]
 		);
-		$oo = json_decode($oo, true);
+		$oo = json_decode($oo->out, true);
 
 		if (isset($oo["Mhs"], $oo["PeriodeAkademik"])) {
 			Exe::sendMessage(

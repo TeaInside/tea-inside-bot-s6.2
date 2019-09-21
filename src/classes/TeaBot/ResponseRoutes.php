@@ -72,7 +72,7 @@ trait ResponseRoutes
 		/**
 		 * Absen/Presensi
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)?(?:absen|presensi)(?:\s+)(.+?)$/", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:absen|presensi)(?:\s+)(.+?)$/i", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "presensi", [$m[1]])) {
 				return true;
 			}

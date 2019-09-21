@@ -45,7 +45,7 @@ trait ResponseRoutes
 		/**
 		 * Login AMIKOM.
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)?(?:amikom\s+login\s+)(\S+)(?:\s+)(\S+)$/", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:amikom\s+login\s+)(\S+)(?:\s+)(\S+)$/i", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "login", [$m[1], $m[2]])) {
 				return true;
 			}
@@ -54,7 +54,7 @@ trait ResponseRoutes
 		/**
 		 * Jadwal Kuliah.
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal)$/", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal)$/i", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal")) {
 				return true;
 			}
@@ -65,6 +65,15 @@ trait ResponseRoutes
 		 */
 		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(senin|selasa|rabu|kamis|jum'?at|sabtu)$/i", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal", [$m[1]])) {
+				return true;
+			}
+		}
+
+		/**
+		 * Absen/Presensi
+		 */
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:absen|presensi)(?:\s+)(.+?)$/", $this->data["text"], $m)) {
+			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "presensi", [$m[1]])) {
 				return true;
 			}
 		}

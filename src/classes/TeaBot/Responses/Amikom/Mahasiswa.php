@@ -107,7 +107,72 @@ final class Mahasiswa extends ResponseFoundation
 				"parse_mode" => "HTML"
 			]
 		);
+
 		return null;
+	}
+
+	/**
+	 * @param string $code
+	 * @return bool
+	 */
+	public function presensi(string $code): bool
+	{
+		if (file_exists($this->storagePath."/auth.json")) {
+			$json = json_decode(file_get_contents($this->storagePath."/auth.json"), true);
+		} else {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "You have not logged in yet!",
+					"parse_mode" => "HTML"
+				]
+			);
+			goto ret;
+		}
+
+		$o = $this->curl(
+			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
+			[
+				CURLOPT_POST => true,
+				CURLOPT_POSTFIELDS => json_encode(["data" => "{$code};{$json["nim"]}"]),
+				CURLOPT_HTTPHEADER => [
+					"Content-Type: application/json",
+					"Connection" => "Keep-Alive",
+					"Accept-Encoding" => "gzip"
+				],
+				CURLOPT_USERAGENT => "okhttp/3.10.0"
+			]
+		);
+		$out = json_decode($o->out, true);
+
+		Exe::sendMessage(
+			[
+				"chat_id" => $this->data["chat_id"],
+				"reply_to_message_id" => $this->data["msg_id"],
+				"text" => $o->out,
+				"parse_mode" => "HTML"
+			]
+		);
+
+		if ($out["message"] === "Created") {
+			$r = "Presensi Sukses!";
+		} else {
+			$r = "Presensi Gagal!";
+		}
+
+		Exe::sendMessage(
+			[
+				"chat_id" => $this->data["chat_id"],
+				"reply_to_message_id" => $this->data["msg_id"],
+				"text" => $r,
+				"parse_mode" => "HTML"
+			]
+		);
+
+
+		ret:
+		return true;
 	}
 
 	/**

@@ -150,8 +150,8 @@ final class Mahasiswa extends ResponseFoundation
 		);
 		$out = json_decode($o->out, true);
 
-		$r = "Request Body:\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
-			"</pre>\n\nResponse Body:\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
+		$r = "<b>Request Body:</b>\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
+			"</pre>\n\n<b>Response Body:</b>\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
 			"</pre>";
 
 		Exe::sendMessage(
@@ -164,9 +164,9 @@ final class Mahasiswa extends ResponseFoundation
 		);
 
 		if (isset($out["message"]) && ($out["message"] === "Created")) {
-			$r = "Presensi Sukses!";
+			$r = "<b>Presensi Sukses!</b>";
 		} else {
-			$r = "Presensi Gagal!";
+			$r = "<b>Presensi Gagal!</b>";
 		}
 
 		Exe::sendMessage(

@@ -137,7 +137,7 @@ final class Mahasiswa extends ResponseFoundation
 			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
 			[
 				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => ,
+				CURLOPT_POSTFIELDS => $data,
 				CURLOPT_HTTPHEADER => [
 					"Content-Type: application/json",
 					"Connection" => "Keep-Alive",

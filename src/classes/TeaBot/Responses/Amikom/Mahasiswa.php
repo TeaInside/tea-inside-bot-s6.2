@@ -131,11 +131,13 @@ final class Mahasiswa extends ResponseFoundation
 			goto ret;
 		}
 
+		$data = "{$code};{$json["nim"]}";
+
 		$o = $this->curl(
 			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
 			[
 				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => json_encode(["data" => "{$code};{$json["nim"]}"]),
+				CURLOPT_POSTFIELDS => json_encode(["data" => $data]),
 				CURLOPT_HTTPHEADER => [
 					"Content-Type: application/json",
 					"Connection" => "Keep-Alive",
@@ -148,11 +150,15 @@ final class Mahasiswa extends ResponseFoundation
 		);
 		$out = json_decode($o->out, true);
 
+		$r = "Request Body:\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
+			"</pre>\n\nResponse Body:\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
+			"</pre>";
+
 		Exe::sendMessage(
 			[
 				"chat_id" => $this->data["chat_id"],
 				"reply_to_message_id" => $this->data["msg_id"],
-				"text" => $o->out,
+				"text" => $r,
 				"parse_mode" => "HTML"
 			]
 		);

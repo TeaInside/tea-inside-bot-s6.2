@@ -141,7 +141,9 @@ final class Mahasiswa extends ResponseFoundation
 					"Connection" => "Keep-Alive",
 					"Accept-Encoding" => "gzip"
 				],
-				CURLOPT_USERAGENT => "okhttp/3.10.0"
+				CURLOPT_USERAGENT => "okhttp/3.10.0",
+				CURLOPT_CONNECTTIMEOUT => 15,
+				CURLOPT_TIMEOUT => 30
 			]
 		);
 		$out = json_decode($o->out, true);
@@ -155,7 +157,7 @@ final class Mahasiswa extends ResponseFoundation
 			]
 		);
 
-		if ($out["message"] === "Created") {
+		if (isset($out["message"]) && ($out["message"] === "Created")) {
 			$r = "Presensi Sukses!";
 		} else {
 			$r = "Presensi Gagal!";

@@ -131,13 +131,13 @@ final class Mahasiswa extends ResponseFoundation
 			goto ret;
 		}
 
-		$data = "{$code};{$json["nim"]}";
+		$data = json_encode(["data" => "{$code};{$json["nim"]}"]);
 
 		$o = $this->curl(
 			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
 			[
 				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => json_encode(["data" => $data]),
+				CURLOPT_POSTFIELDS => ,
 				CURLOPT_HTTPHEADER => [
 					"Content-Type: application/json",
 					"Connection" => "Keep-Alive",

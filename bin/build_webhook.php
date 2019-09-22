@@ -6,7 +6,7 @@ if (file_exists(__DIR__."/webhook.php") && (filemtime(__DIR__."/webhook.php") > 
 
 $phpBinary = PHP_BINARY;
 $runScript = __DIR__."/run.php";
-$extensionLoad = "-d extension=".escapeshellarg(realpath(__DIR__."/../storage/lib/")."/teabot.so");
+$extensionLoad = "-d extension=".escapeshellarg(__DIR__."/../storage/lib/teabot.so");
 $logFile = escapeshellarg(realpath(__DIR__."/..")."/logs/telegram/webhook.log");
 
 $str = <<<STR

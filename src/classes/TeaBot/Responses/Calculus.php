@@ -99,7 +99,7 @@ final class Calculus extends ResponseFoundation
 
 			$r = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
 
-			$o = json_decode(curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
+			$o = json_decode(self::curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
 
 			Exe::sendPhoto(
 				[

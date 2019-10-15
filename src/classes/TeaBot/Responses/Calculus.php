@@ -55,6 +55,8 @@ final class Calculus extends ResponseFoundation
 			goto ret;
 		}
 
+		var_dump($o["out"]);
+
 		$res = json_decode($o["out"], true);
 
 		if (isset($res["solutions"][0]["entire_result"])) {

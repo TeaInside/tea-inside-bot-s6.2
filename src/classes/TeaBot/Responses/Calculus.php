@@ -49,6 +49,9 @@ final class Calculus extends ResponseFoundation
 			);
 			goto ret;
 		}
+
+		$res = json_decode($o["out"], true);
+
 		if (isset($res["solutions"][0]["entire_result"])) {
 			Exe::sendMessage(
 				[
@@ -89,6 +92,9 @@ final class Calculus extends ResponseFoundation
 			);
 			goto ret;
 		}
+
+		$res = json_decode($o["out"], true);
+
 		if (isset($res["solutions"][0]["entire_result"])) {
 
 			$r = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];

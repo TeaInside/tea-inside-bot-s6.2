@@ -97,7 +97,12 @@ final class Calculus extends ResponseFoundation
 
 		if (isset($res["solutions"][0]["entire_result"])) {
 
-			$r = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			$rr = $res["solutions"][0]["entire_result"];
+			if ($rr[0] === "=") {
+				$r = $res["dym"]["originalEquation"].$rr;
+			} else {
+				$r = "(".$res["dym"]["originalEquation"].") is ".$rr;
+			}
 
 			$o = json_decode(self::curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
 

@@ -7,6 +7,7 @@ use TeaBot\Exe;
 use TeaBot\Data;
 use TeaBot\Lang;
 use TeaBot\ResponseFoundation;
+use TeaBot\Plugins\Tex2Png\Tex2Png;
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
@@ -37,18 +38,7 @@ final class Calculus extends ResponseFoundation
 	 */
 	public function simple(string $expression): bool
 	{
-		$expression = urlencode($expression);
-
-		$o = self::curl(
-			"https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional",
-			[
-				CURLOPT_HTTPHEADER => [
-					"X-Requested-With: XMLHttpRequest",
-					"Authorization: Bearer ".(self::API_KEY),
-				]
-			]
-		);
-
+		$o = self::exec($expression);
 		if ($o["ern"]) {
 			Exe::sendMessage(
 				[
@@ -59,11 +49,6 @@ final class Calculus extends ResponseFoundation
 			);
 			goto ret;
 		}
-
-		var_dump($o["out"]);
-
-		$res = json_decode($o["out"], true);
-
 		if (isset($res["solutions"][0]["entire_result"])) {
 			Exe::sendMessage(
 				[
@@ -84,6 +69,76 @@ final class Calculus extends ResponseFoundation
 
 		ret:
 		return true;
+	}
+
+	/**
+	 * @param string $expression
+	 * @return bool
+	 */
+	public function simpleImg(string $expression)
+	{
+		$o = self::exec($expression);
+
+		if ($o["ern"]) {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "An error occured: {$o["ern"]}: {$o["err"]}"
+				]
+			);
+			goto ret;
+		}
+		if (isset($res["solutions"][0]["entire_result"])) {
+
+			$r = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			$hash = sha1($r);
+
+			Tex2png::create($r)
+				->saveTo(BASEPATH."/public/assets/calculus/{$hash}.png")
+				->generate();
+
+			Exe::sendPhoto(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"photo" => "http://telegram-bot.teainside.org/assets/calculus/{$hash}.png",
+					"caption" => "<pre>".htmlspecialchars($r, ENT_QUOTES, "UTF-8")."</pre>",
+					"parse_mode" => "html"
+				]
+			);
+
+		} else {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "Couldn't get the result"
+				]
+			);
+		}
+
+		ret:
+		return true;
+	}
+
+	/**
+	 * @param string $expression
+	 * @return array
+	 */
+	public static function exec(string $expression)
+	{
+		$expression = urlencode($expression);
+
+		return self::curl(
+			"https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional",
+			[
+				CURLOPT_HTTPHEADER => [
+					"X-Requested-With: XMLHttpRequest",
+					"Authorization: Bearer ".(self::API_KEY),
+				]
+			]
+		);
 	}
 
 	/**

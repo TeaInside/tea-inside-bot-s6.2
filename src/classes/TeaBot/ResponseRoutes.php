@@ -89,7 +89,13 @@ trait ResponseRoutes
 						return true;
 					}
 				break;
-				
+
+				case 2:
+					if ($this->stExec(Responses\Calculus::class, "simpleImg", [$m[2]])) {
+						return true;
+					}
+				break;
+
 				default:
 				break;
 			}

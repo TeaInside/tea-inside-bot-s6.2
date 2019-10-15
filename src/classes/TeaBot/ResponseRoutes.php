@@ -78,6 +78,23 @@ trait ResponseRoutes
 			}
 		}
 
+		/**
+		 * Calculus.
+		 */
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:c)(\d{2})(?:\s+)(.+?)$/i", $this->data["text"], $m)) {
+			$m[1] = (int)$m[1];
+			switch ($m[1]) {
+				case 1:
+					if ($this->stExec(TeaBot\Responses\Calculus::class, "simple", [$m[2]])) {
+						return true;
+					}
+				break;
+				
+				default:
+				break;
+			}
+		}
+
 		return false;
 	}
 }

@@ -41,7 +41,12 @@ final class Calculus extends ResponseFoundation
 
 		$o = self::curl(
 			"https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional",
-			[CURLOPT_HTTPHEADER => ["Authorization: Bearer ".(self::API_KEY)]]
+			[
+				CURLOPT_HTTPHEADER => [
+					"X-Requested-With: XMLHttpRequest",
+					"Authorization: Bearer ".(self::API_KEY),
+				]
+			]
 		);
 
 		if ($o["ern"]) {

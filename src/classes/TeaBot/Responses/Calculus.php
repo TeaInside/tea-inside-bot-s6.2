@@ -98,17 +98,14 @@ final class Calculus extends ResponseFoundation
 		if (isset($res["solutions"][0]["entire_result"])) {
 
 			$r = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
-			$hash = sha1($r);
 
-			Tex2png::create($r)
-				->saveTo(BASEPATH."/public/assets/calculus/{$hash}.png")
-				->generate();
+			$o = json_decode(curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
 
 			Exe::sendPhoto(
 				[
 					"chat_id" => $this->data["chat_id"],
 					"reply_to_message_id" => $this->data["msg_id"],
-					"photo" => "http://telegram-bot.teainside.org/assets/calculus/{$hash}.png",
+					"photo" => $o["ret"],
 					"caption" => "<pre>".htmlspecialchars($r, ENT_QUOTES, "UTF-8")."</pre>",
 					"parse_mode" => "html"
 				]

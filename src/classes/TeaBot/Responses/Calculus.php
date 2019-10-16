@@ -25,6 +25,13 @@ final class Calculus extends ResponseFoundation
 	public function __construct(Data &$data)
 	{
 		parent::__construct($data);
+		loadConfig("calculus");
+		define("DEFAULT_CALCULUS_HEADERS",
+			[
+				"X-Requested-With: XMLHttpRequest",
+				"Authorization: Bearer ".(CALCULUS_API_KEY)
+			]
+		);
 	}
 
 	/**
@@ -159,14 +166,6 @@ final class Calculus extends ResponseFoundation
 	}
 
 	/**
-	 * @const array
-	 */
-	private const DEFAULT_HEADERS = [
-		"X-Requested-With: XMLHttpRequest",
-		"Authorization: Bearer ".(CALCULUS_API_KEY)
-	];
-
-	/**
 	 * @param string $url
 	 * @param array  $opt
 	 * @return array
@@ -175,7 +174,7 @@ final class Calculus extends ResponseFoundation
 	{
 		$ch = curl_init($url);
 		$optf = [
-			CURLOPT_HTTPHEADER => DEFAULT_HEADERS,
+			CURLOPT_HTTPHEADER => DEFAULT_CALCULUS_HEADERS,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_SSL_VERIFYHOST => false

@@ -3,7 +3,7 @@
 require __DIR__."/../bootstrap/frag_autoload.php";
 
 $const["CALCULUS_STORAGE_PATH"] = STORAGE_PATH."/calculus";
-
+$const["CALCULUS_API_KEY"] = CALCULUS_API_KEY;
 if (!is_dir($const["CALCULUS_STORAGE_PATH"])) {
 	@unlink($const["CALCULUS_STORAGE_PATH"]);
 	mkdir($const["CALCULUS_STORAGE_PATH"], 0755);

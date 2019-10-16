@@ -132,6 +132,7 @@ final class Calculus extends ResponseFoundation
 
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);
+			var_dump($res);
 			if (isset($res["solutions"])) {
 				goto ret;
 			}
@@ -156,7 +157,7 @@ final class Calculus extends ResponseFoundation
 		$res = json_decode($o["out"], true);
 		if (isset($res["solutions"])) {
 			$ret = $res;
-			file_put_contents($cacheFile, json_encode($res, JSON_UNESCAPED_SLASHES));
+			file_put_contents($cacheFile, $o["out"]);
 		} else {
 			$ret = 0;
 		}

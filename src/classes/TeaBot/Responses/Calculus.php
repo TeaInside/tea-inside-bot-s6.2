@@ -159,7 +159,7 @@ final class Calculus extends ResponseFoundation
 			$ret = $res;
 			file_put_contents($cacheFile, $o["out"]);
 		} else {
-			$ret = 0;
+			$ret = null;
 		}
 
 		ret:

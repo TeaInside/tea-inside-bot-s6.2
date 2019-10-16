@@ -81,7 +81,7 @@ trait ResponseRoutes
 		/**
 		 * Calculus.
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)?(?:c)(\d{3})(?:\s+)(.+?)$/i", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:c)(\d{3})(?:([\\s\\n]])+)(.+?)$/si", $this->data["text"], $m)) {
 			$m[1] = (int)$m[1];
 			switch ($m[1]) {
 				case 1:

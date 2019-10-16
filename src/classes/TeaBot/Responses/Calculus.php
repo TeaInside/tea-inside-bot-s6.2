@@ -18,11 +18,6 @@ use TeaBot\Plugins\Tex2Png\Tex2Png;
 final class Calculus extends ResponseFoundation
 {
 	/**
-	 * @const string
-	 */
-	private const API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5zeW1ib2xhYi5jb20iLCJleHAiOjE1NzEyMzIyMjh9.Ryb50DVDZPiudwVlEy4oUCHgf1Tz3wKHDHlBuvC0CbU";
-
-	/**
 	 * @param \TeaBot\Data &$data
 	 *
 	 * Constructor.
@@ -38,19 +33,8 @@ final class Calculus extends ResponseFoundation
 	 */
 	public function simple(string $expression): bool
 	{
-		$o = self::exec($expression);
-		if ($o["ern"]) {
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"text" => "An error occured: {$o["ern"]}: {$o["err"]}"
-				]
-			);
-			goto ret;
-		}
-
-		$res = json_decode($o["out"], true);
+		$res = $this->exec($expression);
+		if (!$res) goto ret;
 
 		if (isset($res["solutions"][0]["entire_result"])) {
 			Exe::sendMessage(
@@ -78,22 +62,10 @@ final class Calculus extends ResponseFoundation
 	 * @param string $expression
 	 * @return bool
 	 */
-	public function simpleImg(string $expression)
+	public function simpleImg(string $expression): bool
 	{
-		$o = self::exec($expression);
-
-		if ($o["ern"]) {
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"text" => "An error occured: {$o["ern"]}: {$o["err"]}"
-				]
-			);
-			goto ret;
-		}
-
-		$res = json_decode($o["out"], true);
+		$res = $this->exec($expression);
+		if (!$res) goto ret;
 
 		if (isset($res["solutions"][0]["entire_result"])) {
 
@@ -101,21 +73,30 @@ final class Calculus extends ResponseFoundation
 			if ($rr[0] === "=") {
 				$r = $res["dym"]["originalEquation"].$rr;
 			} else {
-				$r = "(".$res["dym"]["originalEquation"].") = ".$rr;
+				$r = "(".$res["dym"]["originalEquation"].") = (".$rr.")";
 			}
 
 			$o = json_decode(self::curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
-
-			Exe::sendPhoto(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"photo" => $o["ret"],
-					"caption" => "<pre>".htmlspecialchars($r, ENT_QUOTES, "UTF-8")."</pre>",
-					"parse_mode" => "html"
-				]
-			);
-
+			if (isset($o["error"])) {
+				Exe::sendMessage(
+					[
+						"chat_id" => $this->data["chat_id"],
+						"reply_to_message_id" => $this->data["msg_id"],
+						"text" => "Latex Error Occured:\n<code>".htmlspecialchars($o["error"], ENT_QUOTES, "UTF-8"),
+						"parse_mode" => "html"
+					]
+				);
+			} else {
+				Exe::sendPhoto(
+					[
+						"chat_id" => $this->data["chat_id"],
+						"reply_to_message_id" => $this->data["msg_id"],
+						"photo" => $o["ret"],
+						"caption" => "<pre>".htmlspecialchars($r, ENT_QUOTES, "UTF-8")."</pre>",
+						"parse_mode" => "html"
+					]
+				);
+			}
 		} else {
 			Exe::sendMessage(
 				[
@@ -132,22 +113,58 @@ final class Calculus extends ResponseFoundation
 
 	/**
 	 * @param string $expression
-	 * @return array
+	 * @return ?array
 	 */
-	public static function exec(string $expression)
+	public function exec(string $expression): ?array
 	{
-		$expression = urlencode($expression);
+		$ret = null;
 
-		return self::curl(
-			"https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional",
-			[
-				CURLOPT_HTTPHEADER => [
-					"X-Requested-With: XMLHttpRequest",
-					"Authorization: Bearer ".(self::API_KEY),
+		$expression = trim($expression);
+		$hash = sha1($expression);
+		$cacheFile = CALCULUS_STORAGE_PATH."/cache/".$hash;
+
+		if (file_exists($cacheFile)) {
+			$res = json_decode(file_get_contents($cacheFile), true);
+			if (isset($res["solutions"])) {
+				goto ret;
+			}
+		}
+
+		$expression = urlencode($expression);
+		$o = self::curl("https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional");
+
+		// Curl error.
+		if ($o["err"]) {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "An error occured: {$o["ern"]}: {$o["err"]}"
 				]
-			]
-		);
+			);
+			$ret = null;
+			goto ret;
+		}
+
+		$res = json_decode($o["out"], true);
+		if (isset($res["solutions"])) {
+			$ret = $res;
+			file_put_contents($cacheFile, json_encode($res, JSON_UNESCAPED_SLASHES));
+		} else {
+			$ret = 0;
+		}
+
+		ret:
+		return $ret;
 	}
+
+	/**
+	 * @const array
+	 */
+	private const DEFAULT_HEADERS = [
+		"X-Requested-With: XMLHttpRequest",
+		"Authorization: Bearer ".(CALCULUS_API_KEY)
+	];
 
 	/**
 	 * @param string $url
@@ -158,6 +175,7 @@ final class Calculus extends ResponseFoundation
 	{
 		$ch = curl_init($url);
 		$optf = [
+			CURLOPT_HTTPHEADER => DEFAULT_HEADERS,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_SSL_VERIFYHOST => false
@@ -175,5 +193,4 @@ final class Calculus extends ResponseFoundation
 			"ern" => $ern
 		];
 	}
-
 }

@@ -132,8 +132,8 @@ final class Calculus extends ResponseFoundation
 
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);
-			var_dump($res);
 			if (isset($res["solutions"])) {
+				$ret = $res;
 				goto ret;
 			}
 		}

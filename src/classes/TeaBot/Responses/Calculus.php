@@ -51,14 +51,6 @@ final class Calculus extends ResponseFoundation
 					"text" => $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"]
 				]
 			);
-		} else {
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"text" => "Couldn't get the result"
-				]
-			);
 		}
 
 		ret:
@@ -104,14 +96,6 @@ final class Calculus extends ResponseFoundation
 					]
 				);
 			}
-		} else {
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"text" => "Couldn't get the result"
-				]
-			);
 		}
 
 		ret:
@@ -160,6 +144,13 @@ final class Calculus extends ResponseFoundation
 			file_put_contents($cacheFile, $o["out"]);
 		} else {
 			$ret = null;
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "Couldn't get the result"
+				]
+			);
 		}
 
 		ret:

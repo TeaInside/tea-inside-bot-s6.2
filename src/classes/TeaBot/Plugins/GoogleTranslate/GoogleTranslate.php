@@ -65,7 +65,12 @@ class GoogleTranslate
 		$o = $o["out"];
 
 		if (preg_match("/<div dir=\"ltr\" class=\"t0\">(.+?)</", $o, $m)) {
-			$result = trim($m[1]);
+			$result = trim(html_entity_decode($m[1], ENT_QUOTES, "UTF-8"));
+
+			// Get romanji if exists
+			if (preg_match("/<div dir=\"ltr\" class=\"o1\">(.+?)</", $o, $m)) {
+				$result .= "\n(".html_entity_decode($m[1], ENT_QUOTES, "UTF-8").")";
+			}
 			return $result;
 		}
 	}

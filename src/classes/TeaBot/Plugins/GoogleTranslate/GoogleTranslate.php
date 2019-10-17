@@ -56,7 +56,7 @@ class GoogleTranslate
 	public function execute(): ?string
 	{
 		$o = self::curl(
-			"https://translate.google.com/m?hl=en&sl=en&tl=id&ie=UTF-8&prev=_m&q=".urlencode($this->string),
+			"https://translate.google.com/m?hl=en&sl={$this->source}&tl={$this->to}&ie=UTF-8&prev=_m&q=".urlencode($this->string),
 			[
 				CURLOPT_USERAGENT => "Opera/9.80 (J2ME/MIDP; Opera Mini/7.1.32052/29.3709; U; en) Presto/2.8.119 Version/11.10"
 			]

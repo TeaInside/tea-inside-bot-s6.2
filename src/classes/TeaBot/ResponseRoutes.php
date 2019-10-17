@@ -79,6 +79,15 @@ trait ResponseRoutes
 		}
 
 		/**
+		 * Google translate.
+		 */
+		if (preg_match("/(?:\/tr)\s(\S+)\s(\S+)\s(.+)$/Usi", $s, $m)) {
+			if ($this->stExec(Response\GoogleTranslate::class, "translate", [$m[1], $m[2], $m[3]])) {
+				return true;
+			}
+		}
+
+		/**
 		 * Calculus.
 		 */
 		if (preg_match("/^(?:\/|\!|\~|\.)?(?:c)(\d{3})(?:(?:[\\s\\n])+)(.+?)$/si", $this->data["text"], $m)) {

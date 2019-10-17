@@ -25,8 +25,9 @@ final class GoogleTranslate extends ResponseFoundation
 	public function translate(string $source, string $to, string $text): bool
 	{
 		try {
+			$text = str_replace("\n", ".%.", $text);
 			$st = new GoogleTranslateBase($source, $to, $text);
-			$res = $st->execute();
+			$res = str_replace(".%.", "\n", $st->execute());
 			Exe::sendMessage(
 				[
 					"chat_id" => $this->data["chat_id"],

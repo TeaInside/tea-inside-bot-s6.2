@@ -81,7 +81,7 @@ trait ResponseRoutes
 		/**
 		 * Google translate.
 		 */
-		if (preg_match("/(?:\/tr)\s(\S+)\s(\S+)\s(.+)$/Usi", $s, $m)) {
+		if (preg_match("/(?:\/tr)\s(\S+)\s(\S+)\s(.+)$/Usi", $this->data["text"], $m)) {
 			if ($this->stExec(Response\GoogleTranslate::class, "translate", [$m[1], $m[2], $m[3]])) {
 				return true;
 			}

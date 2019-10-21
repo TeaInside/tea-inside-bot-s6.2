@@ -180,31 +180,28 @@ final class Calculus extends ResponseFoundation
 			[
 				CURLOPT_VERBOSE => true,
 				CURLOPT_CUSTOMREQUEST => "HEAD",
-				CURLOPT_HEADER => true,
 				CURLOPT_HTTPHEADER => [],
 				CURLOPT_USERAGENT => "curl",
-				CURLOPT_WRITEHEADER => function ($ch, $str) {
-					var_dump($str);
+				CURLOPT_WRITEFUNCTION => function ($ch, $str) {
+		
+					if (preg_match("/sy2\.pub\.token=(.+?);/", $str, $m)) {
+						file_put_contents(
+							CALCULUS_STORAGE_PATH."/token.json",
+							json_encode(
+								$ret = [
+									"token" => $m[1],
+									"expired_at" => (time() + 7200)
+								]
+							)
+						);
+						return 0;
+					}
+
+
 					return strlen($str);
 				}
 			]
 		);
-
-		$ret = [];
-
-		var_dump($o["out"]);
-
-		if (preg_match("/sy2\.pub\.token=(.+?);/", $o["out"], $m)) {
-			file_put_contents(
-				CALCULUS_STORAGE_PATH."/token.json",
-				json_encode(
-					$ret = [
-						"token" => $m[1],
-						"expired_at" => (time() + 7200)
-					]
-				)
-			);
-		}
 
 		return $ret;
 	}

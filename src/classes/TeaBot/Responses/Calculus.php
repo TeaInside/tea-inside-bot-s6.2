@@ -181,6 +181,7 @@ final class Calculus extends ResponseFoundation
 			[
 				CURLOPT_CUSTOMREQUEST => "HEAD",
 				CURLOPT_HEADER => true,
+				CURLOPT_HTTPHEADER => null
 			]
 		);
 

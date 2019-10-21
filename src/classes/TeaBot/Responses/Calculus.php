@@ -175,6 +175,7 @@ final class Calculus extends ResponseFoundation
 	 */
 	public static function resolveToken(): array
 	{
+		var_dump("1");
 		$o = self::curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
 			[
@@ -184,6 +185,8 @@ final class Calculus extends ResponseFoundation
 		);
 
 		$ret = [];
+
+		var_dump("2");
 
 		if (preg_match("/sy2\.pub\.token=(.+?);/", $o["out"], $m)) {
 			file_put_contents(
@@ -196,6 +199,8 @@ final class Calculus extends ResponseFoundation
 				)
 			);
 		}
+
+		var_dump("3");
 
 		return $ret;
 	}

@@ -79,6 +79,9 @@ final class Calculus extends ResponseFoundation
 		if (isset($res["solutions"][0]["entire_result"])) {
 
 			$rr = $res["solutions"][0]["entire_result"];
+
+			var_dump($res["dym"]["originalEquation"], $rr);
+
 			if ($rr[0] === "=") {
 				$r = $res["dym"]["originalEquation"].$rr;
 			} else {

@@ -116,6 +116,15 @@ final class Calculus extends ResponseFoundation
 		$hash = sha1($expression);
 		$cacheFile = CALCULUS_STORAGE_PATH."/cache/".$hash;
 
+		if (!file_exists(CALCULUS_STORAGE_PATH."/token.json")) {
+			$token = self::resolveToken();
+		} else {
+			$token = json_decode(file_get_contents(CALCULUS_STORAGE_PATH."/token.json"), true);
+			if (!(isset($token["token"], $token["expired_at"]) && ($token["expired_at"] > time()))) {
+				$token = self::resolveToken();
+			}
+		}
+
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);
 			if (isset($res["solutions"])) {
@@ -156,6 +165,36 @@ final class Calculus extends ResponseFoundation
 		}
 
 		ret:
+		return $ret;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function resolveToken(): array
+	{
+		$o = self::curl(
+			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
+			[
+				CURLOPT_CUSTOMREQUEST => "HEAD",
+				CURLOPT_HEADER => true,
+			]
+		);
+
+		$ret = [];
+
+		if (preg_match("/sy2\.pub\.token=(.+?);/", $o["out"], $m)) {
+			file_put_contents(
+				CALCULUS_STORAGE_PATH."/token.json",
+				json_encode(
+					$ret = [
+						"token" => $m[1],
+						"expired_at" => (time() + 7200)
+					]
+				)
+			);
+		}
+
 		return $ret;
 	}
 

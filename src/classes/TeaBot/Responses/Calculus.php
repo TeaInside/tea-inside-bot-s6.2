@@ -18,6 +18,11 @@ use TeaBot\Plugins\Tex2Png\Tex2Png;
 final class Calculus extends ResponseFoundation
 {
 	/**
+	 * @var string
+	 */
+	private $token;
+
+	/**
 	 * @param \TeaBot\Data &$data
 	 *
 	 * Constructor.
@@ -26,12 +31,18 @@ final class Calculus extends ResponseFoundation
 	{
 		parent::__construct($data);
 		loadConfig("calculus");
-		define("DEFAULT_CALCULUS_HEADERS",
-			[
-				"X-Requested-With: XMLHttpRequest",
-				"Authorization: Bearer ".(CALCULUS_API_KEY)
-			]
-		);
+		self::resolveToken();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function buildHeader(): array
+	{
+		return [
+			"X-Requested-With: XMLHttpRequest",
+			"Authorization: Bearer ".($this->token)
+		];
 	}
 
 	/**
@@ -116,17 +127,6 @@ final class Calculus extends ResponseFoundation
 		$hash = sha1($expression);
 		$cacheFile = CALCULUS_STORAGE_PATH."/cache/".$hash;
 
-		if (!file_exists(CALCULUS_STORAGE_PATH."/token.json")) {
-			$token = self::resolveToken();
-		} else {
-			$token = json_decode(file_get_contents(CALCULUS_STORAGE_PATH."/token.json"), true);
-			if (!(isset($token["token"], $token["expired_at"]) && ($token["expired_at"] > time()))) {
-				$token = self::resolveToken();
-			}
-		}
-
-		var_dump($token);
-
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);
 			if (isset($res["solutions"])) {
@@ -171,10 +171,18 @@ final class Calculus extends ResponseFoundation
 	}
 
 	/**
-	 * @return array
+	 * @return void
 	 */
-	public static function resolveToken(): array
+	public static function resolveToken(): void
 	{
+		if (file_exists(CALCULUS_STORAGE_PATH."/token.json")) {
+			$token = json_decode(file_get_contents(CALCULUS_STORAGE_PATH."/token.json"), true);
+			if (isset($token["token"], $token["expired_at"]) && ($token["expired_at"] > time())) {
+				$this->token = $token["token"];
+				return;
+			}
+		}
+
 		$ret = [];
 		self::curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
@@ -203,7 +211,11 @@ final class Calculus extends ResponseFoundation
 			]
 		);
 
-		return $ret;
+		if (isset($ret["token"])) {
+			$this->token = $ret["token"];
+		}
+
+		return;
 	}
 
 	/**
@@ -215,7 +227,6 @@ final class Calculus extends ResponseFoundation
 	{
 		$ch = curl_init($url);
 		$optf = [
-			CURLOPT_HTTPHEADER => DEFAULT_CALCULUS_HEADERS,
 			CURLOPT_HTTP_VERSION => 2,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
@@ -225,6 +236,9 @@ final class Calculus extends ResponseFoundation
 		];
 		foreach ($opt as $k => $v) {
 			$optf[$k] = $v;
+		}
+		if (!isset($optf[CURLOPT_HTTPHEADER])) {
+			$optf[CURLOPT_HTTPHEADER] = $this->buildHeader();
 		}
 		curl_setopt_array($ch, $optf);
 		$o = curl_exec($ch);

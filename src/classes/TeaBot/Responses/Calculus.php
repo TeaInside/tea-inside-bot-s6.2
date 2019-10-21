@@ -178,12 +178,11 @@ final class Calculus extends ResponseFoundation
 		self::curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
 			[
-				CURLOPT_VERBOSE => true,
 				CURLOPT_CUSTOMREQUEST => "HEAD",
 				CURLOPT_HTTPHEADER => [],
 				CURLOPT_USERAGENT => "curl",
+				CURLOPT_HEADER => true,
 				CURLOPT_WRITEFUNCTION => function ($ch, $str) {
-		
 					if (preg_match("/sy2\.pub\.token=(.+?);/", $str, $m)) {
 						file_put_contents(
 							CALCULUS_STORAGE_PATH."/token.json",

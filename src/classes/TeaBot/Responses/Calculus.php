@@ -110,7 +110,6 @@ final class Calculus extends ResponseFoundation
 	 */
 	public function exec(string $expression): ?array
 	{
-		var_dump($expression);
 		$ret = null;
 
 		$expression = trim($expression);
@@ -125,6 +124,8 @@ final class Calculus extends ResponseFoundation
 				$token = self::resolveToken();
 			}
 		}
+
+		var_dump($token);
 
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);

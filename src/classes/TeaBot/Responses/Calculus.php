@@ -84,8 +84,7 @@ final class Calculus extends ResponseFoundation
 				(strpos($res["dym"]["originalEquation"], "adj") !== false) &&
 				(strpos($res["dym"]["originalEquation"], "matrix") !== false)
 			) {
-				$r = $res["dym"]["originalEquation"]." = ".$res["dym"]["originalEquation"];
-				var_dump($r);
+				$r = str_replace("\\adj", "adj", $res["dym"]["originalEquation"])." = ".$rr;
 			} else {
 				if ($rr[0] === "=") {
 					$r = $res["dym"]["originalEquation"].$rr;

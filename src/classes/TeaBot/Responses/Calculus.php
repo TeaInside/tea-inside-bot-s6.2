@@ -85,7 +85,7 @@ final class Calculus extends ResponseFoundation
 				$r = "(".$res["dym"]["originalEquation"].") = (".$rr.")";
 			}
 
-			$r = str_replace("π", "\\pi", $r);
+			$r = str_replace(["π", ":"], ["\\pi", "="], $r);
 
 			$o = json_decode($this->curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
 			if (isset($o["error"])) {

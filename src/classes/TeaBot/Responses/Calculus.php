@@ -178,6 +178,7 @@ final class Calculus extends ResponseFoundation
 		$o = self::curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
 			[
+				CURLOPT_VERBOSE => true,
 				CURLOPT_CUSTOMREQUEST => "HEAD",
 				CURLOPT_HEADER => true,
 				CURLOPT_HTTPHEADER => [],

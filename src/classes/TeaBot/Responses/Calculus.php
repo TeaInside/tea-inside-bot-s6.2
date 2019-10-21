@@ -218,7 +218,9 @@ final class Calculus extends ResponseFoundation
 			CURLOPT_HTTPHEADER => DEFAULT_CALCULUS_HEADERS,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_SSL_VERIFYHOST => false
+			CURLOPT_SSL_VERIFYHOST => false,
+			CURLOPT_CONNECTTIMEOUT => 30,
+			CURLOPT_TIMEOUT => 30
 		];
 		foreach ($opt as $k => $v) {
 			$optf[$k] = $v;

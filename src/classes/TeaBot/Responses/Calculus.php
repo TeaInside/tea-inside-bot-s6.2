@@ -87,7 +87,7 @@ final class Calculus extends ResponseFoundation
 
 			$r = str_replace("π", "\\pi", $r);
 
-			$o = json_decode(self::curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
+			$o = json_decode($this->curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
 			if (isset($o["error"])) {
 				Exe::sendMessage(
 					[
@@ -137,7 +137,7 @@ final class Calculus extends ResponseFoundation
 		}
 
 		$expression = urlencode($expression);
-		$o = self::curl("https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional");
+		$o = $this->curl("https://www.symbolab.com/pub_api/steps?userId=fe&query={$expression}&language=en&subscribed=false&plotRequest=PlotOptional");
 
 		// Curl error.
 		if ($o["err"]) {
@@ -185,7 +185,7 @@ final class Calculus extends ResponseFoundation
 		}
 
 		$ret = [];
-		self::curl(
+		$this->curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
 			[
 				CURLOPT_CUSTOMREQUEST => "HEAD",
@@ -222,7 +222,7 @@ final class Calculus extends ResponseFoundation
 	 * @param array  $opt
 	 * @return array
 	 */
-	public static function curl(string $url, array $opt = []): array
+	public function curl(string $url, array $opt = []): array
 	{
 		$ch = curl_init($url);
 		$optf = [

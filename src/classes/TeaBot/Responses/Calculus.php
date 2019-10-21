@@ -110,6 +110,7 @@ final class Calculus extends ResponseFoundation
 	 */
 	public function exec(string $expression): ?array
 	{
+		var_dump($expression);
 		$ret = null;
 
 		$expression = trim($expression);

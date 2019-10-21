@@ -80,12 +80,17 @@ final class Calculus extends ResponseFoundation
 
 			$rr = $res["solutions"][0]["entire_result"];
 
-			var_dump($res["dym"]["originalEquation"], $rr);
-
-			if ($rr[0] === "=") {
-				$r = $res["dym"]["originalEquation"].$rr;
+			if (
+				(strpos($res["dym"]["originalEquation"], "adj") !== false) &&
+				(strpos($res["dym"]["originalEquation"], "matrix") !== false)
+			) {
+				$r = $res["dym"]["originalEquation"]." = ".$res["dym"]["originalEquation"];
 			} else {
-				$r = "(".$res["dym"]["originalEquation"].") = (".$rr.")";
+				if ($rr[0] === "=") {
+					$r = $res["dym"]["originalEquation"].$rr;
+				} else {
+					$r = "(".$res["dym"]["originalEquation"].") = (".$rr.")";
+				}
 			}
 
 			$r = str_replace(["π", ":"], ["\\pi", "="], $r);

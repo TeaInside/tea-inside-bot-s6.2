@@ -214,6 +214,7 @@ final class Calculus extends ResponseFoundation
 		$ch = curl_init($url);
 		$optf = [
 			CURLOPT_HTTPHEADER => DEFAULT_CALCULUS_HEADERS,
+			CURLOPT_HTTP_VERSION => 2,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_SSL_VERIFYHOST => false,

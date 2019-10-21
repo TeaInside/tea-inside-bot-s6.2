@@ -31,7 +31,6 @@ final class Calculus extends ResponseFoundation
 	{
 		parent::__construct($data);
 		loadConfig("calculus");
-		self::resolveToken();
 	}
 
 	/**
@@ -127,6 +126,8 @@ final class Calculus extends ResponseFoundation
 		$hash = sha1($expression);
 		$cacheFile = CALCULUS_STORAGE_PATH."/cache/".$hash;
 
+		$this->resolveToken();
+
 		if (file_exists($cacheFile)) {
 			$res = json_decode(file_get_contents($cacheFile), true);
 			if (isset($res["solutions"])) {
@@ -173,7 +174,7 @@ final class Calculus extends ResponseFoundation
 	/**
 	 * @return void
 	 */
-	public static function resolveToken(): void
+	public function resolveToken(): void
 	{
 		if (file_exists(CALCULUS_STORAGE_PATH."/token.json")) {
 			$token = json_decode(file_get_contents(CALCULUS_STORAGE_PATH."/token.json"), true);
@@ -204,8 +205,6 @@ final class Calculus extends ResponseFoundation
 						);
 						return 0;
 					}
-
-
 					return strlen($str);
 				}
 			]

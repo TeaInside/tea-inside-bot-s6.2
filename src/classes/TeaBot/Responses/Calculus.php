@@ -175,6 +175,7 @@ final class Calculus extends ResponseFoundation
 	 */
 	public static function resolveToken(): array
 	{
+		$ret = [];
 		self::curl(
 			"https://www.symbolab.com/solver/limit-calculator/%5Clim_%7Bx%5Cto%5Cinfty%7D%5Cleft(x%5E%7B2%7D%5Cright)",
 			[
@@ -182,7 +183,7 @@ final class Calculus extends ResponseFoundation
 				CURLOPT_HTTPHEADER => [],
 				CURLOPT_USERAGENT => "curl",
 				CURLOPT_HEADER => true,
-				CURLOPT_WRITEFUNCTION => function ($ch, $str) {
+				CURLOPT_WRITEFUNCTION => function ($ch, $str) use (&$ret) {
 					if (preg_match("/sy2\.pub\.token=(.+?);/", $str, $m)) {
 						file_put_contents(
 							CALCULUS_STORAGE_PATH."/token.json",

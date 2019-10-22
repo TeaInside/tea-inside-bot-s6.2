@@ -95,7 +95,16 @@ final class Calculus extends ResponseFoundation
 
 			$r = str_replace(["π", ":"], ["\\pi", "="], $r);
 
-			$o = json_decode($this->curl("https://api.teainside.org/latex.php?exp=".urlencode($r))["out"], true);
+			$o = json_decode($this->curl(
+					"https://127.0.0.1/latex.php?exp=".urlencode($r),
+					[
+						CURLOPT_HTTPHEADER => [
+							"Host: api.teainside.org"
+						]
+					]
+					)["out"],
+					true
+				);
 			if (isset($o["error"])) {
 				Exe::sendMessage(
 					[
@@ -176,6 +185,7 @@ final class Calculus extends ResponseFoundation
 		}
 
 		ret:
+		print json_encode($res, 128);
 		return $ret;
 	}
 

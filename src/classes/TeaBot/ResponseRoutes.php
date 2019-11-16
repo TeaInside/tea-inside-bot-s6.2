@@ -63,7 +63,7 @@ trait ResponseRoutes
 		/**
 		 * Jadwal Kuliah.
 		 */
-		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(senin|selasa|rabu|kamis|jum'?at|sabtu)$/i", $this->data["text"], $m)) {
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(senin|selasa|rabu|kamis|(jum')?at|sabtu)$/i", $this->data["text"], $m)) {
 			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal", [$m[1]])) {
 				return true;
 			}

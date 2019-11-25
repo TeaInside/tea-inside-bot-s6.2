@@ -46,6 +46,7 @@ final class Calculus extends ResponseFoundation
 	}
 
 	/**
+	 * @param string $expr
 	 * @return bool
 	 */
 	public function c001(string $expr): bool
@@ -64,6 +65,45 @@ final class Calculus extends ResponseFoundation
 				"text" => $reply
 			]
 		);
+
+		return true;
+	}
+
+	/**
+	 * @param string $expr
+	 * @return bool
+	 */
+	public function c002(string $expr): bool
+	{
+		$res = $this->execute($expr);
+
+		$photo = null;
+		if (isset($res["solutions"][0]["entire_result"])) {
+			$reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			$photo = "https://api.teainside.org/latex_x.php?exp=".urlencode($expr);
+		} else {
+			$reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
+		}
+
+		if (isset($photo)) {
+			Exe::sendPhoto(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"photo" => $photo,
+					"caption" => "<pre>".htmlspecialchars($r, ENT_QUOTES, "UTF-8")."</pre>",
+					"parse_mode" => "html"
+				]
+			);
+		} else {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => $reply
+				]
+			);
+		}
 
 		return true;
 	}

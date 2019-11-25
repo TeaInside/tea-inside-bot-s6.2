@@ -95,13 +95,13 @@ trait ResponseRoutes
 			$m[1] = (int)$m[1];
 			switch ($m[1]) {
 				case 1:
-					if ($this->stExec(Responses\Calculus::class, "simple", [$m[2]])) {
+					if ($this->stExec(Responses\Calculus::class, "c001", [$m[2]])) {
 						return true;
 					}
 				break;
 
 				case 2:
-					if ($this->stExec(Responses\Calculus::class, "simpleImg", [$m[2]])) {
+					if ($this->stExec(Responses\Calculus::class, "c002", [$m[2]])) {
 						return true;
 					}
 				break;

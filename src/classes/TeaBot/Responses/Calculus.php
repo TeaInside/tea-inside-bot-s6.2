@@ -88,7 +88,7 @@ final class Calculus extends ResponseFoundation
 			} else {
 				$reply = "(".$res["dym"]["originalEquation"].") \\;\\Rightarrow\\; (".$res["solutions"][0]["entire_result"].")";
 			}
-			$photo = "https://api.teainside.org/latex_x.php?d=400&exp=".urlencode($reply);
+			$photo = "https://api.teainside.org/latex_x.php?d=600&exp=".urlencode($reply);
 		} else {
 			$reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
 		}

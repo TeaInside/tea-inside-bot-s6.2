@@ -93,7 +93,11 @@ final class Calculus extends ResponseFoundation
 				}
 			}
 
-			$r = str_replace(["π", ":"], ["\\pi", "="], $r);
+			$r = str_replace(
+				["∂", "π", ":"],
+				["\\partial ", "\\pi ", "="],
+				$r
+			);
 
 			$o = json_decode($this->curl(
 					"https://127.0.0.1/latex.php?exp=".urlencode($r),
@@ -105,12 +109,14 @@ final class Calculus extends ResponseFoundation
 					)["out"],
 					true
 				);
+
 			if (isset($o["error"])) {
 				Exe::sendMessage(
 					[
 						"chat_id" => $this->data["chat_id"],
 						"reply_to_message_id" => $this->data["msg_id"],
-						"text" => "Latex Error Occured:\n<code>".htmlspecialchars($o["error"], ENT_QUOTES, "UTF-8"),
+						"text" => "Latex Error Occured while evaluating this expression:\n<code>".
+								htmlspecialchars($r, ENT_QUOTES, "UTF-8")."<code/>",
 						"parse_mode" => "html"
 					]
 				);

@@ -53,7 +53,11 @@ final class Calculus extends ResponseFoundation
 	{
 		$res = $this->execute($expr);
 		if (isset($res["solutions"][0]["entire_result"])) {
-			$reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			if ($res["solutions"][0]["entire_result"][0] === "=") {
+				$reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			} else {
+				$reply = $res["dym"]["originalEquation"]."\\;\\Rightarrow\\;".$res["solutions"][0]["entire_result"];
+			}
 		} else {
 			$reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
 		}
@@ -79,7 +83,11 @@ final class Calculus extends ResponseFoundation
 
 		$photo = null;
 		if (isset($res["solutions"][0]["entire_result"])) {
-			$reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			if ($res["solutions"][0]["entire_result"][0] === "=") {
+				$reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
+			} else {
+				$reply = $res["dym"]["originalEquation"]."\\;\\Rightarrow\\;".$res["solutions"][0]["entire_result"];
+			}
 			$photo = "https://api.teainside.org/latex_x.php?d=400&exp=".urlencode($reply);
 		} else {
 			$reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";

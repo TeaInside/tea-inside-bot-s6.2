@@ -4,6 +4,8 @@ namespace TeaBot;
 
 use DB;
 use PDO;
+use Error;
+use Exception;
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
@@ -234,7 +236,7 @@ abstract class LoggerFoundation
 		$t = 0;
 		while (self::f_is_locked("user", $hash)) {
 			if ($t === 30) {
-				self::funlock($hash);
+				self::funlock("user", $hash);
 				break;
 			}
 			sleep(1);
@@ -334,7 +336,7 @@ abstract class LoggerFoundation
 
 			} else {
 				$additionalQuery[0] = " ";
-				$this->pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);
+				$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);
 			}
 
 		} else {

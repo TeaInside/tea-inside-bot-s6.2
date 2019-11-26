@@ -28,14 +28,6 @@ final class Help extends ResponseFoundation
 					"parse_mode" => "HTML"
 				]
 			);
-		} else {			
-			$o = Exe::sendMessage(
-				[
-					"text" => Lang::get("help.group"),
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"]
-				]
-			);
 		}
 		return true;
 	}

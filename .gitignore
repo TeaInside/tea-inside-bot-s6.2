@@ -7,4 +7,5 @@
 /build/
 /.phpintel/
 /config.php
+/backup.sql
 /public/adminer.php

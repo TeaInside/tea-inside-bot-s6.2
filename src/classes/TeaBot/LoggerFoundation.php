@@ -188,6 +188,32 @@ abstract class LoggerFoundation
 	}
 
 	/**
+	 * @param string $userId
+	 * @return ?int
+	 */
+	public static function getLatestUserPhoto(string $userId): ?int
+	{
+		$o = Exe::getUserProfilePhotos(
+			[
+				"user_id" => $userId,
+				"offset" => 0,
+				"limit" => 1
+			]
+		);
+		$json = json_decode($o["out"], true);
+		if (isset($json["result"]["photos"][0])) {
+			$c = count($json["result"]["photos"][0]);
+			if ($c) {
+				$p = $json["result"]["photos"][0][$c - 1];
+				if (isset($p["file_id"])) {
+					return self::fileResolve($p["file_id"]);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @param mixed $parData Must be accessible as array.
 	 * @param int	$logType
 	 * @return void
@@ -237,32 +263,28 @@ abstract class LoggerFoundation
 				$additionalQuery = "";
 			}
 
+			$photoChange = $gotAdditonalPhoto = false;
 			if ((!$noMsgLog) && (($cc % 5) == 0)) {
-				$exeData[":photo"] = null;
+				$gotAdditonalPhoto = true;
+				$exeData[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
 				$additionalQuery .= ", `photo` = :photo";
-				$o = Exe::getUserProfilePhotos(
-					[
-						"user_id" => $parData["user_id"],
-						"offset" => 0,
-						"limit" => 1
-					]
-				);
-				$json = json_decode($o["out"], true);
-				if (isset($json["result"]["photos"][0])) {
-					$c = count($json["result"]["photos"][0]);
-					if ($c) {
-						$p = $json["result"]["photos"][0][$c - 1];
-						if (isset($p["file_id"])) {
-							$exeData[":photo"] = self::fileResolve($p["file_id"]);
-						}
-					}
+				if ($exeData[":photo"] != $r["photo"]) {
+					$photoChange = true;
 				}
 			}
 
 			// Check whether there is a change on user info.
-			if (($parData["username"] !== $r["username"]) ||
+			if ($photoChange ||
+				($parData["username"] !== $r["username"]) ||
 				($parData["first_name"] !== $r["first_name"]) ||
 				($parData["last_name"] !== $r["last_name"])) {
+
+				if (!$gotAdditonalPhoto) {
+					$exeData[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
+					$additionalQuery .= ", `photo` = :photo";
+				}
+
+				$data[":photo"] = $exeData[":photo"];
 
 				// Create user history if there is a change on user info.
 				$createUserHistory = true;
@@ -281,28 +303,11 @@ abstract class LoggerFoundation
 
 		} else {
 
-			$o = Exe::getUserProfilePhotos(
-				[
-					"user_id" => $parData["user_id"],
-					"offset" => 0,
-					"limit" => 1
-				]
-			);
-			$json = json_decode($o["out"], true);
-			if (isset($json["result"]["photos"][0])) {
-				$c = count($json["result"]["photos"][0]);
-				if ($c) {
-					$p = $json["result"]["photos"][0][$c - 1];
-					if (isset($p["file_id"])) {
-						$data[":photo"] = self::fileResolve($p["file_id"]);
-					}
-				}
-			}
-
 			/**
 			 * User has not been stored in database.
 			 */
 			$data[":is_bot"] = ($parData["is_bot"] ? '1' : '0');
+			$data[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
 
 			if ($logType == 1) {
 				$u = 1;

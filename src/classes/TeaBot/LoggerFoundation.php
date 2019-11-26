@@ -180,7 +180,7 @@ abstract class LoggerFoundation
 
 
 	/**
-	 * @param array $parData
+	 * @param mixed $parData Must be accessible as array.
 	 * @param int	$logType
 	 * @return void
 	 *
@@ -190,7 +190,7 @@ abstract class LoggerFoundation
 	 * 1 = Group log.
 	 * 2 = Private log.
 	 */
-	public function userLogger(array $parData, $logType = 0): void
+	public function userLogger($parData, $logType = 0): void
 	{
 		$createUserHistory = false;
 		$data = [

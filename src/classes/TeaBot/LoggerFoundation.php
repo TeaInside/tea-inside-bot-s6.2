@@ -44,8 +44,8 @@ abstract class LoggerFoundation
 	 */
 	public static function groupLock(string $groupId): void
 	{
-		is_dir("/tmp/telegram_lock") or mkdir("/tmp/telegram_lock");
-		file_put_contents("/tmp/telegram_lock/{$groupId}", time());
+		is_dir("/tmp/telegram_lock/group") or mkdir("/tmp/telegram_lock/group");
+		file_put_contents("/tmp/telegram_lock/group/{$groupId}", time());
 	}
 
 	/**
@@ -54,7 +54,7 @@ abstract class LoggerFoundation
 	 */
 	public static function groupUnlock(string $groupId): void
 	{
-		@unlink("/tmp/telegram_lock/{$groupId}");
+		@unlink("/tmp/telegram_lock/group/{$groupId}");
 	}
 
 	/**
@@ -63,7 +63,35 @@ abstract class LoggerFoundation
 	 */
 	public static function groupIsLocked(string $groupId): bool
 	{
-		return file_exists($groupId);
+		return file_exists("/tmp/telegram_lock/group/{$groupId}");
+	}
+
+	/**
+	 * @param string $groupId
+	 * @return void
+	 */
+	public static function userLock(string $userId): void
+	{
+		is_dir("/tmp/telegram_lock/user") or mkdir("/tmp/telegram_lock/user");
+		file_put_contents("/tmp/telegram_lock/user/{$userId}", time());
+	}
+
+	/**
+	 * @param string $userId
+	 * @return void
+	 */
+	public static function userUnlock(string $userId): void
+	{
+		@unlink("/tmp/telegram_lock/user/{$userId}");
+	}
+
+	/**
+	 * @param string $userId
+	 * @return bool
+	 */
+	public static function userIsLocked(string $userId): bool
+	{
+		return file_exists("/tmp/telegram_lock/user/{$userId}");
 	}
 
 	/**
@@ -226,6 +254,19 @@ abstract class LoggerFoundation
 	 */
 	public function userLogger($parData, $logType = 0): void
 	{
+		$hash = sha1($parData["user_id"]);
+		$t = 0;
+		while (self::userIsLocked($hash)) {
+			if ($t === 30) {
+				self::userUnlock($hash);
+				break;
+			}
+			sleep(1);
+			$t++;
+		}
+
+		self::userLock($hash);
+
 		$createUserHistory = false;
 		$data = [
 			":user_id" => $parData["user_id"],
@@ -327,5 +368,7 @@ abstract class LoggerFoundation
 		if ($createUserHistory) {
 			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
 		}
+
+		self::userUnlock($hash);
 	}
 }

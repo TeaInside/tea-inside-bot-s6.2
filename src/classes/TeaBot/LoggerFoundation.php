@@ -72,6 +72,13 @@ abstract class LoggerFoundation
 	 */
 	public static function fileResolve(string $telegramFileId): ?int
 	{
+		$pdo = DB::pdo();
+		$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :telegram_file_id LIMIT 1;");
+		$st->execute([":telegram_file_id" => $telegramFileId]);
+		if ($r = $st->fetch(PDO::FETCH_NUM)) {
+			return (int)$r[0];
+		}
+
 		$o = json_decode(Exe::getFile(["file_id" => $telegramFileId])["out"], true);
 		if (isset($o["result"]["file_path"])) {
 
@@ -127,12 +134,15 @@ abstract class LoggerFoundation
 			// Calculate file checksum.
 			$sha1_hash = sha1_file($tmpFile, true);
 			$md5_hash = md5_file($tmpFile, true);
-			$absolute_hash = $sha1_hash.$md5_hash;
 
 			// Check whether there is the same file in storage by matching its absolute hash.
-			$pdo = DB::pdo();
-			$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
-			$st->execute([":absolute_hash" => $absolute_hash]);
+			$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `md5_sum` = :md5_sum AND `sha1_sum` = :sha1_sum LIMIT 1;");
+			$st->execute(
+				[
+					":md5_sum" => $md5_hash,
+					":sha1_sum" => $sha1_hash,
+				]
+			);
 			if ($r = $st->fetch(PDO::FETCH_NUM)) {
 				// Increase hit counter.
 				$pdo->prepare("UPDATE `files` SET `telegram_file_id` = :telegram_file_id, `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
@@ -157,13 +167,12 @@ abstract class LoggerFoundation
 			rename($tmpFile, $targetFile);
 
 			// Insert metadata to database.
-			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `absolute_hash`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :absolute_hash, :file_type, :extension, :size, :hit_count, :created_at);")
+			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :file_type, :extension, :size, :hit_count, :created_at);")
 				->execute(
 					[
 						":telegram_file_id" => $telegramFileId,
 						":md5_sum" => $md5_hash,
 						":sha1_sum" => $sha1_hash,
-						":absolute_hash" => $absolute_hash,
 						":file_type" => "photo",
 						":extension" => $ext,
 						":size" => filesize($targetFile),
@@ -177,7 +186,6 @@ abstract class LoggerFoundation
 		// Couldn't get the file_path (Error from Telegram API)
 		return null;
 	}
-
 
 	/**
 	 * @param mixed $parData Must be accessible as array.

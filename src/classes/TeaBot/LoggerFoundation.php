@@ -253,7 +253,8 @@ abstract class LoggerFoundation
 			$o = Exe::getUserProfilePhotos(
 				[
 					"user_id" => $parData["user_id"],
-					"offset" => 0
+					"offset" => 0,
+					"limit" => 1
 				]
 			);
 			var_dump($o);

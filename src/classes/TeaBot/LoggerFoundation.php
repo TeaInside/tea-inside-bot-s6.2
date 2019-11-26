@@ -41,7 +41,7 @@ abstract class LoggerFoundation
 	/**
 	 * @return void
 	 */
-	abstract public function saveUserInfo(): void;
+	abstract public function userLogger(): void;
 
 	/**
 	 * @param string $groupId

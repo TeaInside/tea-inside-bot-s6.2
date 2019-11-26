@@ -37,7 +37,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		 *
 		 * 1 means group logger
 		 */
-		$this->userLogger(1);
+		$this->userLogger($this->data, 1);
 	}
 
 	/**

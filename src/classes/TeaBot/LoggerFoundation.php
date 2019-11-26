@@ -178,8 +178,10 @@ abstract class LoggerFoundation
 		return null;
 	}
 
+
 	/**
-	 * @param int $logType
+	 * @param array $parData
+	 * @param int	$logType
 	 * @return void
 	 *
 	 *
@@ -188,14 +190,14 @@ abstract class LoggerFoundation
 	 * 1 = Group log.
 	 * 2 = Private log.
 	 */
-	public function userLogger($logType = 0): void
+	public function userLogger(array $parData, $logType = 0): void
 	{
 		$createUserHistory = false;
 		$data = [
-			":user_id" => $this->data["user_id"],
-			":username" => $this->data["username"],
-			":first_name" => $this->data["first_name"],
-			":last_name" => $this->data["last_name"],
+			":user_id" => $parData["user_id"],
+			":username" => $parData["username"],
+			":first_name" => $parData["first_name"],
+			":last_name" => $parData["last_name"],
 			":photo" => null,
 			":created_at" => date("Y-m-d H:i:s")
 		];
@@ -204,7 +206,7 @@ abstract class LoggerFoundation
 		 * Retrieve user data from database.
 		 */
 		$st = $this->pdo->prepare("SELECT `id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
-		$st->execute([":user_id" => $this->data["user_id"]]);
+		$st->execute([":user_id" => $parData["user_id"]]);
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 
@@ -227,16 +229,16 @@ abstract class LoggerFoundation
 			}
 
 			// Check whether there is a change on user info.
-			if (($this->data["username"] !== $r["username"]) ||
-				($this->data["first_name"] !== $r["first_name"]) ||
-				($this->data["last_name"] !== $r["last_name"])) {
+			if (($parData["username"] !== $r["username"]) ||
+				($parData["first_name"] !== $r["first_name"]) ||
+				($parData["last_name"] !== $r["last_name"])) {
 
 				// Create user history if there is a change on user info.
 				$createUserHistory = true;
 
-				$exeData[":username"] = $this->data["username"];
-				$exeData[":first_name"] = $this->data["first_name"];
-				$exeData[":last_name"] = $this->data["last_name"];
+				$exeData[":username"] = $parData["username"];
+				$exeData[":first_name"] = $parData["first_name"];
+				$exeData[":last_name"] = $parData["last_name"];
 
 				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name {$additionalQuery} WHERE `id` = :id LIMIT 1;")
 				->execute($exeData);
@@ -251,7 +253,7 @@ abstract class LoggerFoundation
 			/**
 			 * User has not been stored in database.
 			 */
-			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
+			$data[":is_bot"] = ($parData["is_bot"] ? '1' : '0');
 
 			if ($logType == 1) {
 				$u = 1;
@@ -267,7 +269,6 @@ abstract class LoggerFoundation
 			unset($data[":is_bot"]);
 			$createHistory = true;
 		}
-
 
 		if ($createHistory) {
 			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);

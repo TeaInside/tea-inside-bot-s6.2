@@ -96,6 +96,15 @@ final class Response
 						$r[0]
 					);
 
+					Exe::sendMessage(
+						[
+							"chat_id" => $this->data["chat_id"],
+							"reply_to_message_id" => $this->data["msg_id"],
+							"text" => $reply,
+							"parse_mode" => "HTML"
+						]
+					);
+
 					LoggerFoundation::userLogger(
 						[
 							"user_id" => $v["id"],
@@ -105,15 +114,6 @@ final class Response
 							"is_bot" => $v["is_bot"]
 						],
 						0
-					);
-
-					Exe::sendMessage(
-						[
-							"chat_id" => $this->data["chat_id"],
-							"reply_to_message_id" => $this->data["msg_id"],
-							"text" => $reply,
-							"parse_mode" => "HTML"
-						]
 					);
 				}
 			}

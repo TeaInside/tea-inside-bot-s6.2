@@ -250,7 +250,12 @@ abstract class LoggerFoundation
 
 		} else {
 
-			$o = Exe::getUserProfilePhotos(["user_id" => $parData["user_id"]]);
+			$o = Exe::getUserProfilePhotos(
+				[
+					"user_id" => $parData["user_id"],
+					"offset" => 0
+				]
+			);
 			var_dump($o);
 
 			/**

@@ -101,7 +101,8 @@ final class Response
 							"user_id" => $v["id"],
 							"username" => ($v["username"] ?? null),
 							"first_name" => $v["first_name"],
-							"last_name" => ($v["last_name"] ?? null)
+							"last_name" => ($v["last_name"] ?? null),
+							"is_bot" => $v["is_bot"]
 						],
 						0
 					);

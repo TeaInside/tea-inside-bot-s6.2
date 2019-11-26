@@ -235,7 +235,7 @@ abstract class LoggerFoundation
 		$hash = sha1($parData["user_id"]);
 		$t = 0;
 		while (self::f_is_locked("user", $hash)) {
-			if ($t === 30) {
+			if ($t >= 30) {
 				self::funlock("user", $hash);
 				break;
 			}

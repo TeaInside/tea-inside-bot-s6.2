@@ -76,9 +76,9 @@ final class Response
 		$st = $pdo->prepare("SELECT `welcome_msg` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
 		$st->execute([":group_id" => $this->data["chat_id"]]);
 		if ($r = $st->fetch(PDO::FETCH_NUM)) {
-			if ($r) {
+			if ($r[0]) {
 				foreach ($this->data["new_chat_members"] as $v) {
-					$r = str_replace(
+					$reply = str_replace(
 						[
 							"{{userlink}}",
 							"{{first_name}}",
@@ -91,20 +91,21 @@ final class Response
 							$v["last_name"] ?? "",
 							$this->data->in["message"]["chat"]["title"]
 						],
-						$r
+						$r[0]
 					);
 
 					Exe::sendMessage(
 						[
 							"chat_id" => $this->data["chat_id"],
 							"reply_to_message_id" => $this->data["msg_id"],
-							"text" => $r,
+							"text" => $reply,
 							"parse_mode" => "HTML"
 						]
 					);
 				}
 			}
 		}
+		var_dump($r);
 	}
 }
 

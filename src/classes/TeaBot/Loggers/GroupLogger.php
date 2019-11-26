@@ -151,6 +151,26 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logText(): void
 	{
+		$this->pdo
+			->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, NULL, :is_edited, :tmsg_datetime, :created_at);")
+			->execute(
+				[
+					":group_id" => $this->data["chat_id"],
+					":user_id" => $this->data["user_id"],
+					":tmsg_id" => $this->data["msg_id"],
+					":reply_to_tmsg_id" => (
+						isset($this->data["reply"]) ? $this->data["reply"]["message_id"] : null
+					),
+					":msg_type" => "text",
+					":text" => $this->data["text"],
+					":text_entities" => (
+						isset($this->data["entities"]) ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
+					),
+					":is_edited" => '0',
+					":tmsg_datetime" => date("Y-m-d H:i:s", $this->data["date"]),
+					":created_at" => date("Y-m-d H:i:s")
+				]
+			);
 	}
 
 	/**
@@ -158,6 +178,28 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function logPhoto(): void
 	{
+		$photo = end($this->data["photo"]);
+		$fileId = static::fileResolve($photo["file_id"], true);
+		$this->pdo->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")
+			->execute(
+				[
+					":group_id" => $this->data["chat_id"],
+					":user_id" => $this->data["user_id"],
+					":tmsg_id" => $this->data["msg_id"],
+					":reply_to_tmsg_id" => (
+						isset($this->data["reply"]) ? $this->data["reply"]["message_id"] : null
+					),
+					":msg_type" => "photo",
+					":text" => $this->data["text"],
+					":text_entities" => (
+						isset($this->data["entities"]) ? json_encode($this->data["entities"], JSON_UNESCAPED_SLASHES) : null
+					),
+					":file" => $fileId,
+					":is_edited" => '0',
+					":tmsg_datetime" => date("Y-m-d H:i:s", $this->data["date"]),
+					":created_at" => date("Y-m-d H:i:s")
+				]
+			);
 	}
 
 	/**

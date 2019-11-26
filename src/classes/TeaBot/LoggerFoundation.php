@@ -74,14 +74,19 @@ abstract class LoggerFoundation
 
 	/**
 	 * @param string $telegramFileId
+	 * @param bool   $increaseHitCounter
 	 * @return ?int
 	 */
-	public static function fileResolve(string $telegramFileId): ?int
+	public static function fileResolve(string $telegramFileId, bool $increaseHitCounter = false): ?int
 	{
 		$pdo = DB::pdo();
 		$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :telegram_file_id LIMIT 1;");
 		$st->execute([":telegram_file_id" => $telegramFileId]);
 		if ($r = $st->fetch(PDO::FETCH_NUM)) {
+			if ($increaseHitCounter) {
+				$fileId = $ret = (int)$r[0];
+				goto increase_hit_counter;
+			}
 			return (int)$r[0];
 		}
 
@@ -162,6 +167,11 @@ abstract class LoggerFoundation
 				// Delete temporary file.
 				unlink($tmpFile);
 
+				if ($increaseHitCounter) {
+					$fileId = $ret = (int)$r[0];
+					goto increase_hit_counter;
+				}
+
 				return (int)$r[0];
 			}
 
@@ -173,7 +183,7 @@ abstract class LoggerFoundation
 			rename($tmpFile, $targetFile);
 
 			// Insert metadata to database.
-			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :file_type, :extension, :size, :hit_count, :created_at);")
+			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :file_type, :extension, :size, 1, :created_at);")
 				->execute(
 					[
 						":telegram_file_id" => $telegramFileId,
@@ -182,7 +192,6 @@ abstract class LoggerFoundation
 						":file_type" => "photo",
 						":extension" => $ext,
 						":size" => filesize($targetFile),
-						":hit_count" => 1,
 						":created_at" => date("Y-m-d H:i:s")
 					]
 				);
@@ -191,6 +200,15 @@ abstract class LoggerFoundation
 
 		// Couldn't get the file_path (Error from Telegram API)
 		return null;
+
+		increase_hit_counter:
+		$pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
+					[
+						":id" => $fileId,
+						":updated_at" => date("Y-m-d H:i:s")
+					]
+				);
+		return $ret;
 	}
 
 	/**

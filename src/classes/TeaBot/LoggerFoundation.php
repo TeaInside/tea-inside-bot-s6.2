@@ -353,8 +353,10 @@ abstract class LoggerFoundation
 				->execute($exeData);
 
 			} else {
-				$additionalQuery[0] = " ";
-				$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);
+				if (!$noMsgLog) {
+					$additionalQuery[0] = " ";
+					$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);	
+				}
 			}
 
 		} else {

@@ -79,7 +79,7 @@ final class Logger
 		delete_lock_file:
 		// If error or exception is thrown, the program may not delete the lock file.
 		if ($logger instanceof GroupLogger) {
-			LoggerFoundation::groupUnlock($logger->groupHash);
+			LoggerFoundation::funlock("group", $logger->groupHash);
 		}
 		throw $e;
 	}

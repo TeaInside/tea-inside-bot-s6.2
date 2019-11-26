@@ -27,10 +27,10 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	public function run(): void
 	{
 		$this->groupHash = sha1($this->data["group_id"]);
-		while (static::groupIsLocked($this->groupHash)) {
+		while (static::f_is_locked("group", $this->groupHash)) {
 			sleep(2);
 		}
-		static::groupLock($this->groupHash);
+		static::flock("group", $this->groupHash);
 
 		/**
 		 * @see TeaBot\LoggerFoundation
@@ -59,6 +59,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function __destruct()
 	{
-		static::groupUnlock($this->groupHash);
+		static::funlock($this->groupHash);
 	}
 }

@@ -151,6 +151,7 @@ fwrite($handle, "
 ");
 	fwrite($handle, "const lang_entry {$lang}_lang_entry[] = {\n");
 	foreach ($langData as $k => $data) {
+		$data = str_replace("\n", "\\n", $data);
 		fwrite($handle, "\tADD_LE(\"{$k}\", \"{$data}\"),\n");
 	}
 	fwrite($handle, "};\n");

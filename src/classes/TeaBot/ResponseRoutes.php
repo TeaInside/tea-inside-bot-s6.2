@@ -83,7 +83,7 @@ trait ResponseRoutes
 		 */
 		if (preg_match("/^(?:\/|\!|\~|\.)?(?:tipsen)(?:\s+)(\S+?)(?:\s+)(.+?)$/is", $this->data["text"], $m)) {
 			$m[2] = str_replace("\n", " ", $m[2]);
-			if ($this->stExec(Response\Amikom\Mahasiswa::class, "tipsen", [$m[1], $m[2]])) {
+			if ($this->stExec(Responses\Amikom\Mahasiswa::class, "tipsen", [$m[1], $m[2]])) {
 				return true;
 			}
 		}

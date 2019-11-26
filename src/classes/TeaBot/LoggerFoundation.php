@@ -223,17 +223,40 @@ abstract class LoggerFoundation
 			 */
 			$exeData = [":id" => (int)$r["id"]];
 
+			$noMsgLog = false;
 			if ($logType == 1) {
-				$r["group_msg_count"] = ((int)$r["group_msg_count"] + 1);
+				$cc = $r["group_msg_count"] = ((int)$r["group_msg_count"] + 1);
 				$exeData[":group_msg_count"] = $r["group_msg_count"];
 				$additionalQuery = ", `group_msg_count` = :group_msg_count";
 			} else if ($logType == 2) {
-				$r["private_msg_count"] = ((int)$r["private_msg_count"] + 1);
+				$cc = $r["private_msg_count"] = ((int)$r["private_msg_count"] + 1);
 				$exeData[":private_msg_count"] = $r["private_msg_count"];
 				$additionalQuery = ", `private_msg_count` = :private_msg_count";
 			} else {
 				$noMsgLog = true;
 				$additionalQuery = "";
+			}
+
+			if ((!$noMsgLog) && (($cc % 5) == 0)) {
+				$exeData[":photo"] = null;
+				$additionalQuery .= ", `photo` = :photo";
+				$o = Exe::getUserProfilePhotos(
+					[
+						"user_id" => $parData["user_id"],
+						"offset" => 0,
+						"limit" => 1
+					]
+				);
+				$json = json_decode($o["out"], true);
+				if (isset($json["result"]["photos"][0])) {
+					$c = count($json["result"]["photos"][0]);
+					if ($c) {
+						$p = $json["result"]["photos"][0][$c - 1];
+						if (isset($p["file_id"])) {
+							$exeData[":photo"] = self::fileResolve($p["file_id"]);
+						}
+					}
+				}
 			}
 
 			// Check whether there is a change on user info.
@@ -265,14 +288,13 @@ abstract class LoggerFoundation
 					"limit" => 1
 				]
 			);
-
 			$json = json_decode($o["out"], true);
 			if (isset($json["result"]["photos"][0])) {
 				$c = count($json["result"]["photos"][0]);
 				if ($c) {
 					$p = $json["result"]["photos"][0][$c - 1];
 					if (isset($p["file_id"])) {
-						$data[":photo"] = $this->fileResolve($p["file_id"]);
+						$data[":photo"] = self::fileResolve($p["file_id"]);
 					}
 				}
 			}

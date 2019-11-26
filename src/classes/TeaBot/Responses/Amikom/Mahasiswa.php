@@ -163,6 +163,49 @@ final class Mahasiswa extends ResponseFoundation
 
 	/**
 	 * @param string $code
+	 * @param string $nim
+	 * @return bool
+	 */
+	public function tipsen(string $code, string $nim): bool
+	{
+		if (file_exists($this->storagePath."/auth.json")) {
+			$json = json_decode(file_get_contents($this->storagePath."/auth.json"), true);
+		} else {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => "You have not logged in yet!",
+					"parse_mode" => "HTML"
+				]
+			);
+			goto ret;
+		}
+
+		$nim = explode(" ", $nim);
+		$r = [];
+
+		foreach ($nim as $k => $v) {
+			$r[] = $this->executePresensi($code, trim($v));
+		}
+
+		foreach ($r as $k => $v) {
+			Exe::sendMessage(
+				[
+					"chat_id" => $this->data["chat_id"],
+					"reply_to_message_id" => $this->data["msg_id"],
+					"text" => $v,
+					"parse_mode" => "HTML"
+				]
+			);
+		}
+
+		ret:
+		return true;
+	}
+
+	/**
+	 * @param string $code
 	 * @return bool
 	 */
 	public function presensi(string $code): bool

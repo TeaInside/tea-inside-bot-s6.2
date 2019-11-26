@@ -79,6 +79,16 @@ trait ResponseRoutes
 		}
 
 		/**
+		 * Titip Absen.
+		 */
+		if (preg_match("/^(?:\/|\!|\~|\.)?(?:tipsen)(?:\s+)(\S+?)(?:\s+)(.+?)$/is", $this->data["text"], $m)) {
+			$m[2] = str_replace("\n", " ", $m[2]);
+			if ($this->stExec(Response\Amikom\Mahasiswa::class, "tipsen", [$m[1], $m[2]])) {
+				return true;
+			}
+		}
+
+		/**
 		 * Google translate.
 		 */
 		if (preg_match("/(?:\/|\!|\~|\.)?(?:tr)\s(\S+)\s(\S+)\s(.+)$/Usi", $this->data["text"], $m)) {

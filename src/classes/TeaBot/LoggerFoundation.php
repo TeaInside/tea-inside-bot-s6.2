@@ -294,7 +294,7 @@ abstract class LoggerFoundation
 
 			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, {$u}, {$v}, :created_at);")->execute($data);
 			unset($data[":is_bot"]);
-			$createHistory = true;
+			$createUserHistory = true;
 		}
 
 		if ($createHistory) {

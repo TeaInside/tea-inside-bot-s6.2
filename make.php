@@ -89,8 +89,8 @@ function build(bool $noExit = false): void
 	if ($forceBuild) {
 		sh("make clean");
 	}
-	sh("make");
-	sh("ln -svf ".escapeshellarg($buildExtDir."/modules/teabot.so")." ".escapeshellarg($libDir));
+	sh("make 2>&1");
+	sh("ln -svf ".escapeshellarg($buildExtDir."/modules/teabot.so")." ".escapeshellarg($libDir)." 2>&1");
 
 	chdir($cwd);
 

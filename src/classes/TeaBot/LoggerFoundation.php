@@ -257,7 +257,17 @@ abstract class LoggerFoundation
 					"limit" => 1
 				]
 			);
-			var_dump($o);
+
+			$json = json_decode($o["out"], true);
+			if (isset($json["result"]["photos"][0])) {
+				$c = count($json["result"]["photos"][0]);
+				if ($c) {
+					$p = $json["result"]["photos"][0][$c - 1];
+					if (isset($p["file_id"])) {
+						$data[":photo"] = $this->fileResolve($p["file_id"]);
+					}
+				}
+			}
 
 			/**
 			 * User has not been stored in database.

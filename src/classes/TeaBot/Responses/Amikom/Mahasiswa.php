@@ -113,6 +113,56 @@ final class Mahasiswa extends ResponseFoundation
 
 	/**
 	 * @param string $code
+	 * @param string $nim
+	 * @return string
+	 */
+	public function executePresensi(string $code, string $nim): string
+	{
+		$data = json_encode(["data" => "{$code};{$nim}"]);
+		$o = $this->curl(
+			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
+			[
+				CURLOPT_POST => true,
+				CURLOPT_POSTFIELDS => $data,
+				CURLOPT_HTTPHEADER => [
+					"Content-Type: application/json",
+					"Connection" => "Keep-Alive",
+					"Accept-Encoding" => "gzip"
+				],
+				CURLOPT_USERAGENT => "okhttp/3.10.0",
+				CURLOPT_CONNECTTIMEOUT => 15,
+				CURLOPT_TIMEOUT => 30
+			]
+		);
+		$out = json_decode($o->out, true);
+
+		$gagal = false;
+		if (isset($out["message"])) {
+			if ($out["message"] === "Resource already exists") {
+				$r = "<b>Presensi duplikat!</b>";
+			} else if ($out["message"] === "Created") {
+				$r = "<b>Presensi Sukses!</b>";
+			} else {
+				$gagal = true;
+			}
+		} else {
+			$gagal = true;
+		}
+
+		if ($gagal) {
+			$r = "<b>Presensi Gagal!</b>";
+		}
+
+		$r = "{$r}\n\n".
+			"<b>Request Body:</b>\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
+			"</pre>\n\n<b>Response Body:</b>\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
+			"</pre>";
+
+		return $r;
+	}
+
+	/**
+	 * @param string $code
 	 * @return bool
 	 */
 	public function presensi(string $code): bool
@@ -131,28 +181,7 @@ final class Mahasiswa extends ResponseFoundation
 			goto ret;
 		}
 
-		$data = json_encode(["data" => "{$code};{$json["nim"]}"]);
-
-		$o = $this->curl(
-			"http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
-			[
-				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => $data,
-				CURLOPT_HTTPHEADER => [
-					"Content-Type: application/json",
-					"Connection" => "Keep-Alive",
-					"Accept-Encoding" => "gzip"
-				],
-				CURLOPT_USERAGENT => "okhttp/3.10.0",
-				CURLOPT_CONNECTTIMEOUT => 15,
-				CURLOPT_TIMEOUT => 30
-			]
-		);
-		$out = json_decode($o->out, true);
-
-		$r = "<b>Request Body:</b>\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
-			"</pre>\n\n<b>Response Body:</b>\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
-			"</pre>";
+		$r = $this->executePresensi($code, $json["nim"]);
 
 		Exe::sendMessage(
 			[
@@ -162,22 +191,6 @@ final class Mahasiswa extends ResponseFoundation
 				"parse_mode" => "HTML"
 			]
 		);
-
-		if (isset($out["message"]) && ($out["message"] === "Created")) {
-			$r = "<b>Presensi Sukses!</b>";
-		} else {
-			$r = "<b>Presensi Gagal!</b>";
-		}
-
-		Exe::sendMessage(
-			[
-				"chat_id" => $this->data["chat_id"],
-				"reply_to_message_id" => $this->data["msg_id"],
-				"text" => $r,
-				"parse_mode" => "HTML"
-			]
-		);
-
 
 		ret:
 		return true;

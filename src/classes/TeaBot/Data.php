@@ -48,6 +48,7 @@ final class Data implements ArrayAccess
 			$this->container["chat_id"]	= &$this->in["message"]["chat"]["id"];
 			$this->container["msg_id"]	= &$this->in["message"]["message_id"];
 			$this->container["msg_type"] = "new_chat_member";
+			$this->data["new_chat_members"] = $this->in["message"]["new_chat_members"];
 		}
 	}
 

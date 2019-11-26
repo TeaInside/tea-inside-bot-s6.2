@@ -250,6 +250,9 @@ abstract class LoggerFoundation
 
 		} else {
 
+			$o = Exe::getUserProfilePhotos(["user_id" => $data["user_id"]]);
+			var_dump($o);
+
 			/**
 			 * User has not been stored in database.
 			 */

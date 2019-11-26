@@ -45,6 +45,7 @@ abstract class LoggerFoundation
 	 */
 	public static function flock(string $type, string $hash): void
 	{
+		is_dir("/tmp/telegram_lock") or mkdir("/tmp/telegram_lock");
 		is_dir("/tmp/telegram_lock/{$type}") or mkdir("/tmp/telegram_lock/{$type}");
 		file_put_contents("/tmp/telegram_lock/{$type}/{$hash}", time());
 	}

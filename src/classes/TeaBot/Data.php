@@ -44,6 +44,8 @@ final class Data implements ArrayAccess
 			$this->container["text"]  	 = &$this->in["message"]["text"];
 			$this->container["msg_type"] = "text";
 			$this->buildGeneralMessage();
+		} else {
+			var_dump($data);
 		}
 	}
 

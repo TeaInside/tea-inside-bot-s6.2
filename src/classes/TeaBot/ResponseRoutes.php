@@ -25,6 +25,15 @@ trait ResponseRoutes
 		}
 
 		/**
+		 * Help command.
+		 */
+		if (preg_match("/^(\/|\!|\~|\.)help$/Usi", $this->data["text"])) {
+			if ($this->stExec(Responses\Help::class, "help")) {
+				return true;
+			}
+		}
+
+		/**
 		 * Qur'an command.
 		 */
 		if (preg_match("/^(?:\/|\!|\~|\.)(?:quran )(\d{1,3}):(\d{1,3})$/Usi", $this->data["text"], $m)) {

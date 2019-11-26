@@ -13,7 +13,6 @@ CREATE TABLE `files` (
   `telegram_file_id` varchar(255) CHARACTER SET latin1 NOT NULL,
   `md5_sum` binary(16) NOT NULL,
   `sha1_sum` binary(20) NOT NULL,
-  `absolute_hash` binary(36) NOT NULL,
   `file_type` varchar(32) CHARACTER SET latin1 NOT NULL DEFAULT 'unknown',
   `extension` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
   `size` bigint(20) unsigned DEFAULT NULL,
@@ -22,7 +21,6 @@ CREATE TABLE `files` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `absolute_hash` (`absolute_hash`),
   KEY `telegram_file_id` (`telegram_file_id`),
   KEY `md5_sum` (`md5_sum`),
   KEY `sha1_sum` (`sha1_sum`),
@@ -186,4 +184,4 @@ CREATE TABLE `users_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 
--- 2019-09-14 16:33:51
+-- 2019-11-26 12:54:04

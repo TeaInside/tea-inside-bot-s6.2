@@ -39,11 +39,6 @@ abstract class LoggerFoundation
 	abstract public function run(): void;
 
 	/**
-	 * @return void
-	 */
-	abstract public function userLogger(): void;
-
-	/**
 	 * @param string $groupId
 	 * @return void
 	 */
@@ -181,5 +176,101 @@ abstract class LoggerFoundation
 
 		// Couldn't get the file_path (Error from Telegram API)
 		return null;
+	}
+
+	/**
+	 * @param int $logType
+	 * @return void
+	 *
+	 *
+	 * $logType description
+	 * 0 = No message log.
+	 * 1 = Group log.
+	 * 2 = Private log.
+	 */
+	public function userLogger($logType = 0): void
+	{
+		$createUserHistory = false;
+		$data = [
+			":user_id" => $this->data["user_id"],
+			":username" => $this->data["username"],
+			":first_name" => $this->data["first_name"],
+			":last_name" => $this->data["last_name"],
+			":photo" => null,
+			":created_at" => date("Y-m-d H:i:s")
+		];
+
+		/**
+		 * Retrieve user data from database.
+		 */
+		$st = $this->pdo->prepare("SELECT `id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
+		$st->execute([":user_id" => $this->data["user_id"]]);
+
+		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+
+			/**
+			 * User has been recorded in database.
+			 */
+			$exeData = [":id" => (int)$r["id"]];
+
+			if ($logType == 1) {
+				$r["group_msg_count"] = ((int)$r["group_msg_count"] + 1);
+				$exeData[":group_msg_count"] = $r["group_msg_count"];
+				$additionalQuery = ", `group_msg_count` = :group_msg_count";
+			} else if ($logType == 2) {
+				$r["private_msg_count"] = ((int)$r["private_msg_count"] + 1);
+				$exeData[":private_msg_count"] = $r["private_msg_count"];
+				$additionalQuery = ", `private_msg_count` = :private_msg_count";
+			} else {
+				$noMsgLog = true;
+				$additionalQuery = "";
+			}
+
+			// Check whether there is a change on user info.
+			if (($this->data["username"] !== $r["username"]) ||
+				($this->data["first_name"] !== $r["first_name"]) ||
+				($this->data["last_name"] !== $r["last_name"])) {
+
+				// Create user history if there is a change on user info.
+				$createUserHistory = true;
+
+				$exeData[":username"] = $this->data["username"];
+				$exeData[":first_name"] = $this->data["first_name"];
+				$exeData[":last_name"] = $this->data["last_name"];
+
+				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name {$additionalQuery} WHERE `id` = :id LIMIT 1;")
+				->execute($exeData);
+
+			} else {
+				$additionalQuery[0] = " ";
+				$this->pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);
+			}
+
+		} else {
+
+			/**
+			 * User has not been stored in database.
+			 */
+			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
+
+			if ($logType == 1) {
+				$u = 1;
+				$v = 0;
+			} else if ($logType == 2) {
+				$u = 0;
+				$v = 1;
+			} else {
+				$u = $v = 0;
+			}
+
+			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, {$u}, {$v}, :created_at);")->execute($data);
+			unset($data[":is_bot"]);
+			$createHistory = true;
+		}
+
+
+		if ($createHistory) {
+			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
+		}
 	}
 }

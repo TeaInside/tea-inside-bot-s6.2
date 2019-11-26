@@ -107,7 +107,6 @@ final class Response
 				}
 			}
 		}
-		var_dump($r);
 	}
 }
 

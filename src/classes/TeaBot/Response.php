@@ -96,6 +96,16 @@ final class Response
 						$r[0]
 					);
 
+					LoggerFoundation::userLogger(
+						[
+							"user_id" => $v["id"],
+							"username" => ($v["username"] ?? null),
+							"first_name" => $v["first_name"],
+							"last_name" => ($v["last_name"] ?? null)
+						],
+						0
+					);
+
 					Exe::sendMessage(
 						[
 							"chat_id" => $this->data["chat_id"],

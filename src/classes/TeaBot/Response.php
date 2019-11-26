@@ -80,16 +80,18 @@ final class Response
 				foreach ($this->data["new_chat_members"] as $v) {
 					$reply = str_replace(
 						[
-							"{{userlink}}",
+							"{{user_link}}",
 							"{{first_name}}",
 							"{{last_name}}",
+							"{{full_name}}",
 							"{{group_name}}",
 						],
 						[
 							"tg://".$v["id"],
-							$v["first_name"],
-							$v["last_name"] ?? "",
-							$this->data->in["message"]["chat"]["title"]
+							htmlspecialchars($v["first_name"], ENT_QUOTES, "UTF-8"),
+							htmlspecialchars($v["last_name"] ?? "", ENT_QUOTES, "UTF-8"),
+							htmlspecialchars($v["first_name"].($v["last_name"]?" ".$v["last_name"] : ""), ENT_QUOTES, "UTF-8"),
+							htmlspecialchars($this->data->in["message"]["chat"]["title"], ENT_QUOTES, "UTF-8")
 						],
 						$r[0]
 					);

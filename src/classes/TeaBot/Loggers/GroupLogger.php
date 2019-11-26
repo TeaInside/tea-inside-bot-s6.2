@@ -59,6 +59,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function __destruct()
 	{
-		static::funlock($this->groupHash);
+		static::funlock("group", $this->groupHash);
 	}
 }

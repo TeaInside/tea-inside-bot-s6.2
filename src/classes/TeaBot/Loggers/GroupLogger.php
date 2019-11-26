@@ -104,6 +104,20 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	}
 
 	/**
+	 * @return void
+	 */
+	public function logText(): void
+	{
+	}
+
+	/**
+	 * @return void
+	 */
+	public function logPhoto(): void
+	{
+	}
+
+	/**
 	 * Destructor.
 	 */
 	public function __destruct()

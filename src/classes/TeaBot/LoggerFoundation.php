@@ -243,6 +243,25 @@ abstract class LoggerFoundation
 
 		self::flock("user", $hash);
 
+		$e = null;
+		try {
+			self::unsafeUserLogger($parData, $logType);	
+		} catch (Exception $e) {
+		} catch (Error $e) {
+		}
+
+		self::funlock("user", $hash);
+		if ($e) throw $e;
+	}
+
+	/**
+	 * @param mixed $parData Must be accessible as array.
+	 * @param int	$logType
+	 * @return void
+	 */
+	private static function unsafeUserLogger($parData, $logType = 0): void
+	{
+		$pdo = DB::pdo();
 		$createUserHistory = false;
 		$data = [
 			":user_id" => $parData["user_id"],
@@ -256,7 +275,7 @@ abstract class LoggerFoundation
 		/**
 		 * Retrieve user data from database.
 		 */
-		$st = $this->pdo->prepare("SELECT `id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
+		$st = $pdo->prepare("SELECT `id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
 		$st->execute([":user_id" => $parData["user_id"]]);
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
@@ -310,7 +329,7 @@ abstract class LoggerFoundation
 				$exeData[":first_name"] = $parData["first_name"];
 				$exeData[":last_name"] = $parData["last_name"];
 
-				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name {$additionalQuery} WHERE `id` = :id LIMIT 1;")
+				$pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name {$additionalQuery} WHERE `id` = :id LIMIT 1;")
 				->execute($exeData);
 
 			} else {
@@ -336,15 +355,13 @@ abstract class LoggerFoundation
 				$u = $v = 0;
 			}
 
-			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, {$u}, {$v}, :created_at);")->execute($data);
+			$pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, {$u}, {$v}, :created_at);")->execute($data);
 			unset($data[":is_bot"]);
 			$createUserHistory = true;
 		}
 
 		if ($createUserHistory) {
-			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
+			$pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
 		}
-
-		self::funlock("user", $hash);
 	}
 }

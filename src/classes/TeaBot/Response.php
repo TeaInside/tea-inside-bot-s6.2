@@ -87,7 +87,7 @@ final class Response
 							"{{group_name}}",
 						],
 						[
-							"tg://".$v["id"],
+							"tg://user?id=".$v["id"],
 							htmlspecialchars($v["first_name"], ENT_QUOTES, "UTF-8"),
 							htmlspecialchars($v["last_name"] ?? "", ENT_QUOTES, "UTF-8"),
 							htmlspecialchars($v["first_name"].($v["last_name"]?" ".$v["last_name"] : ""), ENT_QUOTES, "UTF-8"),

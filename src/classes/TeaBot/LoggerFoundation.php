@@ -297,7 +297,7 @@ abstract class LoggerFoundation
 			$createUserHistory = true;
 		}
 
-		if ($createHistory) {
+		if ($createUserHistory) {
 			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
 		}
 	}

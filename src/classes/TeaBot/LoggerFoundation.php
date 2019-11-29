@@ -359,7 +359,7 @@ abstract class LoggerFoundation
 			} else {
 				if (!$noMsgLog) {
 					$additionalQuery[0] = " ";
-					$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);	
+					$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);
 				}
 			}
 

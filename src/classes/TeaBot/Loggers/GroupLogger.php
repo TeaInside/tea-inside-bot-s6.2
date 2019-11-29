@@ -114,6 +114,11 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 				($this->data["group_username"] !== $r["username"]) ||
 				(isset($resolvedPhoto) && ($resolvedPhoto !== $r["photo"]))
 			) {
+
+				if (!isset($resolvedPhoto)) {
+					$resolvedPhoto = $this->groupPhotoResolve($r["photo"]);
+				}
+
 				$data[":photo"] = $resolvedPhoto;
 				$createHistory = true;
 				$this->pdo->prepare("UPDATE `groups` SET `username` = :username, `name` = :name, `photo` = :photo, `msg_count` = :msg_count, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(

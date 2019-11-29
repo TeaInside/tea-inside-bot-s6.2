@@ -63,6 +63,8 @@ final class TeaBot
 						"parse_mode" => "HTML"
 					]
 				);
+
+				throw $e;
 			}
 			exit(0);
 		}
@@ -92,6 +94,8 @@ final class TeaBot
 						"parse_mode" => "HTML"
 					]
 				);
+
+				throw $e;
 			}
 			exit(0);
 		}

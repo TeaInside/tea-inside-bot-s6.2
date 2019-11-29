@@ -26,41 +26,8 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function run(): void
 	{
-		/**
-		 * @see TeaBot\LoggerFoundation
-		 *
-		 * 1 means group logger
-		 */
-		$this->userLogger($this->data, 1);
-		$this->groupLogger();
-	}
-
-	/**
-	 * @return void
-	 */
-	private function groupLogger(): void
-	{
-		$this->groupHash = sha1($this->data["group_id"]);
-		$t = 0;
-		while (static::f_is_locked("group", $this->groupHash)) {
-			if ($t >= 30) {
-				self::funlock("group", $this->groupHash);
-				break;
-			}
-			sleep(1);
-			$t++;
-		}
-		static::flock("group", $this->groupHash);
-
-		$e = null;
-		try {
-			$this->unsafeGroupLogger();
-		} catch (Exception $e) {
-		} catch (Error $e) {
-		}
-
-		self::funlock("group", $this->groupHash);
-		if ($e) throw $e;
+		$this->saveGroupInfo();
+		$this->saveUserInfo();
 	}
 
 	/**
@@ -73,7 +40,7 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 		$currentFileId = $o["result"]["photo"]["big_file_id"] ?? null;
 
 		if (!is_null($photoId)) {
-			$st = $this->pdo->prepare("SELECT `telegram_file_id` FROM `files` WHERE `id` = :id LIMIT 1;");
+			$st = $this->pdo->prepare("SELECT `telegram_file_id`, `absolute_hash` FROM `files` WHERE `id` = :id LIMIT 1;");
 			$st->execute([":id" => $photoId]);
 			if (($r = $st->fetch(PDO::FETCH_ASSOC)) && ($r["telegram_file_id"] === $currentFileId)) {
 				return $photoId;
@@ -84,10 +51,24 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	}
 
 	/**
+	 * Destructor.
+	 */
+	public function __destruct()
+	{
+		static::groupUnlock($this->groupHash);
+	}
+
+	/**
 	 * @return void
 	 */
-	private function unsafeGroupLogger(): void
+	public function saveGroupInfo(): void
 	{
+		$this->groupHash = sha1($this->data["group_id"]);
+		while (static::groupIsLocked($this->groupHash)) {
+			sleep(2);
+		}
+		static::groupLock($this->groupHash);
+
 		$createHistory = false;
 		$st = $this->pdo->prepare("SELECT `name`, `username`, `link`, `photo`, `msg_count` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
 		$st->execute([":group_id" => $this->data["chat_id"]]);
@@ -102,11 +83,10 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 
 		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
 
-			$r["photo"] = (int)$r["photo"];
-
-			if (($r["msg_count"] % 5) === 0) {
-				$resolvedPhoto = $this->groupPhotoResolve($r["photo"]);
+			if (($r["msg_count"] % 4) === 0) {
+				$resolvedPhoto = $this->groupPhotoResolve($r['photo']);
 			}
+
 			$r["msg_count"]++;
 
 			if (
@@ -114,7 +94,6 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 				($this->data["group_username"] !== $r["username"]) ||
 				(isset($resolvedPhoto) && ($resolvedPhoto !== $r["photo"]))
 			) {
-				$data[":photo"] = $resolvedPhoto;
 				$createHistory = true;
 				$this->pdo->prepare("UPDATE `groups` SET `username` = :username, `name` = :name, `photo` = :photo, `msg_count` = :msg_count, `updated_at` = :updated_at WHERE `group_id` = :group_id LIMIT 1;")->execute(
 					[
@@ -143,6 +122,59 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 
 		if ($createHistory) {
 			$this->pdo->prepare("INSERT INTO `groups_history` (`group_id`, `name`, `username`, `link`, `photo`, `created_at`) VALUES (:group_id, :name, :username, :link, :photo, :created_at);")->execute($data);
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function saveUserInfo(): void
+	{
+		$createHistory = false;
+		$st = $this->pdo->prepare("SELECT `username`, `first_name`, `last_name`, `photo` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
+		$st->execute([":user_id" => $this->data["user_id"]]);
+		$data = [
+			":user_id" => $this->data["user_id"],
+			":username" => $this->data["username"],
+			":first_name" => $this->data["first_name"],
+			":last_name" => $this->data["last_name"],
+			":photo" => null,
+			":created_at" => date("Y-m-d H:i:s")
+		];
+
+		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+			if (
+				($this->data["username"] !== $r["username"]) ||
+				($this->data["first_name"] !== $r["first_name"]) ||
+				($this->data["last_name"] !== $r["last_name"])
+			) {
+				$createHistory = true;
+				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name, `group_msg_count` = `group_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+					[
+						":username" => $this->data["username"],
+						":first_name" => $this->data["first_name"],
+						":last_name" => $this->data["last_name"],
+						":updated_at" => $data[":created_at"],
+						":user_id" => $data[":user_id"]
+					]
+				);
+			} else {
+				$this->pdo->prepare("UPDATE `users` SET `group_msg_count` = `group_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
+					[
+						":updated_at" => $data[":created_at"],
+						":user_id" => $data[":user_id"]
+					]
+				);
+			}
+		} else {
+			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
+			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`, `updated_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, 1, 0, :created_at, NULL);")->execute($data);
+			unset($data[":is_bot"]);
+			$createHistory = true;
+		}
+
+		if ($createHistory) {
+			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
 		}
 	}
 
@@ -179,8 +211,28 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 	public function logPhoto(): void
 	{
 		$photo = end($this->data["photo"]);
-		$fileId = static::fileResolve($photo["file_id"], true);
-		$this->pdo->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")
+
+		// First, check whether file_id exists in database or not.
+		$st = $this->pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :file_id LIMIT 1;");
+		$st->execute([":file_id" => $photo["file_id"]]);
+		if ($r = $st->fetch(PDO::FETCH_NUM)) {
+			// Increase hit counter.
+			$this->pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
+					[
+						":id" => $r[0],
+						":updated_at" => date("Y-m-d H:i:s")
+					]
+				);
+
+			$fileId = $r[0];
+			goto save_message;
+		}
+
+		$fileId = static::fileResolve($photo["file_id"]);
+
+		save_message:
+		$this->pdo
+			->prepare("INSERT INTO `groups_messages` (`group_id`, `user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:group_id, :user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")
 			->execute(
 				[
 					":group_id" => $this->data["chat_id"],
@@ -200,13 +252,5 @@ final class GroupLogger extends LoggerFoundation implements LoggerInterface
 					":created_at" => date("Y-m-d H:i:s")
 				]
 			);
-	}
-
-	/**
-	 * Destructor.
-	 */
-	public function __destruct()
-	{
-		static::funlock("group", $this->groupHash);
 	}
 }

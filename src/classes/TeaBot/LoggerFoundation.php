@@ -4,6 +4,8 @@ namespace TeaBot;
 
 use DB;
 use PDO;
+use Error;
+use Exception;
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
@@ -39,44 +41,59 @@ abstract class LoggerFoundation
 	abstract public function run(): void;
 
 	/**
+	 * @param string $type
+	 * @param string $hash
 	 * @return void
 	 */
-	abstract public function saveUserInfo(): void;
-
-	/**
-	 * @param string $groupId
-	 * @return void
-	 */
-	public static function groupLock(string $groupId): void
+	public static function flock(string $type, string $hash): void
 	{
 		is_dir("/tmp/telegram_lock") or mkdir("/tmp/telegram_lock");
-		file_put_contents("/tmp/telegram_lock/{$groupId}", time());
+		is_dir("/tmp/telegram_lock/{$type}") or mkdir("/tmp/telegram_lock/{$type}");
+		file_put_contents("/tmp/telegram_lock/{$type}/{$hash}", time());
 	}
 
 	/**
-	 * @param string $groupId
+	 * @param string $type
+	 * @param string $hash
 	 * @return void
 	 */
-	public static function groupUnlock(string $groupId): void
+	public static function funlock(string $type, string $hash): void
 	{
-		@unlink("/tmp/telegram_lock/{$groupId}");
+		@unlink("/tmp/telegram_lock/{$type}/{$hash}");
 	}
 
 	/**
-	 * @param string $groupId
+	 * @param string $type
+	 * @param string $hash
 	 * @return bool
 	 */
-	public static function groupIsLocked(string $groupId): bool
+	public static function f_is_locked(string $type, string $hash): bool
 	{
-		return file_exists($groupId);
+		return file_exists("/tmp/telegram_lock/{$type}/{$hash}");
 	}
 
 	/**
 	 * @param string $telegramFileId
+	 * @param bool   $increaseHitCounter
 	 * @return ?int
 	 */
-	public static function fileResolve(string $telegramFileId): ?int
+	public static function fileResolve(?string $telegramFileId, bool $increaseHitCounter = false): ?int
 	{
+		if (is_null($telegramFileId)) {
+			return null;
+		}
+
+		$pdo = DB::pdo();
+		$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :telegram_file_id LIMIT 1;");
+		$st->execute([":telegram_file_id" => $telegramFileId]);
+		if ($r = $st->fetch(PDO::FETCH_NUM)) {
+			if ($increaseHitCounter) {
+				$fileId = $ret = (int)$r[0];
+				goto increase_hit_counter;
+			}
+			return (int)$r[0];
+		}
+
 		$o = json_decode(Exe::getFile(["file_id" => $telegramFileId])["out"], true);
 		if (isset($o["result"]["file_path"])) {
 
@@ -132,12 +149,15 @@ abstract class LoggerFoundation
 			// Calculate file checksum.
 			$sha1_hash = sha1_file($tmpFile, true);
 			$md5_hash = md5_file($tmpFile, true);
-			$absolute_hash = $sha1_hash.$md5_hash;
 
 			// Check whether there is the same file in storage by matching its absolute hash.
-			$pdo = DB::pdo();
-			$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `absolute_hash` = :absolute_hash LIMIT 1;");
-			$st->execute([":absolute_hash" => $absolute_hash]);
+			$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `md5_sum` = :md5_sum AND `sha1_sum` = :sha1_sum LIMIT 1;");
+			$st->execute(
+				[
+					":md5_sum" => $md5_hash,
+					":sha1_sum" => $sha1_hash,
+				]
+			);
 			if ($r = $st->fetch(PDO::FETCH_NUM)) {
 				// Increase hit counter.
 				$pdo->prepare("UPDATE `files` SET `telegram_file_id` = :telegram_file_id, `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
@@ -151,6 +171,11 @@ abstract class LoggerFoundation
 				// Delete temporary file.
 				unlink($tmpFile);
 
+				if ($increaseHitCounter) {
+					$fileId = $ret = (int)$r[0];
+					goto increase_hit_counter;
+				}
+
 				return (int)$r[0];
 			}
 
@@ -162,17 +187,15 @@ abstract class LoggerFoundation
 			rename($tmpFile, $targetFile);
 
 			// Insert metadata to database.
-			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `absolute_hash`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :absolute_hash, :file_type, :extension, :size, :hit_count, :created_at);")
+			$pdo->prepare("INSERT INTO `files` (`telegram_file_id`, `md5_sum`, `sha1_sum`, `file_type`, `extension`, `size`, `hit_count`, `created_at`) VALUES (:telegram_file_id, :md5_sum, :sha1_sum, :file_type, :extension, :size, 1, :created_at);")
 				->execute(
 					[
 						":telegram_file_id" => $telegramFileId,
 						":md5_sum" => $md5_hash,
 						":sha1_sum" => $sha1_hash,
-						":absolute_hash" => $absolute_hash,
 						":file_type" => "photo",
 						":extension" => $ext,
 						":size" => filesize($targetFile),
-						":hit_count" => 1,
 						":created_at" => date("Y-m-d H:i:s")
 					]
 				);
@@ -181,5 +204,190 @@ abstract class LoggerFoundation
 
 		// Couldn't get the file_path (Error from Telegram API)
 		return null;
+
+		increase_hit_counter:
+		$pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
+					[
+						":id" => $fileId,
+						":updated_at" => date("Y-m-d H:i:s")
+					]
+				);
+		return $ret;
+	}
+
+	/**
+	 * @param string $userId
+	 * @return ?int
+	 */
+	public static function getLatestUserPhoto(string $userId): ?int
+	{
+		$o = Exe::getUserProfilePhotos(
+			[
+				"user_id" => $userId,
+				"offset" => 0,
+				"limit" => 1
+			]
+		);
+		$json = json_decode($o["out"], true);
+		if (isset($json["result"]["photos"][0])) {
+			$c = count($json["result"]["photos"][0]);
+			if ($c) {
+				$p = $json["result"]["photos"][0][$c - 1];
+				if (isset($p["file_id"])) {
+					return self::fileResolve($p["file_id"]);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param mixed $parData Must be accessible as array.
+	 * @param int	$logType
+	 * @return void
+	 *
+	 *
+	 * $logType description
+	 * 0 = No message log.
+	 * 1 = Group log.
+	 * 2 = Private log.
+	 */
+	public function userLogger($parData, $logType = 0): void
+	{
+		$hash = sha1($parData["user_id"]);
+		$t = 0;
+		while (self::f_is_locked("user", $hash)) {
+			if ($t >= 30) {
+				self::funlock("user", $hash);
+				break;
+			}
+			sleep(1);
+			$t++;
+		}
+
+		self::flock("user", $hash);
+
+		$e = null;
+		try {
+			self::unsafeUserLogger($parData, $logType);	
+		} catch (Exception $e) {
+		} catch (Error $e) {
+		}
+
+		self::funlock("user", $hash);
+		if ($e) throw $e;
+	}
+
+	/**
+	 * @param mixed $parData Must be accessible as array.
+	 * @param int	$logType
+	 * @return void
+	 */
+	private static function unsafeUserLogger($parData, $logType = 0): void
+	{
+		$pdo = DB::pdo();
+		$createUserHistory = false;
+		$data = [
+			":user_id" => $parData["user_id"],
+			":username" => $parData["username"],
+			":first_name" => $parData["first_name"],
+			":last_name" => $parData["last_name"],
+			":photo" => null,
+			":created_at" => date("Y-m-d H:i:s")
+		];
+
+		/**
+		 * Retrieve user data from database.
+		 */
+		$st = $pdo->prepare("SELECT `id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
+		$st->execute([":user_id" => $parData["user_id"]]);
+
+		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
+
+			/**
+			 * User has been recorded in database.
+			 */
+			$exeData = [":id" => (int)$r["id"]];
+
+			$noMsgLog = false;
+			if ($logType == 1) {
+				$cc = $r["group_msg_count"] = ((int)$r["group_msg_count"] + 1);
+				$exeData[":group_msg_count"] = $r["group_msg_count"];
+				$additionalQuery = ", `group_msg_count` = :group_msg_count";
+			} else if ($logType == 2) {
+				$cc = $r["private_msg_count"] = ((int)$r["private_msg_count"] + 1);
+				$exeData[":private_msg_count"] = $r["private_msg_count"];
+				$additionalQuery = ", `private_msg_count` = :private_msg_count";
+			} else {
+				$noMsgLog = true;
+				$additionalQuery = "";
+			}
+
+			$photoChange = $gotAdditonalPhoto = false;
+			if ((!$noMsgLog) && (($cc % 5) == 0)) {
+				$gotAdditonalPhoto = true;
+				$exeData[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
+				$additionalQuery .= ", `photo` = :photo";
+				if ($exeData[":photo"] != $r["photo"]) {
+					$photoChange = true;
+				}
+			}
+
+			// Check whether there is a change on user info.
+			if ($photoChange ||
+				($parData["username"] !== $r["username"]) ||
+				($parData["first_name"] !== $r["first_name"]) ||
+				($parData["last_name"] !== $r["last_name"])) {
+
+				if (!$gotAdditonalPhoto) {
+					$exeData[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
+					$additionalQuery .= ", `photo` = :photo";
+				}
+
+				$data[":photo"] = $exeData[":photo"];
+
+				// Create user history if there is a change on user info.
+				$createUserHistory = true;
+
+				$exeData[":username"] = $parData["username"];
+				$exeData[":first_name"] = $parData["first_name"];
+				$exeData[":last_name"] = $parData["last_name"];
+
+				$pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name {$additionalQuery} WHERE `id` = :id LIMIT 1;")
+				->execute($exeData);
+
+			} else {
+				if (!$noMsgLog) {
+					$additionalQuery[0] = " ";
+					$pdo->prepare("UPDATE `users` SET {$additionalQuery} WHERE `id` = :id LIMIT 1;")->execute($exeData);	
+				}
+			}
+
+		} else {
+
+			/**
+			 * User has not been stored in database.
+			 */
+			$data[":is_bot"] = ($parData["is_bot"] ? '1' : '0');
+			$data[":photo"] = self::getLatestUserPhoto($parData["user_id"]);
+
+			if ($logType == 1) {
+				$u = 1;
+				$v = 0;
+			} else if ($logType == 2) {
+				$u = 0;
+				$v = 1;
+			} else {
+				$u = $v = 0;
+			}
+
+			$pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, {$u}, {$v}, :created_at);")->execute($data);
+			unset($data[":is_bot"]);
+			$createUserHistory = true;
+		}
+
+		if ($createUserHistory) {
+			$pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
+		}
 	}
 }

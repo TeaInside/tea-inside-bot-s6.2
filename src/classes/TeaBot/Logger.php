@@ -54,33 +54,18 @@ final class Logger
 	 */
 	private function execLogger(LoggerFoundation $logger): void
 	{
-		try {
-			$logger->run();
-			switch ($this->data["msg_type"]) {
-				case "text":
-					$logger->logText();
-				break;
+		$logger->run();
+		switch ($this->data["msg_type"]) {
+			case "text":
+				$logger->logText();
+			break;
 
-				case "photo":
-					$logger->logPhoto();
-				break;
+			case "photo":
+				$logger->logPhoto();
+			break;
 
-				default:
-				break;
-			}	
-		} catch (Exception $e) {
-			goto delete_lock_file;
-		} catch (Error $e) {
-			goto delete_lock_file;
+			default:
+			break;
 		}
-
-		return;
-
-		delete_lock_file:
-		// If error or exception is thrown, the program may not delete the lock file.
-		if ($logger instanceof GroupLogger) {
-			LoggerFoundation::groupUnlock($logger->groupHash);
-		}
-		throw $e;
 	}
 }

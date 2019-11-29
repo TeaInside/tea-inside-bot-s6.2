@@ -5,4 +5,6 @@
 const lang_entry en_lang_entry[] = {
 	ADD_LE("start.group", "This command can only be used in private."),
 	ADD_LE("start.private", "Send /help to show the command list."),
+	ADD_LE("help.group", "This command can only be used in private."),
+	ADD_LE("help.private", "<b>Available Commands:</b>\n\n<code>/c001 [math expression in latex]</code> Calculate math expression.\n\n<code>/c002 [math expression in latex]</code> Calculate math expression with image output.\n\n<code>/tr [from lang code] [to lang code] [text]</code> Translate text (google translate).\n"),
 };

@@ -21,60 +21,12 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 	 */
 	public function run(): void
 	{
-		$this->saveUserInfo();
-	}
-
-	/**
-	 * @return void
-	 */
-	public function saveUserInfo(): void
-	{
-		$createHistory = false;
-		$st = $this->pdo->prepare("SELECT `username`, `first_name`, `last_name`, `photo` FROM `users` WHERE `user_id` = :user_id LIMIT 1;");
-		$st->execute([":user_id" => $this->data["user_id"]]);
-		$data = [
-			":user_id" => $this->data["user_id"],
-			":username" => $this->data["username"],
-			":first_name" => $this->data["first_name"],
-			":last_name" => $this->data["last_name"],
-			":photo" => null,
-			":created_at" => date("Y-m-d H:i:s")
-		];
-
-		if ($r = $st->fetch(PDO::FETCH_ASSOC)) {
-			if (
-				($this->data["username"] !== $r["username"]) ||
-				($this->data["first_name"] !== $r["first_name"]) ||
-				($this->data["last_name"] !== $r["last_name"])
-			) {
-				$createHistory = true;
-				$this->pdo->prepare("UPDATE `users` SET `username` = :username, `first_name` = :first_name, `last_name` = :last_name, `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
-					[
-						":username" => $this->data["username"],
-						":first_name" => $this->data["first_name"],
-						":last_name" => $this->data["last_name"],
-						":updated_at" => $data[":created_at"],
-						":user_id" => $data[":user_id"]
-					]
-				);
-			} else {
-				$this->pdo->prepare("UPDATE `users` SET `private_msg_count` = `private_msg_count` + 1, `updated_at` = :updated_at WHERE `user_id` = :user_id LIMIT 1;")->execute(
-					[
-						":updated_at" => $data[":created_at"],
-						":user_id" => $data[":user_id"]
-					]
-				);
-			}
-		} else {
-			$data[":is_bot"] = ($this->data["is_bot"] ? '1' : '0');
-			$this->pdo->prepare("INSERT INTO `users` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `is_bot`, `group_msg_count`, `private_msg_count`, `created_at`, `updated_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :is_bot, 0, 1, :created_at, NULL);")->execute($data);
-			unset($data[":is_bot"]);
-			$createHistory = true;
-		}
-
-		if ($createHistory) {
-			$this->pdo->prepare("INSERT INTO `users_history` (`user_id`, `username`, `first_name`, `last_name`, `photo`, `created_at`) VALUES (:user_id, :username, :first_name, :last_name, :photo, :created_at);")->execute($data);
-		}
+		/**
+		 * @see TeaBot\LoggerFoundation
+		 *
+		 * 1 means private logger
+		 */
+		$this->userLogger($this->data, 2);
 	}
 
 	/**
@@ -109,26 +61,7 @@ final class PrivateLogger extends LoggerFoundation implements LoggerInterface
 	public function logPhoto(): void
 	{
 		$photo = end($this->data["photo"]);
-
-		// First, check whether file_id exists in database or not.
-		$st = $this->pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :file_id LIMIT 1;");
-		$st->execute([":file_id" => $photo["file_id"]]);
-		if ($r = $st->fetch(PDO::FETCH_NUM)) {
-			// Increase hit counter.
-			$this->pdo->prepare("UPDATE `files` SET `hit_count` = `hit_count` + 1, `updated_at` = :updated_at WHERE `id` = :id LIMIT 1;")->execute(
-					[
-						":id" => $r[0],
-						":updated_at" => date("Y-m-d H:i:s")
-					]
-				);
-
-			$fileId = $r[0];
-			goto save_message;
-		}
-
-		$fileId = static::fileResolve($photo["file_id"]);
-
-		save_message:
+		$fileId = static::fileResolve($photo["file_id"], true);
 		$this->pdo
 			->prepare("INSERT INTO `private_messages` (`user_id`, `tmsg_id`, `reply_to_tmsg_id`, `msg_type`, `text`, `text_entities`, `file`, `is_edited`, `tmsg_datetime`, `created_at`) VALUES (:user_id, :tmsg_id, :reply_to_tmsg_id, :msg_type, :text, :text_entities, :file, :is_edited, :tmsg_datetime, :created_at);")
 			->execute(

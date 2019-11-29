@@ -2,6 +2,7 @@
 
 namespace TeaBot;
 
+use Error;
 use Exception;
 
 /**
@@ -39,15 +40,63 @@ final class TeaBot
 	{
 		if (!($resPid = pcntl_fork())) {
 			cli_set_process_title("response");
-			$st = new Response($this->data);
-			$st->run();
+			try {
+				$st = new Response($this->data);
+				$st->run();	
+			} catch (Error $e) {
+
+				$err = $e->__toString();
+				$errHash = sha1($err);
+
+				Exe::sendMessage(
+					[
+						"chat_id" => -1001128970273,
+						"text" => "[Error res {$errHash}]\n{$err}",
+						"parse_mode" => "HTML"
+					]
+				);
+
+				Exe::sendMessage(
+					[
+						"chat_id" => -1001128970273,
+						"text" => "[Rb {$errHash}]\n".json_encode($this->data->in, JSON_UNESCAPED_SLASHES),
+						"parse_mode" => "HTML"
+					]
+				);
+
+				throw $e;
+			}
 			exit(0);
 		}
 
 		if (!($logPid = pcntl_fork())) {
 			cli_set_process_title("logger");
-			$st = new Logger($this->data);
-			$st->run();
+			try {
+				$st = new Logger($this->data);
+				$st->run();
+			} catch (Error $e) {
+
+				$err = $e->__toString();
+				$errHash = sha1($err);
+
+				Exe::sendMessage(
+					[
+						"chat_id" => -1001128970273,
+						"text" => "[Error log {$errHash}]\n{$err}",
+						"parse_mode" => "HTML"
+					]
+				);
+
+				Exe::sendMessage(
+					[
+						"chat_id" => -1001128970273,
+						"text" => "[Rb {$errHash}]\n".json_encode($this->data->in, JSON_UNESCAPED_SLASHES),
+						"parse_mode" => "HTML"
+					]
+				);
+
+				throw $e;
+			}
 			exit(0);
 		}
 

@@ -51,7 +51,6 @@ final class Calculus extends ResponseFoundation
 	 */
 	public function c001(string $expr): bool
 	{
-		$expr = null;
 		$res = $this->execute($expr);
 		if (isset($res["solutions"][0]["entire_result"])) {
 			if ($res["solutions"][0]["entire_result"][0] === "=") {

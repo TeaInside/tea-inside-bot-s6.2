@@ -77,8 +77,12 @@ abstract class LoggerFoundation
 	 * @param bool   $increaseHitCounter
 	 * @return ?int
 	 */
-	public static function fileResolve(string $telegramFileId, bool $increaseHitCounter = false): ?int
+	public static function fileResolve(?string $telegramFileId, bool $increaseHitCounter = false): ?int
 	{
+		if (is_null($telegramFileId)) {
+			return null;
+		}
+
 		$pdo = DB::pdo();
 		$st = $pdo->prepare("SELECT `id` FROM `files` WHERE `telegram_file_id` = :telegram_file_id LIMIT 1;");
 		$st->execute([":telegram_file_id" => $telegramFileId]);

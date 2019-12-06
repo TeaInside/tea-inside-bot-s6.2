@@ -1,7 +1,7 @@
 <?php
 
 if (file_exists(__DIR__."/webhook.php") && (filemtime(__DIR__."/webhook.php") > filemtime(__FILE__))) {
-	exit(0);
+    exit(0);
 }
 
 $phpBinary = PHP_BINARY;

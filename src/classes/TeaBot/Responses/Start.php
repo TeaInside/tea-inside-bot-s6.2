@@ -14,28 +14,28 @@ use TeaBot\ResponseFoundation;
  */
 final class Start extends ResponseFoundation
 {
-	/**
-	 * @return bool
-	 */
-	public function start(): bool
-	{
-		if ($this->data["chat_type"] === "private") {
-			Exe::sendMessage(
-				[
-					"text" => Lang::get("start.private"),
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"]
-				]
-			);
-		} else {			
-			$o = Exe::sendMessage(
-				[
-					"text" => Lang::get("start.group"),
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"]
-				]
-			);
-		}
-		return true;
-	}
+    /**
+     * @return bool
+     */
+    public function start(): bool
+    {
+        if ($this->data["chat_type"] === "private") {
+            Exe::sendMessage(
+                [
+                    "text" => Lang::get("start.private"),
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"]
+                ]
+            );
+        } else {            
+            $o = Exe::sendMessage(
+                [
+                    "text" => Lang::get("start.group"),
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"]
+                ]
+            );
+        }
+        return true;
+    }
 }

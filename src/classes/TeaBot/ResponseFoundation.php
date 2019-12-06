@@ -12,18 +12,18 @@ use Exception;
  */
 abstract class ResponseFoundation
 {
-	/**
-	 * @var \TeaBot\Data
-	 */
-	protected $data;
+    /**
+     * @var \TeaBot\Data
+     */
+    protected $data;
 
-	/**
-	 * @param \TeaBot\Data &$data
-	 *
-	 * Constructor.
-	 */
-	public function __construct(Data &$data)
-	{
-		$this->data = &$data;
-	}
+    /**
+     * @param \TeaBot\Data &$data
+     *
+     * Constructor.
+     */
+    public function __construct(Data &$data)
+    {
+        $this->data = &$data;
+    }
 }

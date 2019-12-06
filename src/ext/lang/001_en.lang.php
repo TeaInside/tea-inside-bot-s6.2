@@ -3,9 +3,9 @@
 $lang = "en";
 $targetFile = __DIR__."/{$lang}.h";
 $langData = [
-	"start.group" => "This command can only be used in private.",
-	"start.private" => "Send /help to show the command list.",
-	"help.group" => "This command can only be used in private.",
+    "start.group" => "This command can only be used in private.",
+    "start.private" => "Send /help to show the command list.",
+    "help.group" => "This command can only be used in private.",
 
 "help.private" => <<<HELP_PRIVATE
 <b>Available Commands:</b>

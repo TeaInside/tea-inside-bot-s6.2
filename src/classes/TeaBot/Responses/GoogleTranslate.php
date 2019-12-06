@@ -16,34 +16,34 @@ use TeaBot\Plugins\GoogleTranslate\GoogleTranslate as GoogleTranslateBase;
  */
 final class GoogleTranslate extends ResponseFoundation
 {
-	/**
-	 * @param string $source
-	 * @param string $to
-	 * @param string $text
-	 * @return bool
-	 */
-	public function translate(string $source, string $to, string $text): bool
-	{
-		try {
-			$text = str_replace("\n", "#aaa#", $text);
-			$st = new GoogleTranslateBase($source, $to, $text);
-			$res = str_replace("# aaa #", "\n", $st->execute());
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"text" => $res,
-					"reply_to_message_id" => $this->data["msg_id"],
-				]
-			);
-		} catch (Exception $e) {
-			Exe::sendMessage(
-				[
-					"chat_id" => $this->data["chat_id"],
-					"text" => $e->__toString(),
-					"reply_to_message_id" => $this->data["msg_id"],
-				]
-			);
-		}
-		return true;
-	}
+    /**
+     * @param string $source
+     * @param string $to
+     * @param string $text
+     * @return bool
+     */
+    public function translate(string $source, string $to, string $text): bool
+    {
+        try {
+            $text = str_replace("\n", "#aaa#", $text);
+            $st = new GoogleTranslateBase($source, $to, $text);
+            $res = str_replace("# aaa #", "\n", $st->execute());
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "text" => $res,
+                    "reply_to_message_id" => $this->data["msg_id"],
+                ]
+            );
+        } catch (Exception $e) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "text" => $e->__toString(),
+                    "reply_to_message_id" => $this->data["msg_id"],
+                ]
+            );
+        }
+        return true;
+    }
 }

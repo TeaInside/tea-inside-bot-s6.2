@@ -14,22 +14,22 @@ use TeaBot\ResponseFoundation;
  */
 final class Debug extends ResponseFoundation
 {
-	/**
-	 * @return bool
-	 */
-	public function debug(): bool
-	{
-		$debugData = json_encode($this->data->in, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    /**
+     * @return bool
+     */
+    public function debug(): bool
+    {
+        $debugData = json_encode($this->data->in, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-		Exe::sendMessage(
-			[
-				"chat_id" => $this->data["chat_id"],
-				"reply_to_message_id" => $this->data["msg_id"],
-				"text" => "<pre>".htmlspecialchars($debugData)."</pre>",
-				"parse_mode" => "HTML"
-			]
-		);
+        Exe::sendMessage(
+            [
+                "chat_id" => $this->data["chat_id"],
+                "reply_to_message_id" => $this->data["msg_id"],
+                "text" => "<pre>".htmlspecialchars($debugData)."</pre>",
+                "parse_mode" => "HTML"
+            ]
+        );
 
-		return true;
-	}
+        return true;
+    }
 }

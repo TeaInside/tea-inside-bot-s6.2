@@ -12,15 +12,15 @@ $cwd = getcwd();
 $forceBuild = array_search("-f", $argv) !== false;
 
 if (isset($argv[1])) {
-	switch ($argv[1]) {
-		case "release":
-			$releaseMode = true;
-		break;
-		
-		case "clean":
-			cleanBuiltData();
-		break;
-	}
+    switch ($argv[1]) {
+        case "release":
+            $releaseMode = true;
+        break;
+        
+        case "clean":
+            cleanBuiltData();
+        break;
+    }
 }
 
 build();
@@ -30,82 +30,82 @@ build();
  */
 function build(bool $noExit = false): void
 {
-	global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
+    global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
 
-	// Build webhook endpoint.
-	sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_webhook.php"));
+    // Build webhook endpoint.
+    sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_webhook.php"));
 
-	// Make lib dir.
-	is_dir($libDir) or mkdir($libDir);
+    // Make lib dir.
+    is_dir($libDir) or mkdir($libDir);
 
-	/**
-	 * Build extension.
-	 */
-	$buildExtDir = $buildDir."/ext";
-	if (!is_dir($buildDir)) {
-		mmlog("Create build directory: %s", $buildDir);
-		mkdir($buildDir, 0755);
-	}
-	if (!is_dir($buildExtDir)) {
-		mmlog("Create ext build directory: %s", $buildExtDir);
-		mkdir($buildExtDir, 0755);
-	}
+    /**
+     * Build extension.
+     */
+    $buildExtDir = $buildDir."/ext";
+    if (!is_dir($buildDir)) {
+        mmlog("Create build directory: %s", $buildDir);
+        mkdir($buildDir, 0755);
+    }
+    if (!is_dir($buildExtDir)) {
+        mmlog("Create ext build directory: %s", $buildExtDir);
+        mkdir($buildExtDir, 0755);
+    }
 
-	/**
-	 * Build languages.
-	 */
-	recursiveCallbackScanDir($extDir, function (string $dir, string $file) {
-		if (preg_match("/^.+\.lang\.php$/S", $file)) {
-			langFragBuilder($dir."/".$file);
-		}
-	});
+    /**
+     * Build languages.
+     */
+    recursiveCallbackScanDir($extDir, function (string $dir, string $file) {
+        if (preg_match("/^.+\.lang\.php$/S", $file)) {
+            langFragBuilder($dir."/".$file);
+        }
+    });
 
-	// Scan ext directory.
-	recursiveCallbackScanDir($extDir, function (string $dir, string $file) use ($extDir, $buildExtDir) {
-		$baseD = explode($extDir, $dir, 2);
-		if (isset($baseD[1])) {
-			
-			$targetDir = $buildExtDir."/".ltrim($baseD[1], "/");
-			if (!is_dir($targetDir)) {
-				mmlog("Create ext build directory: %s", $targetDir);
-				mkdir($targetDir, 0755);
-			}
+    // Scan ext directory.
+    recursiveCallbackScanDir($extDir, function (string $dir, string $file) use ($extDir, $buildExtDir) {
+        $baseD = explode($extDir, $dir, 2);
+        if (isset($baseD[1])) {
+            
+            $targetDir = $buildExtDir."/".ltrim($baseD[1], "/");
+            if (!is_dir($targetDir)) {
+                mmlog("Create ext build directory: %s", $targetDir);
+                mkdir($targetDir, 0755);
+            }
 
-			$sourceFile = $dir."/".$file;
-			$targetFile = rtrim($targetDir, "/")."/".$file;
+            $sourceFile = $dir."/".$file;
+            $targetFile = rtrim($targetDir, "/")."/".$file;
 
-			if ((!file_exists($targetFile)) || (filemtime($sourceFile) > filemtime($targetFile))) {
-				sh("cp -vf ".escapeshellarg($sourceFile)." ".escapeshellarg($targetFile));
-			}
-		}
-	});
+            if ((!file_exists($targetFile)) || (filemtime($sourceFile) > filemtime($targetFile))) {
+                sh("cp -vf ".escapeshellarg($sourceFile)." ".escapeshellarg($targetFile));
+            }
+        }
+    });
 
-	chdir($buildExtDir);
-	if (!file_exists("configure.lock")) {
-		sh("phpize");
-		sh("./configure");
-		file_put_contents($buildExtDir."/configure.lock", time());
-	}
-	if ($forceBuild) {
-		sh("make clean");
-	}
-	sh("make 2>&1");
-	sh("ln -svf ".escapeshellarg($buildExtDir."/modules/teabot.so")." ".escapeshellarg($libDir)." 2>&1");
+    chdir($buildExtDir);
+    if (!file_exists("configure.lock")) {
+        sh("phpize");
+        sh("./configure");
+        file_put_contents($buildExtDir."/configure.lock", time());
+    }
+    if ($forceBuild) {
+        sh("make clean");
+    }
+    sh("make 2>&1");
+    sh("ln -svf ".escapeshellarg($buildExtDir."/modules/teabot.so")." ".escapeshellarg($libDir)." 2>&1");
 
-	chdir($cwd);
+    chdir($cwd);
 
-	/**
-	 * Build config.
-	 */
-	recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
-		if (preg_match("/^.+\.frag\.php$/S", $file)) {
-			sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg($dir."/".$file));
-		}
-	});
+    /**
+     * Build config.
+     */
+    recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
+        if (preg_match("/^.+\.frag\.php$/S", $file)) {
+            sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg($dir."/".$file));
+        }
+    });
 
-	if (!$noExit) {
-		exit(0);
-	}
+    if (!$noExit) {
+        exit(0);
+    }
 }
 
 /**
@@ -113,21 +113,21 @@ function build(bool $noExit = false): void
  */
 function cleanBuiltData(): void
 {
-	global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
+    global $extDir, $buildDir, $releaseMode, $forceBuild, $libDir, $cwd, $configDir;
 
-	sh("rm -rfv build");
-	recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
-		if (($file !== ".gitignore") && (!preg_match("/^.+\.frag\.php$/S", $file))) {
-			print "Deleting {$file}...";
-			if (unlink($dir."/".$file)) {
-				print "OK!";
-			} else {
-				print "Error!";
-			}
-			print "\n";
-		}
-	});
-	exit(0);
+    sh("rm -rfv build");
+    recursiveCallbackScanDir($configDir, function (string $dir, string $file) {
+        if (($file !== ".gitignore") && (!preg_match("/^.+\.frag\.php$/S", $file))) {
+            print "Deleting {$file}...";
+            if (unlink($dir."/".$file)) {
+                print "OK!";
+            } else {
+                print "Error!";
+            }
+            print "\n";
+        }
+    });
+    exit(0);
 }
 
 /**
@@ -136,24 +136,24 @@ function cleanBuiltData(): void
  */
 function langFragBuilder(string $sourceFile): void
 {
-	require $sourceFile;
+    require $sourceFile;
 
-	if (file_exists($targetFile) && (filemtime($sourceFile) < filemtime($targetFile))) {
-		return;
-	}
+    if (file_exists($targetFile) && (filemtime($sourceFile) < filemtime($targetFile))) {
+        return;
+    }
 
-	print "Executing {$sourceFile}...\n";
-	$handle = fopen($targetFile, "w");
+    print "Executing {$sourceFile}...\n";
+    $handle = fopen($targetFile, "w");
 fwrite($handle, "
 /**
  * This file was generated by langFragBuilder() from source file: ".basename($sourceFile)."
  */
 ");
-	fwrite($handle, "const lang_entry {$lang}_lang_entry[] = {\n");
-	foreach ($langData as $k => $data) {
-		$data = str_replace("\n", "\\n", $data);
-		fwrite($handle, "\tADD_LE(\"{$k}\", \"{$data}\"),\n");
-	}
-	fwrite($handle, "};\n");
-	fclose($handle);
+    fwrite($handle, "const lang_entry {$lang}_lang_entry[] = {\n");
+    foreach ($langData as $k => $data) {
+        $data = str_replace("\n", "\\n", $data);
+        fwrite($handle, "    ADD_LE(\"{$k}\", \"{$data}\"),\n");
+    }
+    fwrite($handle, "};\n");
+    fclose($handle);
 }

@@ -10,15 +10,15 @@ namespace TeaBot\Contracts;
  */
 interface LoggerInterface
 {
-	/**
-	 * @param string
-	 * @return void
-	 */
-	public function logText(): void;
+    /**
+     * @param string
+     * @return void
+     */
+    public function logText(): void;
 
-	/**
-	 * @param string
-	 * @return void
-	 */
-	public function logPhoto(): void;
+    /**
+     * @param string
+     * @return void
+     */
+    public function logPhoto(): void;
 }

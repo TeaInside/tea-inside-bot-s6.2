@@ -15,57 +15,57 @@ use TeaBot\Loggers\PrivateLogger;
  */
 final class Logger
 {
-	/**
-	 * @var \TeaBot\Data
-	 */
-	private $data;
+    /**
+     * @var \TeaBot\Data
+     */
+    private $data;
 
-	/**
-	 * @param \TeaBot\Data &$data
-	 *
-	 * Constructor.
-	 */
-	public function __construct(Data &$data)
-	{
-		$this->data = &$data;
-	}
+    /**
+     * @param \TeaBot\Data &$data
+     *
+     * Constructor.
+     */
+    public function __construct(Data &$data)
+    {
+        $this->data = &$data;
+    }
 
-	/**
-	 * @return void
-	 */
-	public function run(): void
-	{
-		if ($this->data["event_type"] === Data::GENERAL_MSG) {
-			if ($this->data["chat_type"] === "group") {
-				$logger = new GroupLogger($this->data);
-			} else if ($this->data["chat_type"] === "private") {
-				$logger = new PrivateLogger($this->data);
-			}
+    /**
+     * @return void
+     */
+    public function run(): void
+    {
+        if ($this->data["event_type"] === Data::GENERAL_MSG) {
+            if ($this->data["chat_type"] === "group") {
+                $logger = new GroupLogger($this->data);
+            } else if ($this->data["chat_type"] === "private") {
+                $logger = new PrivateLogger($this->data);
+            }
 
-			if (isset($logger)) {
-				$this->execLogger($logger);
-			}
-		}
-	}
+            if (isset($logger)) {
+                $this->execLogger($logger);
+            }
+        }
+    }
 
-	/**
-	 * @param \TeaBot\LoggerFoundation $logger
-	 * @return void
-	 */
-	private function execLogger(LoggerFoundation $logger): void
-	{
-		$logger->run();
-		switch ($this->data["msg_type"]) {
-			case "text":
-				$logger->logText();
-			break;
+    /**
+     * @param \TeaBot\LoggerFoundation $logger
+     * @return void
+     */
+    private function execLogger(LoggerFoundation $logger): void
+    {
+        $logger->run();
+        switch ($this->data["msg_type"]) {
+            case "text":
+                $logger->logText();
+            break;
 
-			case "photo":
-				$logger->logPhoto();
-			break;
+            case "photo":
+                $logger->logPhoto();
+            break;
 
-			default:
-			break;
-		}
-	}
+            default:
+            break;
+        }
+    }
 }

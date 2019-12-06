@@ -14,21 +14,21 @@ use TeaBot\ResponseFoundation;
  */
 final class Help extends ResponseFoundation
 {
-	/**
-	 * @return bool
-	 */
-	public function help(): bool
-	{
-		if ($this->data["chat_type"] === "private") {
-			Exe::sendMessage(
-				[
-					"text" => Lang::get("help.private"),
-					"chat_id" => $this->data["chat_id"],
-					"reply_to_message_id" => $this->data["msg_id"],
-					"parse_mode" => "HTML"
-				]
-			);
-		}
-		return true;
-	}
+    /**
+     * @return bool
+     */
+    public function help(): bool
+    {
+        if ($this->data["chat_type"] === "private") {
+            Exe::sendMessage(
+                [
+                    "text" => Lang::get("help.private"),
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "parse_mode" => "HTML"
+                ]
+            );
+        }
+        return true;
+    }
 }

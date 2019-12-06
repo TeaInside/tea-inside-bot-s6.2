@@ -134,7 +134,7 @@ final class CaptchaHandler
                     ]
                 );
                 shell_exec("/usr/bin/kill -9 {$cdata["pid"]}");
-                unlink($captchaFile);
+                unlink($fdc);
             } else {
                 Exe::sendMessage(
                     [

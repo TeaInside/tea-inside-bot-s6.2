@@ -75,7 +75,7 @@ final class CaptchaHandler
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
                     "caption" => $msg,
-                    "photo" => $photo,
+                    "photo" => $cdata["photo"],
                     "parse_mode" => "HTML"
                 ]
             );

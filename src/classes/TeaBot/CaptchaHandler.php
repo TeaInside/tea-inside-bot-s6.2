@@ -85,11 +85,12 @@ final class CaptchaHandler
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
                 sleep($cdata["timeout"]);
                 Exe::kickChatMember(
-                    [
+                    $x = [
                         "chat_id" => $this->data["chat_id"],
                         "user_id" => $v["id"]
                     ]
                 );
+                Exe::unbanChatMember($x);
                 Exe::sendMessage(
                     [
                         "chat_id" => $this->data["chat_id"],

@@ -2,7 +2,6 @@
 
 if (isset($checkAnswer)) {
     if (isset($extra, $answer) && is_string($extra) && is_string($answer)) {
-        $extra = intr_decrypt($extra, WEB_APP_KEY);
         function factorial($number)
         { 
             $factorial = 1; 

@@ -15,8 +15,8 @@ switch (rand(0, 0)) {
         $p = ["-", "+"];
         $arr[1] = $p[rand(0, 1)].$arr[1];
         $arr[2] = $p[rand(0, 1)].$arr[2];
-        // $latex = "\\lim_{x \\to 0} \\frac{".implode("", $arr)."}{x}";
-        $latex = '\lim_{x \to 0} \frac{\sin(x)+x-2x}{x}';
+        $latex = "\\lim_{x \\to 0} \\frac{".implode("", $arr)."}{x}";
+        // $latex = '\lim_{x \to 0} \frac{\sin(x)+x-2x}{x}';
         $photo = "https://api.teainside.org/latex_x.php?d=300&exp=".urlencode($latex);
         break;
     

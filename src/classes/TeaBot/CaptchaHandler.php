@@ -60,6 +60,7 @@ final class CaptchaHandler
             $n = rand(1, 1);
             $cdata = self::reqIsolate(BASEPATH."/src/captcha/calculus/calculus_".sprintf("%04d.php", $n));
             $cdata["n"] = $n;
+            $cdata["type"] = "calculus";
             $name = htmlspecialchars(
                 $v["first_name"].(isset($v["last_name"]) ? " ".$v["last_name"] : ""),
                 ENT_QUOTES,
@@ -81,6 +82,7 @@ final class CaptchaHandler
             );
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
+                cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
                 sleep($cdata["timeout"]);
                 Exe::kickChatMember(
                     [
@@ -88,11 +90,10 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
-
                 Exe::sendMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
-                        "text" => $mention." has been kicked from the group due to failed to answer the captcha",
+                        "text" => $mention." has been kicked from the group due to failed to answer the captcha.",
                         "parse_mode" => "HTML"
                     ]
                 );

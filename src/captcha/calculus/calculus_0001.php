@@ -29,5 +29,5 @@ return [
     "timeout" => 30,
     "extra" => $extra,
     "msg" => $msg,
-    "photo" => $photo
+    "photo" => $photo,
 ];

@@ -98,6 +98,7 @@ final class CaptchaHandler
                         "parse_mode" => "HTML"
                     ]
                 );
+                unlink($this->captchaDir."/".$v["id"]);
                 exit;
             }
             $cdata["pid"] = $pid;
@@ -111,6 +112,46 @@ final class CaptchaHandler
      */
     private static function reqIsolate(string $file)
     {
+        return require $file;
+    }
+
+    /**
+     * @param \TeaBot\Data $data
+     * @return bool
+     */
+    public static function handleIncomingMessage(Data $data): bool
+    {
+        $fdc = "/tmp/telegram/captcha_handler/{$data["chat_id"]}/{$data["user_id"]}";
+        if (file_exists($fdc)) {
+            $cdata = json_decode(file_get_contents($fdc), true);
+            $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
+            if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $data["chat_id"],
+                        "text" => "Captcha passed, you have answered the captcha correctly. Welcome to the group!",
+                        "reply_to_message_id" => $data["msg_id"]
+                    ]
+                );
+                shell_exec("/usr/bin/kill -9 {$cdata["pid"]}");
+                unlink($captchaFile);
+            } else {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $data["chat_id"],
+                        "text" => "Wrong answer!",
+                        "reply_to_message_id" => $data["msg_id"]
+                    ]
+                );
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static function checkAnswer(string $file, $answer = null, $extra = null): bool
+    {
+        $checkAnswer = true;
         return require $file;
     }
 }

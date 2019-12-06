@@ -10,6 +10,7 @@ if (isset($checkAnswer)) {
             } 
             return $factorial; 
         }
+        var_dump($extra, $answer);
         return factorial((int)$extra) === (int)trim($answer);
     }
 

@@ -84,7 +84,7 @@ final class CaptchaHandler
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
                 sleep($cdata["timeout"]);
-                Exe::kickChatMember(
+                $o = Exe::kickChatMember(
                     $x = [
                         "chat_id" => $this->data["chat_id"],
                         "user_id" => $v["id"]
@@ -94,7 +94,7 @@ final class CaptchaHandler
                 Exe::sendMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
-                        "text" => $mention." has been kicked from the group due to failed to answer the captcha.",
+                        "text" => $mention." has been kicked from the group due to failed to answer the captcha.\n\n{$o["out"]}",
                         "parse_mode" => "HTML"
                     ]
                 );

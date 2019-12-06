@@ -69,7 +69,7 @@ final class CaptchaHandler
             if (isset($v["username"])) {
                 $mention .= " (@".$v["username"].")";
             }
-            $cdata["msg"] = $mention.", ".$cdata["msg"];
+            $cdata["msg"] = $mention."\n".$cdata["msg"];
             Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
@@ -92,7 +92,8 @@ final class CaptchaHandler
                 Exe::sendMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
-                        "text" => $mention." has been kicked from the group due to failed to answer the captcha"
+                        "text" => $mention." has been kicked from the group due to failed to answer the captcha",
+                        "parse_mode" => "HTML"
                     ]
                 );
                 exit;

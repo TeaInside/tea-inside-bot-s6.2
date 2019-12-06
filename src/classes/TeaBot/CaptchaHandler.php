@@ -102,7 +102,12 @@ final class CaptchaHandler
                 exit;
             }
             $cdata["pid"] = $pid;
-            file_put_contents($this->captchaDir."/".$v["id"], json_encode($cdata, JSON_UNESCAPED_SLASHES));
+            if (file_exists($fdc = $this->captchaDir."/".$v["id"])) {
+                $ccdata = json_decode(file_get_contents($fdc), true);
+                shell_exec("/usr/bin/kill -9 {$ccdata["pid"]}");
+                unlink($fdc);
+            }
+            file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
         }
     }
 

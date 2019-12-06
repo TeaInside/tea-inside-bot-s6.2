@@ -69,12 +69,12 @@ final class CaptchaHandler
             if (isset($v["username"])) {
                 $mention .= " (@".$v["username"].")";
             }
-            $v["msg"] = $mention.", ".$v["msg"];
+            $cdata["msg"] = $mention.", ".$cdata["msg"];
             Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "caption" => $v["msg"],
+                    "caption" => $cdata["msg"],
                     "photo" => $cdata["photo"],
                     "parse_mode" => "HTML"
                 ]

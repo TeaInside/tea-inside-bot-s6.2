@@ -24,7 +24,7 @@ switch (rand(0, 0)) {
         break;
 }
 
-$ch = curl_init("https://api.teainside.org/teacalc2.php?key=8e7eaa2822cf3bf77a03d63d2fbdeb36df0a409f&expr=".urlencode($extra));
+$ch = curl_init("https://api.teainside.org/teacalc2.php?key=8e7eaa2822cf3bf77a03d63d2fbdeb36df0a409f&expr=".urlencode($latex));
 curl_setopt_array($ch,
     [
         CURLOPT_RETURNTRANSFER => true,

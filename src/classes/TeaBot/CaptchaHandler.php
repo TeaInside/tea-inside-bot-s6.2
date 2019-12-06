@@ -29,6 +29,10 @@ final class CaptchaHandler
     {
         $this->data = $data;
         $this->type = $type;
+        $this->captchaDir = "/tmp/telegram/captcha_handler/{$this->data["chat_id"]}";
+        is_dir("/tmp/telegram") or mkdir("/tmp/telegram");
+        is_dir("/tmp/telegram/captcha_handler") or mkdir("/tmp/telegram/captcha_handler");
+        is_dir($this->captchaDir) or mkdir($this->captchaDir);
     }
 
     /**
@@ -51,22 +55,59 @@ final class CaptchaHandler
      */
     private function calculusCaptcha()
     {
-        $extra = rand(0, 10);
-        $latex = "\int_{0}^{\infty} t^{".$extra."} e^{-t} dt";
+        pcntl_signal(SIGCHLD, SIG_IGN);
+        foreach ($this->data["new_chat_members"] as $v) {
+            $n = rand(1, 1);
+            $cdata = self::reqIsolate(BASEPATH."/src/captcha/calculus/calculus_".sprintf("%04d.php", $n));
+            $cdata["n"] = $n;
+            $name = htmlspecialchars(
+                $v["first_name"].(isset($v["last_name"]) ? " ".$v["last_name"] : ""),
+                ENT_QUOTES,
+                "UTF-8"
+            );
+            $mention = "<a href=\"tg://user?id={$v["id"]}\">{$name}</a>";
+            if (isset($v["username"])) {
+                $mention .= " (@".$v["username"].")";
+            }
+            $msg = $mention.", ".$msg;
+            Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "caption" => $msg,
+                    "photo" => $photo,
+                    "parse_mode" => "HTML"
+                ]
+            );
+            $cdata["created_at"] = time();
+            if (!($pid = pcntl_fork())) {
+                sleep($cdata["timeout"]);
+                Exe::kickChatMember(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "user_id" => $v["id"]
+                    ]
+                );
 
-        $msg = "<b>Please solve this problem in 5 minutes to make sure you are a human!</b>\nReply your answer to this message!\n\n".
-            "Integrate the following expression:\n<code>".htmlspecialchars($latex, ENT_QUOTES, "UTF-8")."</code>";
-        $photo = "https://api.teainside.org/latex_x.php?d=400&exp=".urlencode($latex);
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "text" => $mention." has been kicked from the group due to failed to answer the captcha"
+                    ]
+                );
+                exit;
+            }
+            $cdata["pid"] = $pid;
+            file_put_contents($this->captchaDir."/".$v["id"], json_encode($cdata, JSON_UNESCAPED_SLASHES));
+        }
+    }
 
-        Exe::sendPhoto(
-            [
-                "chat_id" => $this->data["chat_id"],
-                "reply_to_message_id" => $this->data["msg_id"],
-                "caption" => $msg,
-                "photo" => $photo,
-                "parse_mode" => "HTML"
-            ]
-        );
-
+    /**
+     * @param string $file
+     * @return mixed
+     */
+    private static function reqIsolate(string $file)
+    {
+        return require $file;
     }
 }

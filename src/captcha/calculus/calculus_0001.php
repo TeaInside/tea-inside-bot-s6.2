@@ -26,7 +26,7 @@ $msg = "<b>Please solve this problem in 5 minutes to make sure you are a human o
 $photo = "https://api.teainside.org/latex_x.php?d=300&exp=".urlencode($latex);
 
 return [
-    "timeout" => 300,
+    "timeout" => 30,
     "extra" => $extra,
     "msg" => $msg,
     "photo" => $photo

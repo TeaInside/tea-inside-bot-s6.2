@@ -81,7 +81,7 @@ final class CaptchaHandler
                 ]
             );
 
-            $fdc = $this->captchaDir."/".$v["id"]
+            $fdc = $this->captchaDir."/".$v["id"];
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));

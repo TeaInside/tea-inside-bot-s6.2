@@ -73,7 +73,7 @@ final class Response
 	private function sendWelcome()
 	{
 		$pdo = DB::pdo();
-		$st = $pdo->prepare("SELECT `welcome_msg` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
+		$st = $pdo->prepare("SELECT `welcome_msg`,`captcha` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
 		$st->execute([":group_id" => $this->data["chat_id"]]);
 		if ($r = $st->fetch(PDO::FETCH_NUM)) {
 			if ($r[0]) {
@@ -117,6 +117,23 @@ final class Response
 					);
 				}
 			}
-		}
+
+            if ($r[1]) {
+                (new CaptchaHandler($this->data, $r[1]))->run();
+            }
+		} else {
+            foreach ($this->data["new_chat_members"] as $v) {
+                LoggerFoundation::userLogger(
+                    [
+                        "user_id" => $v["id"],
+                        "username" => ($v["username"] ?? null),
+                        "first_name" => $v["first_name"],
+                        "last_name" => ($v["last_name"] ?? null),
+                        "is_bot" => $v["is_bot"]
+                    ],
+                    0
+                );
+            }
+        }
 	}
 }

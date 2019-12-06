@@ -80,10 +80,15 @@ final class CaptchaHandler
                     "parse_mode" => "HTML"
                 ]
             );
+
+            $fdc = $this->captchaDir."/".$v["id"]
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
                 sleep($cdata["timeout"]);
+                if (!file_exists($fdc)) {
+                    exit;
+                }
                 $o = Exe::kickChatMember(
                     $x = [
                         "chat_id" => $this->data["chat_id"],
@@ -98,13 +103,15 @@ final class CaptchaHandler
                         "parse_mode" => "HTML"
                     ]
                 );
-                unlink($this->captchaDir."/".$v["id"]);
+                unlink($fdc);
                 exit;
             }
+
             $cdata["pid"] = $pid;
-            if (file_exists($fdc = $this->captchaDir."/".$v["id"])) {
+            if (file_exists($fdc)) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
                 shell_exec("/usr/bin/kill -9 {$ccdata["pid"]}");
+                posix_kill($ccdata["pid"], SIGKILL);
                 unlink($fdc);
             }
             file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
@@ -139,6 +146,7 @@ final class CaptchaHandler
                     ]
                 );
                 shell_exec("/usr/bin/kill -9 {$cdata["pid"]}");
+                posix_kill($cdata["pid"], SIGKILL);
                 unlink($fdc);
             } else {
                 Exe::sendMessage(

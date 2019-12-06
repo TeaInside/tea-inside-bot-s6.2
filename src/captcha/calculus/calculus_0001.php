@@ -19,7 +19,7 @@ if (isset($checkAnswer)) {
 $timeout = 300; // 5 minutes.
 $extra = rand(0, 10);
 $latex = "\\int_{0}^{\\infty} t^{".$extra."} e^{-t} dt";
-$msg = "<b>Please solve this problem in 5 minutes to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n".
+$msg = "<b>Please solve this problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n".
     "Integrate the following expression:\n<code>".htmlspecialchars($latex, ENT_QUOTES, "UTF-8")."</code>";
 
 $photo = "https://api.teainside.org/latex_x.php?d=300&exp=".urlencode($latex);

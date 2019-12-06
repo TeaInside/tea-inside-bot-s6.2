@@ -151,7 +151,6 @@ final class CaptchaHandler
 
     public static function checkAnswer(string $file, $answer = null, $extra = null): bool
     {
-        var_dump($answer, $extra);
         $checkAnswer = true;
         return require $file;
     }

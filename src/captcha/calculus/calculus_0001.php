@@ -1,7 +1,7 @@
 <?php
 
 if (isset($checkAnswer)) {
-    if (isset($extra, $answer) && is_string($extra) && is_string($answer)) {
+    if (isset($extra, $answer)) {
         function factorial($number)
         { 
             $factorial = 1; 
@@ -10,7 +10,6 @@ if (isset($checkAnswer)) {
             } 
             return $factorial; 
         }
-        var_dump($extra, $answer);
         return factorial((int)$extra) === (int)trim($answer);
     }
 

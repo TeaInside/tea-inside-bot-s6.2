@@ -173,20 +173,23 @@ final class Calculus extends ResponseFoundation
             file_put_contents($baseDir."/{$hash}.png", $o);
 
             send_photo:
-            Exe::sendPhoto(
+            $o = Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
                     "photo" => "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.png",
-                    "caption" => "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}"
+                    "caption" => "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}",
+                    "parse_mode" => "HTML"
                 ]
             );
+            echo $o["out"];
         } else {
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => "Invalid format!\nUsage: <code>/cr02 a; b</code>\nWhere <code>a</code> and <code>b</code> are complex numbers"
+                    "text" => "Invalid format!\nUsage: <code>/cr02 a; b</code>\nWhere <code>a</code> and <code>b</code> are complex numbers.",
+                    "parse_mode" => "HTML"
                 ]
             );
         }

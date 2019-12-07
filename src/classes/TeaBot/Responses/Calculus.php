@@ -242,7 +242,6 @@ final class Calculus extends ResponseFoundation
                     "text" => "Error: ({$ern}) {$err}",
                 ]
             );
-            echo "zr ".$o["out"];
             return true;
         }
         curl_close($ch);
@@ -256,7 +255,6 @@ final class Calculus extends ResponseFoundation
         /**
          * Scrape 2
          */
-        var_dump("url: {$e}");
         $ch = curl_init($e);
         curl_setopt_array($ch,
             [
@@ -311,7 +309,6 @@ final class Calculus extends ResponseFoundation
                     "text" => "Error: ({$ern}) {$err}",
                 ]
             );
-            echo "zs ".$o["out"];
             return true;
         }
         curl_close($ch);
@@ -327,7 +324,6 @@ final class Calculus extends ResponseFoundation
                 "parse_mode" => "HTML"
             ]
         );
-        echo "z ".$o["out"];
         return true;
 
         invalid:
@@ -339,7 +335,6 @@ final class Calculus extends ResponseFoundation
                 "text" => "Invalid data!",
             ]
         );
-        echo "zw ".$o["out"];
         return true;
     }
 }

@@ -56,6 +56,7 @@ final class Exe
         $r["error"] = curl_error($ch);
         $r["errno"] = curl_error($ch);
         curl_close($ch);
+        echo $path."\n";
         echo $r["out"];
 
         if ($r["errno"]) {

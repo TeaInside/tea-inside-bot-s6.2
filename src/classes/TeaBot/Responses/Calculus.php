@@ -248,7 +248,7 @@ final class Calculus extends ResponseFoundation
 
         $e = explode("asynchronousPod('", $o, 2);
         if (count($e) < 2) goto invalid;
-        $e = explode("'", $e, 2);
+        $e = explode("'", $e[0], 2);
         if (count($e) < 2) goto invalid;
         $e = $e[0];
 
@@ -281,7 +281,7 @@ final class Calculus extends ResponseFoundation
 
         $e = explode("src=\"", $o, 2);
         if (count($e) < 2) goto invalid;
-        $e = explode("\"", $e, 2);
+        $e = explode("\"", $e[0], 2);
         if (count($e) < 2) goto invalid;
         $e = $e[0];
 

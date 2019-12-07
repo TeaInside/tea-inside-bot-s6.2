@@ -170,19 +170,19 @@ final class Calculus extends ResponseFoundation
                 return true;
             }
             curl_close($ch);
-            file_put_contents($baseDir."/{$hash}.png", $o);
+            file_put_contents($baseDir."/{$hash}.gif", $o);
 
             send_photo:
             $o = Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "photo" => "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.png",
+                    "photo" => "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.gif",
                     "caption" => "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}",
                     "parse_mode" => "HTML"
                 ]
             );
-            echo "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.png\n";
+            echo "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.gif\n";
             echo $o["out"];
         } else {
             Exe::sendMessage(

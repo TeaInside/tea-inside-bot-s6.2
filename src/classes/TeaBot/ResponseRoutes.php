@@ -109,19 +109,24 @@ trait ResponseRoutes
         /**
          * Calculus.
          */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:c)(\d{3})(?:(?:[\\s\\n])+)(.+?)$/si", $this->data["text"], $m)) {
+        if (preg_match("/^(?:\/|\!|\~|\.)?([a-z\d]{4})(?:(?:[\\s\\n])+)(.+?)$/si", $this->data["text"], $m)) {
             $m[2] = str_replace("\n", " ", $m[2]);
-            $m[1] = (int)$m[1];
             switch ($m[1]) {
-                case 1:
+                case "c001":
                     if ($this->stExec(Responses\Calculus::class, "c001", [$m[2]])) {
                         return true;
                     }
                 break;
 
-                case 2:
+                case "c002":
                     if ($this->stExec(Responses\Calculus::class, "c002", [$m[2]])) {
                         return true;
+                    }
+                break;
+
+                case "cr02":
+                    if ($this->stExec(Response\Calculus::class, "cr02", [$m[2]])) {
+                        
                     }
                 break;
 

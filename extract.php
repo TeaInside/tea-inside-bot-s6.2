@@ -1,11 +1,10 @@
 <?php
 
-$a = file_get_contents("test.html");
-
-if (preg_match_all("/<a href=\".+?sl=(.+?)&/", $a, $m)) {
-    print "[";
-    foreach($m[1] as $s) {
-        print "\"{$s}\", ";
-    }
-    print "]";
+if (preg_match('/^(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)i$/', $a, $m)) {
+    $reMin = (int)$m[1];
+    $imMin = (int)$m[3] * ($m[2] == "-" ? -1 : 1);
+    $reMax = (int)$m[4];
+    $imMax = (int)$m[6] * ($m[5] == "-" ? -1 : 1);;
 }
+
+var_dump($reMin, $reMax, $imMin, $imMax);

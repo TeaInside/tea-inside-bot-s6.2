@@ -115,4 +115,35 @@ final class Calculus extends ResponseFoundation
 
         return true;
     }
+
+    /**
+     * @param string $expr
+     * @return bool
+     */
+    public function cr02(string $expr): bool
+    {
+        if (preg_match('/^(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)i$/i', $expr, $m)) {
+            $reMin = (int)$m[1];
+            $imMin = (int)$m[3] * ($m[2] == "-" ? -1 : 1);
+            $reMax = (int)$m[4];
+            $imMax = (int)$m[6] * ($m[5] == "-" ? -1 : 1);
+            Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "photo" => "http://mathworld.wolfram.com/webMathematica/ComplexPlots.jsp?name=RiemannZeta&zMin={$reMin}%2B{$imMin}*I&zMax={$reMax}%2B{$imMax}*I&nt=1",
+                    "caption" => "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}"
+                ]
+            );
+        } else {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => "Invalid format!\nUsage: <code>/cr02 a; b</code>\nWhere <code>a</code> and <code>b</code> are complex numbers"
+                ]
+            );
+        }
+        return true;
+    }
 }

@@ -122,11 +122,11 @@ final class Calculus extends ResponseFoundation
      */
     public function cr02(string $expr): bool
     {
-        if (preg_match('/^(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?\d+)i$/i', $expr, $m)) {
-            $reMin = (int)$m[1];
-            $imMin = (int)$m[3] * ($m[2] == "-" ? -1 : 1);
-            $reMax = (int)$m[4];
-            $imMax = (int)$m[6] * ($m[5] == "-" ? -1 : 1);
+        if (preg_match('/^(\-?[\d\.]+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)i$/', $a, $m)) {
+            $reMin = (float)$m[1];
+            $imMin = ($m[3] === "" ? 1 : (float)$m[3]) * ($m[2] == "-" ? -1 : 1);
+            $reMax = (float)$m[4];
+            $imMax = ($m[6] === "" ? 1 : (float)$m[6]) * ($m[5] == "-" ? -1 : 1);
             $hash = md5("q".$reMin.$reMax.$imMax.$imMin);
 
             $baseDir = BASEPATH."/storage/telegram/riemann_graph";

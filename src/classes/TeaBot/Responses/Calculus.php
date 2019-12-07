@@ -328,13 +328,14 @@ final class Calculus extends ResponseFoundation
 
         invalid:
         $j = json_decode($oo["out"], true);
-        Exe::editTextMessage(
+        $o = Exe::editTextMessage(
             [
                 "chat_id" => $this->data["chat_id"],
                 "message_id" => $j["result"]["message_id"],
                 "text" => "Invalid data!",
             ]
         );
+        echo "zw ".$o["out"];
         return true;
     }
 }

@@ -127,11 +127,57 @@ final class Calculus extends ResponseFoundation
             $imMin = (int)$m[3] * ($m[2] == "-" ? -1 : 1);
             $reMax = (int)$m[4];
             $imMax = (int)$m[6] * ($m[5] == "-" ? -1 : 1);
+            $hash = md5($reMin.$imMin.$reMax.$imMax);
+
+            $baseDir = BASEPATH."/storage/telegram/riemann_graph";
+
+            if (file_exists($baseDir."/{$hash}.png")) {
+                goto send_photo;
+            }
+
+            is_dir($baseDir) or mkdir($baseDir);
+
+            $oo = Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "text" => "Calculating...",
+                    "reply_to_message_id" => $this->data["msg_id"]
+                ]
+            );
+
+            $url = "http://mathworld.wolfram.com/webMathematica/ComplexPlots.jsp?name=RiemannZeta&zMin={$reMin}%2B{$imMin}*I&zMax={$reMax}%2B{$imMax}*I&nt=1";
+            echo $url;
+            $ch = curl_init($url);
+            curl_setopt_array($ch,
+                [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_TIMEOUT => 120,
+                    CURLOPT_CONNECTTIMEOUT => 120
+                ]
+            );
+            $o = curl_exec($ch);
+            if ($err = curl_error($ch)) {
+                $ern = curl_errno($ch);
+                curl_close($ch);
+                $j = json_decode($oo["out"], true);
+                Exe::editTextMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $j["result"]["message_id"],
+                        "text" => "Error: ({$ern}) {$err}",
+                    ]
+                );
+                return true;
+            }
+            curl_close($ch);
+            file_put_contents($baseDir."/{$hash}.png", $o);
+
+            send_photo:
             Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "photo" => "http://mathworld.wolfram.com/webMathematica/ComplexPlots.jsp?name=RiemannZeta&zMin={$reMin}%2B{$imMin}*I&zMax={$reMax}%2B{$imMax}*I&nt=1",
+                    "photo" => "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.png",
                     "caption" => "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}"
                 ]
             );

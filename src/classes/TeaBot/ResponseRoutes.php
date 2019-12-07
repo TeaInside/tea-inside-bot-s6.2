@@ -130,8 +130,8 @@ trait ResponseRoutes
                     }
                 break;
 
-                case "cq47":
-                    if ($this->stExec(Responses\Calculus::class, "cq47", [$m[2]])) {
+                case "cyf4":
+                    if ($this->stExec(Responses\Calculus::class, "cyf4", [$m[2]])) {
                         return true;  
                     }
                 break;

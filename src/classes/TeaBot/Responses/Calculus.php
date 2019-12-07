@@ -198,7 +198,7 @@ final class Calculus extends ResponseFoundation
      * @param string $expr
      * @return bool
      */
-    public function cq47(string $expr): bool
+    public function cyf4(string $expr): bool
     {
         $expr = "plot [//math:".$expr."//]";
         $hash = md5($expr);

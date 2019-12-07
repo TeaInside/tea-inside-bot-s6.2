@@ -146,7 +146,6 @@ final class Calculus extends ResponseFoundation
             );
 
             $url = "http://mathworld.wolfram.com/webMathematica/ComplexPlots.jsp?name=RiemannZeta&zMin={$reMin}%2B{$imMin}*I&zMax={$reMax}%2B{$imMax}*I&nt=1";
-            echo $url;
             $ch = curl_init($url);
             curl_setopt_array($ch,
                 [
@@ -182,14 +181,12 @@ final class Calculus extends ResponseFoundation
                     "parse_mode" => "HTML"
                 ]
             );
-            echo "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.gif\n";
-            echo $o["out"];
         } else {
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => "Invalid format!\nUsage: <code>/cr02 a; b</code>\nWhere <code>a</code> and <code>b</code> are complex numbers.",
+                    "text" => "Invalid format!\nUsage: <code>/cr02 min; max</code>\nWhere <code>min</code> and <code>max</code> are complex numbers.",
                     "parse_mode" => "HTML"
                 ]
             );

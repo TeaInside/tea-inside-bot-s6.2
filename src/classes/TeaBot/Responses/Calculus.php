@@ -323,6 +323,7 @@ final class Calculus extends ResponseFoundation
                 "parse_mode" => "HTML"
             ]
         );
+        echo "z ".$o["out"];
         return true;
 
         invalid:

@@ -127,7 +127,7 @@ final class Calculus extends ResponseFoundation
             $imMin = (int)$m[3] * ($m[2] == "-" ? -1 : 1);
             $reMax = (int)$m[4];
             $imMax = (int)$m[6] * ($m[5] == "-" ? -1 : 1);
-            $hash = md5($reMin.$imMin.$reMax.$imMax);
+            $hash = md5("q".$reMin.$reMax.$imMax.$imMin);
 
             $baseDir = BASEPATH."/storage/telegram/riemann_graph";
 

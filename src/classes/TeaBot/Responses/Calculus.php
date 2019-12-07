@@ -122,7 +122,7 @@ final class Calculus extends ResponseFoundation
      */
     public function cr02(string $expr): bool
     {
-        if (preg_match('/^(\-?[\d\.]+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)i$/', $a, $m)) {
+        if (preg_match('/^(\-?[\d\.]+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)(?:i\s*\;\s*)(\-?\d+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)i$/', $expr, $m)) {
             $reMin = (float)$m[1];
             $imMin = ($m[3] === "" ? 1 : (float)$m[3]) * ($m[2] == "-" ? -1 : 1);
             $reMax = (float)$m[4];

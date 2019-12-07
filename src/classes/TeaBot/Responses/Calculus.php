@@ -159,7 +159,7 @@ final class Calculus extends ResponseFoundation
                 $ern = curl_errno($ch);
                 curl_close($ch);
                 $j = json_decode($oo["out"], true);
-                Exe::editTextMessage(
+                Exe::editMessageText(
                     [
                         "chat_id" => $this->data["chat_id"],
                         "message_id" => $j["result"]["message_id"],
@@ -235,7 +235,7 @@ final class Calculus extends ResponseFoundation
             $ern = curl_errno($ch);
             curl_close($ch);
             $j = json_decode($oo["out"], true);
-            Exe::editTextMessage(
+            Exe::editMessageText(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "message_id" => $j["result"]["message_id"],
@@ -269,7 +269,7 @@ final class Calculus extends ResponseFoundation
             $ern = curl_errno($ch);
             curl_close($ch);
             $j = json_decode($oo["out"], true);
-            Exe::editTextMessage(
+            Exe::editMessageText(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "message_id" => $j["result"]["message_id"],
@@ -303,7 +303,7 @@ final class Calculus extends ResponseFoundation
             $ern = curl_errno($ch);
             curl_close($ch);
             $j = json_decode($oo["out"], true);
-            $o = Exe::editTextMessage(
+            $o = Exe::editMessageText(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "message_id" => $j["result"]["message_id"],
@@ -331,7 +331,7 @@ final class Calculus extends ResponseFoundation
 
         invalid:
         $j = json_decode($oo["out"], true);
-        $o = Exe::editTextMessage(
+        $o = Exe::editMessageText(
             [
                 "chat_id" => $this->data["chat_id"],
                 "message_id" => $j["result"]["message_id"],

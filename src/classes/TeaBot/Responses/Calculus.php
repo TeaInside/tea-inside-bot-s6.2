@@ -242,6 +242,7 @@ final class Calculus extends ResponseFoundation
                     "text" => "Error: ({$ern}) {$err}",
                 ]
             );
+            echo "zr ".$o["out"];
             return true;
         }
         curl_close($ch);
@@ -275,6 +276,7 @@ final class Calculus extends ResponseFoundation
                     "text" => "Error: ({$ern}) {$err}",
                 ]
             );
+            echo "zc ".$o["out"];
             return true;
         }
         curl_close($ch);
@@ -301,13 +303,14 @@ final class Calculus extends ResponseFoundation
             $ern = curl_errno($ch);
             curl_close($ch);
             $j = json_decode($oo["out"], true);
-            Exe::editTextMessage(
+            $o = Exe::editTextMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "message_id" => $j["result"]["message_id"],
                     "text" => "Error: ({$ern}) {$err}",
                 ]
             );
+            echo "zs ".$o["out"];
             return true;
         }
         curl_close($ch);

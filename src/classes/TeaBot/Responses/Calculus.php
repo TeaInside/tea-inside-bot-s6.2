@@ -256,6 +256,7 @@ final class Calculus extends ResponseFoundation
         /**
          * Scrape 2
          */
+        var_dump("url: {$e}");
         $ch = curl_init($e);
         curl_setopt_array($ch,
             [

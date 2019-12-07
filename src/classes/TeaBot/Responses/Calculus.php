@@ -131,7 +131,7 @@ final class Calculus extends ResponseFoundation
 
             $baseDir = BASEPATH."/storage/telegram/riemann_graph";
 
-            if (file_exists($baseDir."/{$hash}.png")) {
+            if (file_exists($baseDir."/{$hash}.gif")) {
                 goto send_photo;
             }
 

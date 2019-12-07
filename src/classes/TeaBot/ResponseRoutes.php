@@ -125,7 +125,7 @@ trait ResponseRoutes
                 break;
 
                 case "cr02":
-                    if ($this->stExec(Response\Calculus::class, "cr02", [$m[2]])) {
+                    if ($this->stExec(Responses\Calculus::class, "cr02", [$m[2]])) {
                         
                     }
                 break;

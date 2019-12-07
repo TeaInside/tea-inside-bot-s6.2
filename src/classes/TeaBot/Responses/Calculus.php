@@ -182,6 +182,7 @@ final class Calculus extends ResponseFoundation
                     "parse_mode" => "HTML"
                 ]
             );
+            echo "https://telegram-bot.teainside.org/storage/riemann_graph/{$hash}.png\n";
             echo $o["out"];
         } else {
             Exe::sendMessage(

@@ -95,6 +95,9 @@ final class CaptchaHandler
                 if (!file_exists($fdc)) {
                     exit;
                 }
+                if (isset($cdata["banned_hash"])) {
+                    unlink("/tmp/telegram/calculus_lock/".$cdata["banned_hash"]);
+                }
                 $o = Exe::kickChatMember(
                     $x = [
                         "chat_id" => $this->data["chat_id"],
@@ -161,6 +164,13 @@ final class CaptchaHandler
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
 
+                posix_kill($cdata["pid"], SIGKILL);
+                unlink($fdc);
+
+                if (isset($cdata["banned_hash"])) {
+                    unlink("/tmp/telegram/calculus_lock/".$cdata["banned_hash"]);
+                }
+
                 $name = htmlspecialchars(
                     $data["first_name"].(isset($data["last_name"]) ? " ".$data["last_name"] : ""),
                     ENT_QUOTES,
@@ -174,12 +184,10 @@ final class CaptchaHandler
                 Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
-                        "text" => "{$mention} has answered the captcha correctly. Welcome to the group!",
+                        "text" => $mention." has answered the captcha correctly. Welcome to the group!",
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 );
-                posix_kill($cdata["pid"], SIGKILL);
-                unlink($fdc);
                 Exe::deleteMessage(
                     [
                         "chat_id" => $data["chat_id"],
@@ -194,10 +202,7 @@ final class CaptchaHandler
                             "message_id" => $cdata["welcome_msg"]
                         ]
                     );
-                    
-                    echo $o["out"];
-                    
-                } else echo "no wel";
+                }
             } else {
                 Exe::sendMessage(
                     [

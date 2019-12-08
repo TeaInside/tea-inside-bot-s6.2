@@ -51,6 +51,8 @@ final class Calculus extends ResponseFoundation
      */
     public function c001(string $expr): bool
     {
+        if ($this->exprCheck($expr)) return true;
+
         $res = $this->execute($expr);
         if (isset($res["solutions"][0]["entire_result"])) {
             if ($res["solutions"][0]["entire_result"][0] === "=") {
@@ -79,6 +81,8 @@ final class Calculus extends ResponseFoundation
      */
     public function c002(string $expr): bool
     {
+        if ($this->exprCheck($expr)) return true;
+
         $res = $this->execute($expr);
 
         $photo = null;
@@ -336,5 +340,24 @@ final class Calculus extends ResponseFoundation
             ]
         );
         return true;
+    }
+
+    /**
+     * @param string $expr
+     * @return bool
+     */
+    private function exprCheck(string $expr): bool
+    {
+        if (file_exists("/tmp/telegram/calculus_lock/".md5($expr))) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "text" => "Cannot retrieve the solution since another user is having the same problem in captcha.",
+                    "reply_to_message_id" => $this->data["msg_id"]
+                ]
+            );
+            return true;
+        }
+        return false;
     }
 }

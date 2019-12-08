@@ -77,6 +77,7 @@ final class Response
         $pdo = DB::pdo();
         $st = $pdo->prepare("SELECT `welcome_msg`,`captcha` FROM `groups` WHERE `group_id` = :group_id LIMIT 1;");
         $st->execute([":group_id" => $this->data["chat_id"]]);
+        $welcomeMessages = [];
         if ($r = $st->fetch(PDO::FETCH_NUM)) {
             if ($r[0]) {
                 foreach ($this->data["new_chat_members"] as $v) {
@@ -98,14 +99,14 @@ final class Response
                         $r[0]
                     );
 
-                    Exe::sendMessage(
+                    $welcomeMessages[$v["id"]] = json_decode(Exe::sendMessage(
                         [
                             "chat_id" => $this->data["chat_id"],
                             "reply_to_message_id" => $this->data["msg_id"],
                             "text" => $reply,
                             "parse_mode" => "HTML"
                         ]
-                    );
+                    )["out"], true)["result"]["message_id"];
 
                     LoggerFoundation::userLogger(
                         [
@@ -121,7 +122,7 @@ final class Response
             }
 
             if ($r[1]) {
-                (new CaptchaHandler($this->data, $r[1]))->run();
+                (new CaptchaHandler($this->data, $r[1]))->run($welcomeMessages);
             }
         } else {
             foreach ($this->data["new_chat_members"] as $v) {

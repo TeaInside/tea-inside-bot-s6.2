@@ -21,14 +21,20 @@ final class CaptchaHandler
     public $type;
 
     /**
+     * @var array
+     */
+    public $welcomeMessages = [];
+
+    /**
      * @param \TeaBot\Data
      *
      * Constructor.
      */
-    public function __construct(Data $data, string $type)
+    public function __construct(Data $data, string $type, array $welcomeMessages)
     {
         $this->data = $data;
         $this->type = $type;
+        $this->welcomeMessages = $welcomeMessages;
         $this->captchaDir = "/tmp/telegram/captcha_handler/{$this->data["chat_id"]}";
         is_dir("/tmp/telegram") or mkdir("/tmp/telegram");
         is_dir("/tmp/telegram/captcha_handler") or mkdir("/tmp/telegram/captcha_handler");
@@ -71,7 +77,7 @@ final class CaptchaHandler
                 $mention .= " (@".$v["username"].")";
             }
             $cdata["msg"] = $mention."\n".$cdata["msg"];
-            Exe::sendPhoto(
+            $captchaMsg = json_decode(Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -79,7 +85,7 @@ final class CaptchaHandler
                     "photo" => $cdata["photo"],
                     "parse_mode" => "HTML"
                 ]
-            );
+            )["out"], true)["result"]["message_id"];
 
             $fdc = $this->captchaDir."/".$v["id"];
             $cdata["created_at"] = time();
@@ -105,13 +111,22 @@ final class CaptchaHandler
                     ]
                 );
                 unlink($fdc);
+                if (isset($this->welcomeMessages[$v["id"]])) {
+                    Exe::deleteMessage(
+                        [
+                            "chat_id" => $this->data["chat_id"],
+                            "message_id" => $this->welcomeMessages[$v["id"]]
+                        ]
+                    );
+                }
                 exit;
             }
 
             $cdata["pid"] = $pid;
+            $cdata["captcha_msg"] = $captchaMsg;
+            $cdata["welcome_msg"] = $this->welcomeMessages[$v["id"]] ?? null;
             if (file_exists($fdc)) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
-                shell_exec("/usr/bin/kill -9 {$ccdata["pid"]}");
                 posix_kill($ccdata["pid"], SIGKILL);
                 unlink($fdc);
             }
@@ -146,9 +161,23 @@ final class CaptchaHandler
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 );
-                shell_exec("/usr/bin/kill -9 {$cdata["pid"]}");
                 posix_kill($cdata["pid"], SIGKILL);
                 unlink($fdc);
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $cdata["captcha_msg"]
+                    ]
+                );
+                if (isset($cdata["welcome_msg"])) {
+                    sleep(30);
+                    Exe::deleteMessage(
+                        [
+                            "chat_id" => $this->data["chat_id"],
+                            "message_id" => $cdata["welcome_msg"]
+                        ]
+                    );
+                }
             } else {
                 Exe::sendMessage(
                     [

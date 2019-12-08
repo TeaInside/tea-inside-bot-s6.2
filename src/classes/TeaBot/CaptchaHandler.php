@@ -177,7 +177,7 @@ final class CaptchaHandler
                     "UTF-8"
                 );
                 $mention = "<a href=\"tg://user?id={$data["id"]}\">{$name}</a>";
-                if (isset($v["username"])) {
+                if (isset($data["username"])) {
                     $mention .= " (@".$data["username"].")";
                 }
 
@@ -185,6 +185,7 @@ final class CaptchaHandler
                     [
                         "chat_id" => $data["chat_id"],
                         "text" => $mention." has answered the captcha correctly. Welcome to the group!",
+                        "parse_mode" => "HTML",
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 );

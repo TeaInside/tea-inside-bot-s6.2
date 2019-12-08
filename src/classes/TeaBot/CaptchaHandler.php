@@ -177,13 +177,16 @@ final class CaptchaHandler
                 );
                 if (isset($cdata["welcome_msg"])) {
                     sleep(30);
-                    Exe::deleteMessage(
+                    $o = Exe::deleteMessage(
                         [
                             "chat_id" => $data["chat_id"],
                             "message_id" => $cdata["welcome_msg"]
                         ]
                     );
-                }
+                    
+                    echo $o["out"];
+                    
+                } else echo "no wel";
             } else {
                 Exe::sendMessage(
                     [

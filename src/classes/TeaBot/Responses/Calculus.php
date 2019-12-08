@@ -55,6 +55,9 @@ final class Calculus extends ResponseFoundation
 
         $res = $this->execute($expr);
         if (isset($res["solutions"][0]["entire_result"])) {
+
+            if ($this->exprCheck($res["solutions"][0]["entire_result"])) return true;
+
             if ($res["solutions"][0]["entire_result"][0] === "=") {
                 $reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
             } else {
@@ -81,12 +84,13 @@ final class Calculus extends ResponseFoundation
      */
     public function c002(string $expr): bool
     {
-        if ($this->exprCheck($expr)) return true;
-
         $res = $this->execute($expr);
 
         $photo = null;
         if (isset($res["solutions"][0]["entire_result"])) {
+
+            if ($this->exprCheck($res["solutions"][0]["entire_result"])) return true;
+
             if ($res["solutions"][0]["entire_result"][0] === "=") {
                 $reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
             } else {

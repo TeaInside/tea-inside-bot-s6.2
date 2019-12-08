@@ -41,7 +41,7 @@ $extra = $o["solutions"][0]["entire_result"];
 $msg = "<b>Please solve this problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n".
     "Evaluate the following expression:\n<code>".htmlspecialchars($latex, ENT_QUOTES, "UTF-8")."</code>";
 
-$hash = md5($latex);
+$hash = md5($extra);
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");
 file_put_contents("/tmp/telegram/calculus_lock/".$hash, time());
 

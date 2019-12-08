@@ -1,15 +1,16 @@
 <?php
 
+function factorial($number)
+{ 
+    $factorial = 1; 
+    for ($i = 1; $i <= $number; $i++){ 
+      $factorial = $factorial * $i; 
+    } 
+    return $factorial; 
+}
+
 if (isset($checkAnswer)) {
     if (isset($extra, $answer)) {
-        function factorial($number)
-        { 
-            $factorial = 1; 
-            for ($i = 1; $i <= $number; $i++){ 
-              $factorial = $factorial * $i; 
-            } 
-            return $factorial; 
-        }
         return factorial((int)$extra) === (int)trim($answer);
     }
 
@@ -17,10 +18,10 @@ if (isset($checkAnswer)) {
 }
 
 $timeout = 300; // 5 minutes.
-$extra = rand(0, 10);
+$extra = rand(0, 12);
 $latex = "\\int_{0}^{\\infty} t^{".$extra."} e^{-t} dt";
 
-$hash = md5($latex);
+$hash = md5("=".factorial($extra));
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");
 file_put_contents("/tmp/telegram/calculus_lock/".$hash, time());
 

@@ -30,7 +30,10 @@ $mul2 = rand(2, 10);
 $lw1 = $up1 - $mul1;
 $lw2 = $up2 - $mul2;
 
-$latex = "\int_{".$lw1."}^{".$up1."} \int_{".$lw2."}^{".$up2."} \int_{0}^{\infty} (x^{".$extra."} e^{-x}) dx dy dz";
+$rd = ["x^{".$extra."}", "e^{-x}"];
+shuffle($rd);
+
+$latex = "\int_{".$lw1."}^{".$up1."} \int_{".$lw2."}^{".$up2."} \int_{0}^{\infty} (".implode(" ", $rd).") dx dy dz";
 
 $extra = factorial($extra) * $mul1 * $mul2;
 

@@ -165,7 +165,7 @@ final class CaptchaHandler
                 unlink($fdc);
                 Exe::deleteMessage(
                     [
-                        "chat_id" => $this->data["chat_id"],
+                        "chat_id" => $data["chat_id"],
                         "message_id" => $cdata["captcha_msg"]
                     ]
                 );
@@ -173,7 +173,7 @@ final class CaptchaHandler
                     sleep(30);
                     Exe::deleteMessage(
                         [
-                            "chat_id" => $this->data["chat_id"],
+                            "chat_id" => $data["chat_id"],
                             "message_id" => $cdata["welcome_msg"]
                         ]
                     );

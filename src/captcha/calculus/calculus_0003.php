@@ -37,7 +37,7 @@ $latex = "\int_{".$lw1."}^{".$up1."} \int_{".$lw2."}^{".$up2."} \int_{0}^{\infty
 
 $extra = factorial($extra) * $mul1 * $mul2;
 
-$hash = md5("=".factorial($extra));
+$hash = md5("=".$extra);
 
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");
 file_put_contents("/tmp/telegram/calculus_lock/".$hash, time());

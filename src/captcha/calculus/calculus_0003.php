@@ -24,7 +24,7 @@ $up2 = rand(10, 300);
 $mul = rand(2, 5);
 $lw1 = $up1 - $mul;
 $lw2 = $up2 - 1;
-$latex = "\int_{".$up1."}^{".$lw1."} \int_{".$up2."}^{".$lw2."} \int_{0}^{\infty} (x^{".$extra."} e^{-x}) dx dy dz";
+$latex = "\int_{".$lw1."}^{".$up1."} \int_{".$lw2."}^{".$up2."} \int_{0}^{\infty} (x^{".$extra."} e^{-x}) dx dy dz";
 $extra *= $mul;
 
 $hash = md5("=".factorial($extra));

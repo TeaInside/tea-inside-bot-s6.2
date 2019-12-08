@@ -160,10 +160,21 @@ final class CaptchaHandler
             $cdata = json_decode(file_get_contents($fdc), true);
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
+
+                $name = htmlspecialchars(
+                    $data["first_name"].(isset($data["last_name"]) ? " ".$data["last_name"] : ""),
+                    ENT_QUOTES,
+                    "UTF-8"
+                );
+                $mention = "<a href=\"tg://user?id={$data["id"]}\">{$name}</a>";
+                if (isset($v["username"])) {
+                    $mention .= " (@".$data["username"].")";
+                }
+
                 Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
-                        "text" => "Captcha passed, you have answered the captcha correctly. Welcome to the group!",
+                        "text" => "{$mention} has answered the captcha correctly. Welcome to the group!",
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 );

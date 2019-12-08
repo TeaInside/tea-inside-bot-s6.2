@@ -112,13 +112,15 @@ final class CaptchaHandler
                 );
                 unlink($fdc);
                 if (isset($this->welcomeMessages[$v["id"]])) {
-                    Exe::deleteMessage(
+                    $o = Exe::deleteMessage(
                         [
                             "chat_id" => $this->data["chat_id"],
                             "message_id" => $this->welcomeMessages[$v["id"]]
                         ]
                     );
-                }
+                    echo $o["out"];
+                } else
+                echo "wwqww";
                 exit;
             }
 

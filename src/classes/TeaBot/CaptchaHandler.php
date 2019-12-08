@@ -106,7 +106,7 @@ final class CaptchaHandler
                     [
                         "force_reply" => true,
                         "chat_id" => $this->data["chat_id"],
-                        "text" => $mention." has been kicked from the group due to failed to answer the captcha.\n\n{$o["out"]}",
+                        "text" => $mention." has been kicked from the group due to failed to answer the captcha.",
                         "parse_mode" => "HTML"
                     ]
                 );

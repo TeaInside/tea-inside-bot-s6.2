@@ -11,7 +11,7 @@ function factorial($number)
 
 if (isset($checkAnswer)) {
     if (isset($extra, $answer)) {
-        return factorial((int)$extra) === (int)trim($answer);
+        return (string)$extra === trim($answer);
     }
 
     return false;
@@ -25,7 +25,7 @@ $mul = rand(2, 5);
 $lw1 = $up1 - $mul;
 $lw2 = $up2 - 1;
 $latex = "\int_{".$lw1."}^{".$up1."} \int_{".$lw2."}^{".$up2."} \int_{0}^{\infty} (x^{".$extra."} e^{-x}) dx dy dz";
-$extra *= $mul;
+$extra = factorial($extra) * $mul;
 
 $hash = md5("=".factorial($extra));
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");

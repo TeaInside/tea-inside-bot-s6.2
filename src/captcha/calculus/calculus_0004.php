@@ -55,7 +55,7 @@ switch (rand(2, 2)) {
         break;
     case 2:
         $extra = rand(1, 500);
-        $latex = '\frac{'.$extra.'}{\sqrt{3}} \sqrt{{\int_{0}^{\infty} -t^{4} e^{-t} dt} \cdot {\int_{\pi}^{2\pi} \tan(x) \cos(x) dx}}';
+        $latex = '\frac{'.$extra.'\ln(e^{x})}{\sqrt{3} x} \sqrt{{\int_{0}^{\infty} -t^{4} e^{-t} dt} \cdot {\int_{\pi}^{2\pi} \tan(x) \cos(x) dx}}';
         $extra *= 4;
         $val = "Evaluate";
     default:

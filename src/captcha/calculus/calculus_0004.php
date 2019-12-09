@@ -51,11 +51,13 @@ switch (rand(2, 2)) {
 
         $latex = "\\int_{".$varB2.$lwB2."}^{".$varB2.$upB2."} \\int_{".$varB1.$lwB1."}^{".$varB1.$upB1."} \\int_{\\pi}^{2\\pi} (".implode("+", $inExpr).") dx dy dz";
         $extra = $mul1 * $mul2 * (7/4);
+        $val = "Integrate";
         break;
     case 2:
         $extra = rand(1, 500);
         $latex = '\frac{'.$extra.'}{\sqrt{3}} \sqrt{{\int_{0}^{\infty} -t^{4} e^{-t} dt} \cdot {\int_{\pi}^{2\pi} \tan(x) \cos(x) dx}}';
         $extra *= 4;
+        $val = "Evaluate";
     default:
         break;
 }
@@ -65,9 +67,9 @@ $hash = md5("=".$extra);
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");
 file_put_contents("/tmp/telegram/calculus_lock/".$hash, time());
 
-$msg = "<b>Please solve this captcha problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\nIntegrate the following expression!";
+$msg = "<b>Please solve this captcha problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n{$val} the following expression!";
 
-$photo = "https://api.teainside.org/latex_x.php?border=30&d=400&exp=".urlencode($latex);
+$photo = "https://api.teainside.org/latex_x.php?border=140&d=400&exp=".urlencode($latex);
 
 return [
     "timeout" => 300,

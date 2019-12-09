@@ -63,7 +63,7 @@ final class CaptchaHandler
     {
         pcntl_signal(SIGCHLD, SIG_IGN);
         foreach ($this->data["new_chat_members"] as $v) {
-            $n = rand(4, 4);
+            $n = rand(1, 4);
             $cdata = self::reqIsolate(BASEPATH."/src/captcha/calculus/calculus_".sprintf("%04d.php", $n));
             $cdata["n"] = $n;
             $cdata["type"] = "calculus";

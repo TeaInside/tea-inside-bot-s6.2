@@ -38,8 +38,7 @@ curl_close($ch);
 $o = json_decode($o, true);
 $extra = $o["solutions"][0]["entire_result"];
 
-$msg = "<b>Please solve this problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n".
-    "Evaluate the following expression:\n<code>".htmlspecialchars($latex, ENT_QUOTES, "UTF-8")."</code>";
+$msg = "<b>Please solve this captcha problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\nEvaluate the following expression!";
 
 $hash = md5($extra);
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");

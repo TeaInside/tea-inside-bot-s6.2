@@ -10,7 +10,7 @@ if (isset($checkAnswer)) {
 
 $timeout = 300; // 5 minutes.
 
-switch (rand(1, 1)) {
+switch (rand(2, 2)) {
     case 1:
         $varList = ["x", "y", "z", "t", "u"];
         $varList2 = ["\\alpha", "\\beta", "\\gamma", "\\theta"];
@@ -52,7 +52,10 @@ switch (rand(1, 1)) {
         $latex = "\\int_{".$varB2.$lwB2."}^{".$varB2.$upB2."} \\int_{".$varB1.$lwB1."}^{".$varB1.$upB1."} \\int_{\\pi}^{2\\pi} (".implode("+", $inExpr).") dx dy dz";
         $extra = $mul1 * $mul2 * (7/4);
         break;
-    
+    case 2:
+        $extra = rand(1, 500);
+        $latex = '\frac{'.$extra.'}{\sqrt{3}} \sqrt{{\int_{0}^{\infty} -t^{4} e^{-t} dt} \cdot {\int_{\pi}^{2\pi} \tan(x) \cos(x) dx}}';
+        $extra *= 4;
     default:
         break;
 }

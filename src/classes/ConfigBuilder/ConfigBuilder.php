@@ -34,7 +34,7 @@ final class ConfigBuilder
         }
 
         if (!is_string($config["target_file"])) {
-            throw new Exception("\"target_file\" must be a string");    
+            throw new Exception("\"target_file\" must be a string");
         }
 
         if (!array_key_exists("const", $config)) {

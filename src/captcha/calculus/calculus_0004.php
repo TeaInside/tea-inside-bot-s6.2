@@ -10,7 +10,7 @@ if (isset($checkAnswer)) {
 
 $timeout = 300; // 5 minutes.
 
-switch (rand(2, 2)) {
+switch (rand(1, 2)) {
     case 1:
         $varList = ["x", "y", "z", "t", "u"];
         $varList2 = ["\\alpha", "\\beta", "\\gamma", "\\theta"];

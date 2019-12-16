@@ -82,14 +82,14 @@ function build(bool $noExit = false): void
 
     chdir($buildExtDir);
     if (!file_exists("configure.lock")) {
-        sh("phpize");
-        sh("./configure");
+        sh("cd {$buildExtDir}; phpize");
+        sh("cd {$buildExtDir}; ./configure");
         file_put_contents($buildExtDir."/configure.lock", time());
     }
     if ($forceBuild) {
-        sh("make clean");
+        sh("cd {$buildExtDir}; make clean");
     }
-    sh("make 2>&1");
+    sh("cd {$buildExtDir} make 2>&1");
     sh("ln -svf ".escapeshellarg($buildExtDir."/modules/teabot.so")." ".escapeshellarg($libDir)." 2>&1");
 
     chdir($cwd);

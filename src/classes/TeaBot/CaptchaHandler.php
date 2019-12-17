@@ -104,7 +104,6 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
-                Exe::unbanChatMember($x);
                 Exe::sendMessage(
                     [
                         "force_reply" => true,
@@ -128,6 +127,7 @@ final class CaptchaHandler
                         ]
                     );
                 }
+                Exe::unbanChatMember($x);
                 exit;
             }
 

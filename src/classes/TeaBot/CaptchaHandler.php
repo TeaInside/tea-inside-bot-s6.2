@@ -177,7 +177,6 @@ final class CaptchaHandler
         $fdc = "/tmp/telegram/captcha_handler/{$data["chat_id"]}/{$data["user_id"]}";
         if (file_exists($fdc)) {
             $cdata = json_decode(file_get_contents($fdc), true);
-            $this->msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
 
@@ -227,10 +226,17 @@ final class CaptchaHandler
                 Exe::deleteMessage(
                     [
                         "chat_id" => $data["chat_id"],
+                        "message_id" => $data["msg_id"]
+                    ]
+                );
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $data["chat_id"],
                         "message_id" => $correctMsg
                     ]
                 );
             } else {
+                $this->msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
                 $o = json_decode(Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],

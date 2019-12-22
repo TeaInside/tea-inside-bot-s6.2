@@ -113,6 +113,7 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
+                echo "test";
                 Exe::sendMessage(
                     [
                         "force_reply" => true,
@@ -122,7 +123,7 @@ final class CaptchaHandler
                     ]
                 );
                 unlink($fdc);
-                echo 123;
+                echo "xxx";
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],

@@ -232,6 +232,7 @@ final class CaptchaHandler
                     ]
                 )["out"], true);
                 $cdata["delete_msg"][] = $o["result"]["message_id"];
+                file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
             }
             return true;
         }

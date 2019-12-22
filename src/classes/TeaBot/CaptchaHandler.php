@@ -113,14 +113,14 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
-                Exe::sendMessage(
+                $kickMsg = json_decode(Exe::sendMessage(
                     [
                         "force_reply" => true,
                         "chat_id" => $this->data["chat_id"],
                         "text" => $mention." has been kicked from the group due to failed to answer the captcha.",
                         "parse_mode" => "HTML"
                     ]
-                );
+                ), true)["result"]["message_id"];
                 unlink($fdc);
                 Exe::deleteMessage(
                     [
@@ -137,6 +137,12 @@ final class CaptchaHandler
                         ]
                     );
                 }
+                $o = Exe::deleteMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" =>$kickMsg
+                    ]
+                );
                 Exe::unbanChatMember($x);
                 exit;
             }
@@ -269,7 +275,7 @@ final class CaptchaHandler
                     ]
                 );
             }
-            sleep(30);
+            sleep(10);
 
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

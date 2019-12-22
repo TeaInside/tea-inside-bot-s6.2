@@ -127,14 +127,7 @@ final class CaptchaHandler
                         "message_id" =>  $captchaMsg
                     ]
                 );
-                foreach ($cdata["delete_msg"] as $msgId) {
-                    $o = Exe::deleteMessage(
-                        [
-                            "chat_id" => $this->data["chat_id"],
-                            "message_id" => $msgId
-                        ]
-                    );
-                }
+                $this->clearDelQueue($this->data["chat_id"], $this->data["user_id"]);
                 if (isset($this->welcomeMessages[$v["id"]])) {
                     $o = Exe::deleteMessage(
                         [

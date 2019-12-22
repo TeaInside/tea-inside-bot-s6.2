@@ -120,7 +120,7 @@ final class CaptchaHandler
                         "text" => $mention." has been kicked from the group due to failed to answer the captcha.",
                         "parse_mode" => "HTML"
                     ]
-                ), true)["result"]["message_id"];
+                )["out"], true)["result"]["message_id"];
                 unlink($fdc);
                 Exe::deleteMessage(
                     [

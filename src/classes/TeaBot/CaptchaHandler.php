@@ -170,7 +170,7 @@ final class CaptchaHandler
         $fdc = "/tmp/telegram/captcha_handler/{$data["chat_id"]}/{$data["user_id"]}";
         if (file_exists($fdc)) {
             $cdata = json_decode(file_get_contents($fdc), true);
-            $this->msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
+            self::msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
 
@@ -231,7 +231,7 @@ final class CaptchaHandler
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 )["out"], true);
-                $this->msgDelQueue($data["chat_id"], $data["user_id"], $o["result"]["message_id"]);
+                self::msgDelQueue($data["chat_id"], $data["user_id"], $o["result"]["message_id"]);
                 file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
             }
             return true;

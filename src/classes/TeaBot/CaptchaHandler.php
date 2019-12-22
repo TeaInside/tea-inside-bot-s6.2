@@ -259,6 +259,7 @@ final class CaptchaHandler
         if (is_dir($dir)) {
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);
+            $scan = array_reverse($scan);
             foreach ($scan as $msgId) {
                 unlink($dir."/".$msgId);
                 Exe::deleteMessage(

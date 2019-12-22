@@ -269,6 +269,21 @@ final class CaptchaHandler
                     ]
                 );
             }
+            sleep(30);
+
+            $scan = scandir($dir);
+            unset($scan[0], $scan[1]);
+            $scan = array_reverse($scan);
+            foreach ($scan as $msgId) {
+                unlink($dir."/".$msgId);
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $chatId,
+                        "message_id" => $msgId
+                    ]
+                );
+            }
+
             rmdir($dir);
         }
     }

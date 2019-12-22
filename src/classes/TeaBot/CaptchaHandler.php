@@ -213,7 +213,7 @@ final class CaptchaHandler
                         "text" => "Wrong answer!",
                         "reply_to_message_id" => $data["msg_id"]
                     ]
-                ), true);
+                )["out"], true);
                 var_dump($o["result"]);
             }
             return true;

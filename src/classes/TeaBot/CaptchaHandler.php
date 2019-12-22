@@ -28,7 +28,7 @@ final class CaptchaHandler
     /**
      * @var string
      */
-    public static $deleteMsgHdir;
+    public $deleteMsgHdir;
 
     /**
      * @param \TeaBot\Data
@@ -41,11 +41,11 @@ final class CaptchaHandler
         $this->type = $type;
         $this->welcomeMessages = $welcomeMessages;
         $this->captchaDir = "/tmp/telegram/captcha_handler/{$this->data["chat_id"]}";
-        self::$deleteMsgHdir = $this->captchaDir."/delete_msg_hash";
+        $this->deleteMsgHdir = $this->captchaDir."/delete_msg_hash";
         is_dir("/tmp/telegram") or mkdir("/tmp/telegram");
         is_dir("/tmp/telegram/captcha_handler") or mkdir("/tmp/telegram/captcha_handler");
         is_dir($this->captchaDir) or mkdir($this->captchaDir);
-        is_dir(self::$deleteMsgHdir) or mkdir(self::$deleteMsgHdir);
+        is_dir($this->deleteMsgHdir) or mkdir($this->deleteMsgHdir);
     }
 
     /**
@@ -127,7 +127,14 @@ final class CaptchaHandler
                         "message_id" =>  $captchaMsg
                     ]
                 );
-                self::clearDelQueue($this->data["chat_id"], $this->data["user_id"]);
+                foreach ($cdata["delete_msg"] as $msgId) {
+                    $o = Exe::deleteMessage(
+                        [
+                            "chat_id" => $this->data["chat_id"],
+                            "message_id" => $msgId
+                        ]
+                    );
+                }
                 if (isset($this->welcomeMessages[$v["id"]])) {
                     $o = Exe::deleteMessage(
                         [
@@ -165,12 +172,12 @@ final class CaptchaHandler
      * @param \TeaBot\Data $data
      * @return bool
      */
-    public static function handleIncomingMessage(Data $data): bool
+    public function handleIncomingMessage(Data $data): bool
     {
         $fdc = "/tmp/telegram/captcha_handler/{$data["chat_id"]}/{$data["user_id"]}";
         if (file_exists($fdc)) {
             $cdata = json_decode(file_get_contents($fdc), true);
-            self::msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
+            $this->msgDelQueue($data["chat_id"], $data["user_id"], $data["msg_id"]);
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
 
@@ -206,7 +213,7 @@ final class CaptchaHandler
                         "message_id" => $cdata["captcha_msg"]
                     ]
                 );
-                self::clearDelQueue($data["chat_id"], $data["user_id"]);
+                $this->clearDelQueue($data["chat_id"], $data["user_id"]);
                 if (isset($cdata["welcome_msg"])) {
                     sleep(30);
                     $o = Exe::deleteMessage(
@@ -231,7 +238,7 @@ final class CaptchaHandler
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 )["out"], true);
-                self::msgDelQueue($data["chat_id"], $data["user_id"], $o["result"]["message_id"]);
+                $this->msgDelQueue($data["chat_id"], $data["user_id"], $o["result"]["message_id"]);
                 file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
             }
             return true;
@@ -239,16 +246,16 @@ final class CaptchaHandler
         return false;
     }
 
-    private static function msgDelQueue($chatId, $userId, $msgId)
+    private function msgDelQueue($chatId, $userId, $msgId)
     {
-        is_dir(self::$deleteMsgHdir."/".$chatId) or mkdir(self::$deleteMsgHdir."/".$chatId);
-        is_dir(self::$deleteMsgHdir."/".$chatId."/".$userId) or mkdir(self::$deleteMsgHdir."/".$chatId."/".$userId);
-        file_put_contents(self::$deleteMsgHdir."/".$chatId."/".$userId."/".$msgId, time());
+        is_dir($this->deleteMsgHdir."/".$chatId) or mkdir($this->deleteMsgHdir."/".$chatId);
+        is_dir($this->deleteMsgHdir."/".$chatId."/".$userId) or mkdir($this->deleteMsgHdir."/".$chatId."/".$userId);
+        file_put_contents($this->deleteMsgHdir."/".$chatId."/".$userId."/".$msgId, time());
     }
 
-    private static function clearDelQueue($chatId, $userId)
+    private function clearDelQueue($chatId, $userId)
     {
-        $dir = self::$deleteMsgHdir."/".$chatId."/".$userId;
+        $dir = $this->deleteMsgHdir."/".$chatId."/".$userId;
         if (is_dir($dir)) {
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

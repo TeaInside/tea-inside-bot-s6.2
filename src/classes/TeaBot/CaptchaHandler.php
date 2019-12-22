@@ -256,6 +256,7 @@ final class CaptchaHandler
     private function clearDelQueue($chatId, $userId)
     {
         $dir = $this->deleteMsgHdir."/".$chatId."/".$userId;
+        echo $dir;
         if (is_dir($dir)) {
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

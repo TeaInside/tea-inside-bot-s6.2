@@ -98,7 +98,8 @@ final class CaptchaHandler
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
-                sleep($cdata["timeout"]);
+                // sleep($cdata["timeout"]);
+                sleep(30);
                 if (!file_exists($fdc)) {
                     exit;
                 }

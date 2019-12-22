@@ -123,8 +123,8 @@ final class CaptchaHandler
                 foreach ($cdata["delete_msg"] as $msgId) {
                     $o = Exe::deleteMessage(
                         [
-                            "chat_id" => $msgId,
-                            "message_id" => $cdata["welcome_msg"]
+                            "chat_id" => $this->data["chat_id"],
+                            "message_id" => $msgId
                         ]
                     );
                 }
@@ -209,8 +209,8 @@ final class CaptchaHandler
                 foreach ($cdata["delete_msg"] as $msgId) {
                     $o = Exe::deleteMessage(
                         [
-                            "chat_id" => $msgId,
-                            "message_id" => $cdata["welcome_msg"]
+                            "chat_id" => $data["chat_id"],
+                            "message_id" => $msgId
                         ]
                     );
                 }

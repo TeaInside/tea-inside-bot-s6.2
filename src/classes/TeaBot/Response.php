@@ -60,7 +60,7 @@ final class Response
     {
         if (isset($this->data["msg_type"])) {
             if (isset($this->data["text"])) {
-                if (!CaptchaHandler::handleIncomingMessage($this->data)) {
+                if (!(new CaptchaHandler($this->data, "", []))->handleIncomingMessage($this->data)) {
                     $this->execRoutes();
                 }
             } else if (isset($this->data["new_chat_members"])) {

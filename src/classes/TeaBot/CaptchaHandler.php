@@ -122,6 +122,7 @@ final class CaptchaHandler
                     ]
                 );
                 unlink($fdc);
+                echo 123;
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],

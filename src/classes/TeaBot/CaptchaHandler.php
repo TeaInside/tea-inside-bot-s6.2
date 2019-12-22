@@ -28,7 +28,7 @@ final class CaptchaHandler
     /**
      * @var string
      */
-    public $deleteMsgHdir;
+    public static $deleteMsgHdir;
 
     /**
      * @param \TeaBot\Data
@@ -41,11 +41,11 @@ final class CaptchaHandler
         $this->type = $type;
         $this->welcomeMessages = $welcomeMessages;
         $this->captchaDir = "/tmp/telegram/captcha_handler/{$this->data["chat_id"]}";
-        $this->deleteMsgHdir = $this->captchaDir."/delete_msg_hash";
+        self::$deleteMsgHdir = $this->captchaDir."/delete_msg_hash";
         is_dir("/tmp/telegram") or mkdir("/tmp/telegram");
         is_dir("/tmp/telegram/captcha_handler") or mkdir("/tmp/telegram/captcha_handler");
         is_dir($this->captchaDir) or mkdir($this->captchaDir);
-        is_dir($this->deleteMsgHdir) or mkdir($this->deleteMsgHdir);
+        is_dir(self::$deleteMsgHdir) or mkdir(self::$deleteMsgHdir);
     }
 
     /**
@@ -241,14 +241,14 @@ final class CaptchaHandler
 
     private static function msgDelQueue($chatId, $userId, $msgId)
     {
-        is_dir($this->deleteMsgHdir."/".$chatId) or mkdir($this->deleteMsgHdir."/".$chatId);
-        is_dir($this->deleteMsgHdir."/".$chatId."/".$userId) or mkdir($this->deleteMsgHdir."/".$chatId."/".$userId);
-        file_put_contents($this->deleteMsgHdir."/".$chatId."/".$userId."/".$msgId, time());
+        is_dir(self::$deleteMsgHdir."/".$chatId) or mkdir(self::$deleteMsgHdir."/".$chatId);
+        is_dir(self::$deleteMsgHdir."/".$chatId."/".$userId) or mkdir(self::$deleteMsgHdir."/".$chatId."/".$userId);
+        file_put_contents(self::$deleteMsgHdir."/".$chatId."/".$userId."/".$msgId, time());
     }
 
     private static function clearDelQueue($chatId, $userId)
     {
-        $dir = $this->deleteMsgHdir."/".$chatId."/".$userId;
+        $dir = self::$deleteMsgHdir."/".$chatId."/".$userId;
         if (is_dir($dir)) {
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

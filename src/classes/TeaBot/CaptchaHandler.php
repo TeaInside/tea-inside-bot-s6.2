@@ -134,6 +134,7 @@ final class CaptchaHandler
             $cdata["pid"] = $pid;
             $cdata["captcha_msg"] = $captchaMsg;
             $cdata["welcome_msg"] = $this->welcomeMessages[$v["id"]] ?? null;
+            $cdata["delete_msg"] = [];
             if (file_exists($fdc)) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
                 posix_kill($ccdata["pid"], SIGKILL);
@@ -161,6 +162,7 @@ final class CaptchaHandler
         $fdc = "/tmp/telegram/captcha_handler/{$data["chat_id"]}/{$data["user_id"]}";
         if (file_exists($fdc)) {
             $cdata = json_decode(file_get_contents($fdc), true);
+            $cdata["delete_msg"][] = $data["msg_id"];
             $captchaFile = BASEPATH."/src/captcha/{$cdata["type"]}/{$cdata["type"]}_".sprintf("%04d.php", $cdata["n"]);
             if (self::checkAnswer($captchaFile, $data["text"], $cdata["extra"] ?? null)) {
 
@@ -205,13 +207,14 @@ final class CaptchaHandler
                     );
                 }
             } else {
-                Exe::sendMessage(
+                $o = json_decode(Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
                         "text" => "Wrong answer!",
                         "reply_to_message_id" => $data["msg_id"]
                     ]
-                );
+                ), true);
+                var_dump($o["result"]);
             }
             return true;
         }

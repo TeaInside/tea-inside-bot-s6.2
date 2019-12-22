@@ -128,7 +128,7 @@ final class CaptchaHandler
                         "message_id" =>  $captchaMsg
                     ]
                 );
-                $this->clearDelQueue($this->data["chat_id"], $cdata["user_id"]);
+                $this->clearDelQueue($this->data["chat_id"], $v["id"]);
                 if (isset($this->welcomeMessages[$v["id"]])) {
                     $o = Exe::deleteMessage(
                         [

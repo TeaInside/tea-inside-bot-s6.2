@@ -95,6 +95,7 @@ final class CaptchaHandler
                 if (!file_exists($fdc)) {
                     exit;
                 }
+                $cdata = json_decode(file_get_contents($fdc), true);
                 if (isset($cdata["banned_hash"])) {
                     unlink("/tmp/telegram/calculus_lock/".$cdata["banned_hash"]);
                 }
@@ -119,6 +120,14 @@ final class CaptchaHandler
                         "message_id" =>  $captchaMsg
                     ]
                 );
+                foreach ($cdata["delete_msg"] as $msgId) {
+                    $o = Exe::deleteMessage(
+                        [
+                            "chat_id" => $msgId,
+                            "message_id" => $cdata["welcome_msg"]
+                        ]
+                    );
+                }
                 if (isset($this->welcomeMessages[$v["id"]])) {
                     $o = Exe::deleteMessage(
                         [
@@ -197,6 +206,14 @@ final class CaptchaHandler
                         "message_id" => $cdata["captcha_msg"]
                     ]
                 );
+                foreach ($cdata["delete_msg"] as $msgId) {
+                    $o = Exe::deleteMessage(
+                        [
+                            "chat_id" => $msgId,
+                            "message_id" => $cdata["welcome_msg"]
+                        ]
+                    );
+                }
                 if (isset($cdata["welcome_msg"])) {
                     sleep(30);
                     $o = Exe::deleteMessage(
@@ -214,7 +231,7 @@ final class CaptchaHandler
                         "reply_to_message_id" => $data["msg_id"]
                     ]
                 )["out"], true);
-                var_dump($o["result"]);
+                $cdata["delete_msg"][] = $o["result"]["message_id"];
             }
             return true;
         }

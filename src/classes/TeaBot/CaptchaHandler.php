@@ -113,7 +113,6 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
-                echo "test";
                 Exe::sendMessage(
                     [
                         "force_reply" => true,
@@ -123,14 +122,13 @@ final class CaptchaHandler
                     ]
                 );
                 unlink($fdc);
-                echo "xxx";
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
                         "message_id" =>  $captchaMsg
                     ]
                 );
-                $this->clearDelQueue($this->data["chat_id"], $this->data["user_id"]);
+                $this->clearDelQueue($this->data["chat_id"], $cdata["user_id"]);
                 if (isset($this->welcomeMessages[$v["id"]])) {
                     $o = Exe::deleteMessage(
                         [
@@ -258,7 +256,6 @@ final class CaptchaHandler
     private function clearDelQueue($chatId, $userId)
     {
         $dir = $this->deleteMsgHdir."/".$chatId."/".$userId;
-        echo $dir;
         if (is_dir($dir)) {
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

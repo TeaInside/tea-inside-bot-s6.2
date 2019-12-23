@@ -98,8 +98,8 @@ final class CaptchaHandler
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
-                // sleep($cdata["timeout"]);
-                sleep(30);
+                sleep($cdata["timeout"]);
+                //sleep(30);
                 if (!file_exists($fdc)) {
                     exit;
                 }
@@ -140,7 +140,7 @@ final class CaptchaHandler
                 $o = Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
-                        "message_id" =>$kickMsg
+                        "message_id" => $kickMsg
                     ]
                 );
                 Exe::unbanChatMember($x);
@@ -276,6 +276,19 @@ final class CaptchaHandler
                 );
             }
             sleep(10);
+
+            $scan = scandir($dir);
+            unset($scan[0], $scan[1]);
+            $scan = array_reverse($scan);
+            foreach ($scan as $msgId) {
+                unlink($dir."/".$msgId);
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $chatId,
+                        "message_id" => $msgId
+                    ]
+                );
+            }
 
             $scan = scandir($dir);
             unset($scan[0], $scan[1]);

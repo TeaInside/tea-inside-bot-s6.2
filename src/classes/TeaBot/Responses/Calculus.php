@@ -131,7 +131,7 @@ final class Calculus extends ResponseFoundation
                     [
                         "chat_id" => $this->data["chat_id"],
                         "reply_to_message_id" => $this->data["msg_id"],
-                        "text" => "Cannot render image\n\nLaTex result:\n<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
+                        "text" => "Cannot render PNG image due internal error. Please report to @TeaInside.\n\nLaTex result:\n<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
                         "parse_mode" => "html"
                     ]
                 );

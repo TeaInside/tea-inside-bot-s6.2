@@ -137,13 +137,14 @@ final class CaptchaHandler
                         ]
                     );
                 }
+                Exe::unbanChatMember($x);
+                sleep(30);
                 $o = Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
                         "message_id" => $kickMsg
                     ]
                 );
-                Exe::unbanChatMember($x);
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],

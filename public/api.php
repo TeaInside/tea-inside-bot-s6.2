@@ -19,7 +19,7 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 				$msgId = $_GET["msg_id"];
 				$cdir = "/tmp/telegram/captcha_handler/{$chatId}";
 				$dmsgdir = $cdir."/delete_msg_hash/{$chatId}/{$userId}";
-				$f = $dmsgdir."/".$chatId."/".$userId."/".$msgId;
+				$f = $dmsgdir."/".$msgId;
 				if (file_exists($f)) {
 					@unlink($f);
 				} else {

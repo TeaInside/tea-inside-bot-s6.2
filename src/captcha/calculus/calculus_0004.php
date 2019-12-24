@@ -67,12 +67,12 @@ $hash = md5("=".$extra);
 is_dir("/tmp/telegram/calculus_lock/") or mkdir("/tmp/telegram/calculus_lock/");
 file_put_contents("/tmp/telegram/calculus_lock/".$hash, time());
 
-$msg = "<b>Please solve this captcha problem to make sure you are a human or you will be kicked in 5 minutes. Reply your answer to this message!</b>\n\n{$val} the following expression!";
+$msg = "<b>Please solve this captcha problem to make sure you are a human or you will be kicked in 10 minutes. Reply your answer to this message!</b>\n\n{$val} the following expression!";
 
 $photo = "https://api.teainside.org/latex_x.php?border=200&d=400&exp=".urlencode($latex);
 
 return [
-    "timeout" => 300,
+    "timeout" => 600,
     "extra" => $extra,
     "msg" => $msg,
     "photo" => $photo,

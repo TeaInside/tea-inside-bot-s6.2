@@ -98,8 +98,8 @@ final class CaptchaHandler
             $cdata["created_at"] = time();
             if (!($pid = pcntl_fork())) {
                 cli_set_process_title("captcha-handler {$this->data["chat_id"]} {$v["id"]} ".json_encode($cdata));
-                sleep($cdata["timeout"]);
-                //sleep(30);
+                // sleep($cdata["timeout"]);
+                sleep(30);
                 if (!file_exists($fdc)) {
                     exit;
                 }
@@ -113,6 +113,7 @@ final class CaptchaHandler
                         "user_id" => $v["id"]
                     ]
                 );
+                unlink($fdc);
                 $kickMsg = json_decode(Exe::sendMessage(
                     [
                         "force_reply" => true,
@@ -121,7 +122,6 @@ final class CaptchaHandler
                         "parse_mode" => "HTML"
                     ]
                 )["out"], true)["result"]["message_id"];
-                unlink($fdc);
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
@@ -160,6 +160,12 @@ final class CaptchaHandler
             if (file_exists($fdc)) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
                 posix_kill($ccdata["pid"], SIGKILL);
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $ccdata["captcha_msg"]
+                    ]
+                );
                 unlink($fdc);
             }
             file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
@@ -261,12 +267,14 @@ final class CaptchaHandler
 
     private function msgDelQueue($chatId, $userId, $msgId)
     {
-        is_dir($this->deleteMsgHdir."/".$chatId) or mkdir($this->deleteMsgHdir."/".$chatId);
-        is_dir($this->deleteMsgHdir."/".$chatId."/".$userId) or mkdir($this->deleteMsgHdir."/".$chatId."/".$userId);
+        is_dir($this->deleteMsgHdir."/".$chatId) or
+        mkdir($this->deleteMsgHdir."/".$chatId);
+        is_dir($this->deleteMsgHdir."/".$chatId."/".$userId) or
+        mkdir($this->deleteMsgHdir."/".$chatId."/".$userId);
         $f = $this->deleteMsgHdir."/".$chatId."/".$userId."/".$msgId;
         if (!file_exists($f.".lock")) {
             file_put_contents($f, time());
-        }   
+        }
     }
 
     private function clearDelQueue($chatId, $userId)

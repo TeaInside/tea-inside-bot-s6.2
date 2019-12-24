@@ -96,6 +96,15 @@ final class Calculus extends ResponseFoundation
             } else {
                 $reply = "(".$res["dym"]["originalEquation"].") \\;\\Rightarrow\\; (".$res["solutions"][0]["entire_result"].")";
             }
+            $reply = str_replace(
+                [
+                    "\xe2\x88\x82"
+                ],
+                [
+                    "\\partial"
+                ],
+                $reply
+            );
             $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($reply);
         } else {
             $reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";

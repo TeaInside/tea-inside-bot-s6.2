@@ -37,6 +37,24 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 				exit;
 			}
 		break;
+		case "del_que_msg":
+			if (isset($_GET["msg_id"], $_GET["chat_id"]) &&
+				is_string($_GET["msg_id"]) &&
+				is_string($_GET["chat_id"]) &&
+				is_string($_GET["user_id"])
+			) {
+				$userId = $_GET["user_id"];
+				$chatId = $_GET["chat_id"];
+				$msgId = $_GET["msg_id"];
+				$cdir = "/tmp/telegram/captcha_handler/{$chatId}";
+				$dmsgdir = $cdir."/delete_msg_hash/{$chatId}/{$userId}";
+				$f = $dmsgdir."/".$msgId;
+				@file_put_contents($f, time());
+				unset($_GET["key"]);
+				echo json_encode(["result" => "ok"]);
+				exit;
+			}
+		break;
 	}
 }
 http_response_code(400);

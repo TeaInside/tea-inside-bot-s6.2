@@ -101,7 +101,7 @@ final class Calculus extends ResponseFoundation
                     "\xe2\x88\x82"
                 ],
                 [
-                    "\\partial"
+                    "\\partial "
                 ],
                 $reply
             );

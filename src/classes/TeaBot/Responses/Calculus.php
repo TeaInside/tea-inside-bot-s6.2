@@ -98,10 +98,12 @@ final class Calculus extends ResponseFoundation
             }
             $reply = str_replace(
                 [
-                    "\xe2\x88\x82"
+                    "\xe2\x88\x82",
+                    "\xce\xb5"
                 ],
                 [
-                    "\\partial "
+                    "\\partial ",
+                    "\\epsilon "
                 ],
                 $reply
             );
@@ -122,7 +124,17 @@ final class Calculus extends ResponseFoundation
                     "parse_mode" => "html"
                 ]
             );
-            echo $o["out"];
+            $o = json_decode($o["out"], true);
+            if (!$o["ok"]) {
+                 Exe::sendMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "reply_to_message_id" => $this->data["msg_id"],
+                        "text" => "Cannot render image\n\nLaTex result:\n<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."<\pre>",
+                        "parse_mode" => "html"
+                    ]
+                );
+            }
         } else {
             Exe::sendMessage(
                 [

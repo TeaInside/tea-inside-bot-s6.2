@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 require __DIR__."/../bootstrap/autoload.php";
 
 loadConfig("api");
+loadConfig("telegram_bot");
 
 if ($_GET["key"] === "chart" && isset($_GET["action"])) {
     switch ($_GET["action"]) {
@@ -27,7 +28,6 @@ if ($_GET["key"] === "chart" && isset($_GET["action"])) {
 }
 
 if ($_GET["key"] === SRABATSROBOT_API_KEY && isset($_GET["action"])) {
-    loadConfig("telegram_bot");
     switch ($_GET["action"]) {
         case "asl_msg":
             if (isset($_GET["msg_id"], $_GET["chat_id"]) &&

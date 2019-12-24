@@ -49,7 +49,7 @@ final class Calculus extends ResponseFoundation
      * @param string $expr
      * @return bool
      */
-    public function ltx0(string $expr): bool
+    public function lxt0(string $expr): bool
     {
         $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($expr);
         $o = Exe::sendPhoto(
@@ -72,6 +72,7 @@ final class Calculus extends ResponseFoundation
                 ]
             );
         }
+        return true;
     }
 
     /**

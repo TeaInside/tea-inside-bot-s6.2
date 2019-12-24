@@ -107,6 +107,26 @@ trait ResponseRoutes
         }
 
         /**
+         * Google translate reply.
+         */
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:tl?r)\s(\S+)\s(\S+)$/Usi", $this->data["text"], $m) &&
+            (
+                (
+                    isset($this->container["reply"]["message"]["text"]) &&
+                    ($m[3] = trim($this->container["reply"]["message"]["text"]))
+                ) ||
+                (
+                    isset($this->container["reply"]["message"]["text"]) &&
+                    ($m[3] = trim($this->container["reply"]["message"]["caption"]))
+                )
+            )
+        ) {
+            if ($this->stExec(Responses\GoogleTranslate::class, "translate", [$m[1], $m[2], $m[3]])) {
+                return true;
+            }
+        }
+
+        /**
          * Calculus.
          */
         if (preg_match("/^(?:\/|\!|\~|\.)?([a-z\d]{4})(?:(?:[\\s\\n])+)(.+?)$/si", $this->data["text"], $m)) {

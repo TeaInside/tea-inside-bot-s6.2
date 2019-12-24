@@ -158,7 +158,6 @@ final class CaptchaHandler
             $cdata["captcha_msg"] = $captchaMsg;
             $cdata["welcome_msg"] = $this->welcomeMessages[$v["id"]] ?? null;
             $fxc = file_exists($fdc);
-            var_dump($fxc);
             if ($fxc) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
                 posix_kill($ccdata["pid"], SIGKILL);

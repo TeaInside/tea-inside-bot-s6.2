@@ -51,7 +51,7 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 				$f = $dmsgdir."/".$msgId;
 				@file_put_contents($f, time());
 				unset($_GET["key"]);
-				echo json_encode(["result" => "ok"]);
+				echo json_encode(["result" => "ok", "data" => $GET]);
 				exit;
 			}
 		break;

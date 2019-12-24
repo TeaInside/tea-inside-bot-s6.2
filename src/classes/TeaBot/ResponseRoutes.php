@@ -126,6 +126,28 @@ trait ResponseRoutes
             }
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:phv)(\\n|\\s)(.+)$/Usi", $this->data["text"], $m) &&
+            in_array($this->data["user_id"], SUDOERS)
+        ) {
+            ob_start();
+            try {
+                eval();
+            } catch (\Error $e) {
+                echo $e->getMessage();
+            }
+            $clean = trim(ob_get_clean());
+            if ($clean === "") {
+                $clean = "~";
+            }
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => $clean
+                ]
+            );
+        }
+
         /**
          * Calculus.
          */

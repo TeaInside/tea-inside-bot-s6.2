@@ -126,12 +126,12 @@ trait ResponseRoutes
             }
         }
 
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:phv)(\\n|\\s)(.+)$/Usi", $this->data["text"], $m) &&
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:phv)(?:\\n|\\s)(.+)$/Usi", $this->data["text"], $m) &&
             in_array($this->data["user_id"], SUDOERS)
         ) {
             ob_start();
             try {
-                eval();
+                eval($m[1]);
             } catch (\Error $e) {
                 echo $e->getMessage();
             }

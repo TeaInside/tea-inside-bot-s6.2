@@ -171,6 +171,7 @@ final class CaptchaHandler
                         "message_id" => $ccdata["captcha_msg"]
                     ]
                 );
+                isset($ccdata["welcome_msg"]) and
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],

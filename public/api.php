@@ -6,6 +6,7 @@ header("Content-Type: application/json");
 
 if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d791b") {
 	require __DIR__."/../bootstrap/autoload.php";
+	loadConfig("telegram_bot");
 	switch ($_GET["action"]) {
 		case "asl_msg":
 			if (isset($_GET["msg_id"], $_GET["chat_id"]) &&

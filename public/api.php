@@ -25,8 +25,6 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 				exit;
 			}
 		break;
-		is_numeric($msgId) and
-		break;
 	}
 }
 http_response_code(400);

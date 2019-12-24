@@ -103,6 +103,6 @@
         </div>
     </div>
 </center>
-<script type="text/javascript" src="/assets/js/q.js"></script>
+<script type="text/javascript" src="/assets/js/r.js"></script>
 </body>
 </html>

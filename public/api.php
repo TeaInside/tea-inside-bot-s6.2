@@ -24,7 +24,7 @@ if ($_GET["key"] === "chart" && isset($_GET["action"])) {
                 is_string($_GET["start_date"]) &&
                 is_string($_GET["end_date"])
             ) {
-                TeaBot\API\Chart\UserStats::messages($_GET["start_date"], $_GET["end_date"]);
+                TeaBot\API\Chart\Chart::userStats($_GET["start_date"], $_GET["end_date"]);
                 exit;
             }
             break;

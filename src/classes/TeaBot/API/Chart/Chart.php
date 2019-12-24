@@ -66,5 +66,74 @@ class Chart
 			}
 		}
 		echo json_encode($res);
+		DB::close();
+	}
+
+	/**
+	 * @param string $startDate
+	 * @param string $endDate
+	 */
+	public static function userStats(string $startDate, string $endDate)
+	{
+		$pdo = DB::pdo();
+		$st = $pdo->prepare("
+			SELECT * FROM (SELECT
+				1 as `k`,
+				`a`.`user_id`,
+				CONCAT(`b`.`first_name`,
+				  CASE WHEN `b`.`last_name` IS NULL THEN ''
+				  ELSE `b`.`last_name` END
+				) AS `name`,
+				`b`.`username`,
+				LOWER(CONCAT(HEX(`c`.`md5_sum`), '_',
+				   HEX(`c`.`sha1_sum`), '.', `c`.`extension`)
+				) AS `photo`,
+				COUNT(1) as `messages`
+			FROM `groups_messages` AS `a`
+			INNER JOIN `users` AS `b`
+			ON `b`.`user_id` = `a`.`user_id`
+			LEFT JOIN `files` AS `c`
+			ON `c`.`id` = `b`.`photo`
+			WHERE `group_id` = -1001162202776
+			AND `tmsg_datetime` >= :start_date
+			AND `tmsg_datetime` <= :end_date
+			GROUP BY `a`.`user_id`
+			ORDER BY `messages` DESC
+			LIMIT 10) x
+
+			UNION
+
+			SELECT * FROM (SELECT
+				2 as `k`,
+				`a`.`user_id`,
+				CONCAT(`b`.`first_name`,
+				  CASE WHEN `b`.`last_name` IS NULL THEN ''
+				  ELSE `b`.`last_name` END
+				) AS `name`,
+				`b`.`username`,
+				LOWER(CONCAT(HEX(`c`.`md5_sum`), '_',
+				   HEX(`c`.`sha1_sum`), '.', `c`.`extension`)
+				) AS `photo`,
+				COUNT(1) as `messages`
+			FROM `groups_messages` AS `a`
+			INNER JOIN `users` AS `b`
+			ON `b`.`user_id` = `a`.`user_id`
+			LEFT JOIN `files` AS `c`
+			ON `c`.`id` = `b`.`photo`
+			WHERE `group_id` = -1001120283944
+			AND `tmsg_datetime` >= :start_date
+			AND `tmsg_datetime` <= :end_date
+			GROUP BY `a`.`user_id`
+			ORDER BY `messages` DESC
+			LIMIT 10) y;
+		");
+		$st->execute(
+			[
+				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate)),
+				":end_date" => date("Y-m-d 23:59:59", strtotime($endDate))
+			]
+		);
+		echo json_encode($st->fetchAll(PDO::FETCH_NUM));
+		DB::close();
 	}
 }

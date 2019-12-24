@@ -126,7 +126,6 @@
         user_chart_l = 0;
 
     for (i = 0; i < 500; i++) {
-        dateObj.setDate(dateObj.getDate() - 1);
         month = (dateObj.getUTCMonth() + 1).toString();
         day = dateObj.getUTCDate().toString();
         year = dateObj.getUTCFullYear().toString();
@@ -144,6 +143,7 @@
         } else {
             end_date.innerHTML += "<option value=\""+x+"\">"+y+"</option>";
         }
+        dateObj.setDate(dateObj.getDate() - 1);
     }
 
     async function msgChart() {

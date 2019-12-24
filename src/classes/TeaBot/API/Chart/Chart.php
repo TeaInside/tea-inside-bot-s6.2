@@ -60,9 +60,9 @@ class Chart
 		foreach ($r as $k => $v) {
 			if ($v["k"] == 1) {
 				$res["labels"][] = date("d F Y", strtotime($v["date"]));
-				$res["datasets"][0]["data"] = $v["messages"];
+				$res["datasets"][0]["data"][] = $v["messages"];
 			} else {
-				$res["datasets"][1]["data"] = $v["messages"];
+				$res["datasets"][1]["data"][] = $v["messages"];
 			}
 		}
 		echo json_encode($res);

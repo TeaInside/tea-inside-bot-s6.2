@@ -82,7 +82,7 @@ class Chart
 				`a`.`user_id`,
 				CONCAT(`b`.`first_name`,
 				  CASE WHEN `b`.`last_name` IS NULL THEN ''
-				  ELSE `b`.`last_name` END
+				  ELSE CONCAT(' ', `b`.`last_name`) END
 				) AS `name`,
 				`b`.`username`,
 				LOWER(CONCAT(HEX(`c`.`md5_sum`), '_',
@@ -98,8 +98,7 @@ class Chart
 			AND `tmsg_datetime` >= :start_date
 			AND `tmsg_datetime` <= :end_date
 			GROUP BY `a`.`user_id`
-			ORDER BY `messages` DESC
-			LIMIT 10) x
+			ORDER BY `messages` DESC) x
 
 			UNION
 
@@ -108,7 +107,7 @@ class Chart
 				`a`.`user_id`,
 				CONCAT(`b`.`first_name`,
 				  CASE WHEN `b`.`last_name` IS NULL THEN ''
-				  ELSE `b`.`last_name` END
+				  ELSE CONCAT(' ', `b`.`last_name`) END
 				) AS `name`,
 				`b`.`username`,
 				LOWER(CONCAT(HEX(`c`.`md5_sum`), '_',
@@ -124,8 +123,7 @@ class Chart
 			AND `tmsg_datetime` >= :start_date
 			AND `tmsg_datetime` <= :end_date
 			GROUP BY `a`.`user_id`
-			ORDER BY `messages` DESC
-			LIMIT 10) y;
+			ORDER BY `messages` DESC) y;
 		");
 		$st->execute(
 			[

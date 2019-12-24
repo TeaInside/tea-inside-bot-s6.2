@@ -13,7 +13,7 @@ $timeout = 300; // 5 minutes.
 switch (rand(1, 2)) {
     case 1:
         $varList = ["x", "y", "z", "t", "u"];
-        $varList2 = ["\\alpha", "\\beta", "\\gamma", "\\theta"];
+        $varList2 = ["\\alpha", "\\beta", "\\gamma", "\\theta", "\\pi", "e"];
 
         // Get first bound variable.
         $varB1 = array_rand($varList2);

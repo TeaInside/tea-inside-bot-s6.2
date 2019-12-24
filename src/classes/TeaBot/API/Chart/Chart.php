@@ -98,7 +98,7 @@ class Chart
 			AND `tmsg_datetime` >= :start_date
 			AND `tmsg_datetime` <= :end_date
 			GROUP BY `a`.`user_id`
-			ORDER BY `messages` DESC) x
+			ORDER BY `messages` DESC, `name` ASC LIMIT 50) x
 
 			UNION
 
@@ -123,7 +123,7 @@ class Chart
 			AND `tmsg_datetime` >= :start_date
 			AND `tmsg_datetime` <= :end_date
 			GROUP BY `a`.`user_id`
-			ORDER BY `messages` DESC) y;
+			ORDER BY `messages` DESC, `name` ASC LIMIT 50) y;
 		");
 		$st->execute(
 			[

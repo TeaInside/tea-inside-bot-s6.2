@@ -3,63 +3,7 @@
 <head>
 	<script type="text/javascript" src="/assets/js/Chart.min.js"></script>
 	<title>Comparison Telegram Group Messages between Koding Teh and Tea Inside Indonesia</title>
-    <style type="text/css">
-        body {
-            background-color: #000;
-        }
-        * {
-            font-family: Arial;
-        }
-        #header {
-            margin-top: 10px;
-            margin-bottom: 40px;
-        }
-        #msg_chart_cage {
-            margin-top: 50px;
-            width: 90%;
-        }
-        #user_chart_cage {
-            margin-top: 20px;
-            width: 80%;
-            padding: 0px 10px 35px 10px;
-        }
-        .rebdr {
-            margin-top: 10px;
-            background-color: #fff;
-            border: 1px solid #000;
-        }
-        #selector {
-            width: 38%;
-            padding: 20px;
-            padding-top: 0px;
-        }
-        .ust {
-            height: 400px;
-            overflow-y: scroll;
-            overflow-x: scroll;
-            padding: 0px 10px 35px 10px;
-            border: 1px solid #000;
-            width: 43%;
-            display: inline-block;
-        }
-        .ustq {
-            border-collapse: collapse;
-        }
-        .ustq tr th {
-            padding: 5px 8px 5px 8px;
-        }
-        .tdx {
-            padding-right: 5px;
-            padding-left: 5px;
-        }
-        .ppim {
-            border: 2px solid #000;
-            border-radius: 100%;
-            width: 50px;
-            height: 50px;
-            background-color: #000;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/assets/css/chart.css"/>
 </head>
 <body>
 <center>

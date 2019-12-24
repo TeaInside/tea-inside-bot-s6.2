@@ -217,12 +217,13 @@
         ch.send();
     }
 
-    let update_click = function () {       
+    let update_click = function () {
+        msg_chart_l = user_chart_l = 0; 
         msgChart();
         userChart();
         update_charts.disabled = 1;
         let intv = setInterval(function () {
-            if (msg_chart_l) {
+            if (msg_chart_l && user_chart_l) {
                 update_charts.disabled = 0;
                 clearInterval(intv);
             }

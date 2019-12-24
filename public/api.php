@@ -40,5 +40,5 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 http_response_code(400);
 echo json_encode(["result" => "invalid parameter"]);
 
-https://telegram-bot.teainside.org/api.php?key={key}&chat_id={xxx}&msg_id={yyy}&user_id={zzz}
-fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d791b
+// https://telegram-bot.teainside.org/api.php?key={key}&chat_id={xxx}&msg_id={yyy}&user_id={zzz}
+// fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d791b

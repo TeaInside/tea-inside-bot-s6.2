@@ -3,6 +3,7 @@
 namespace TeaBot\API\Chart;
 
 use DB;
+use PDO;
 
 class Chart
 {

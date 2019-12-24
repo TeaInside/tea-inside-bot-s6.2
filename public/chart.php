@@ -126,9 +126,9 @@
         user_chart_l = 0;
 
     for (i = 0; i < 500; i++) {
-        month = (dateObj.getUTCMonth() + 1).toString();
-        day = dateObj.getUTCDate().toString();
-        year = dateObj.getUTCFullYear().toString();
+        month = (dateObj.getMonth() + 1).toString();
+        day = dateObj.getDate().toString();
+        year = dateObj.getFullYear().toString();
         if (day.length == 1) day = '0'+day[0];
         if (month.length == 1) month = '0'+month[0];
         x = year + "-" + month + "-" + day;
@@ -138,7 +138,7 @@
         } else {
             start_date.innerHTML += "<option value=\""+x+"\">"+y+"</option>";
         }
-        if (i == 1) {
+        if (i == 0) {
             end_date.innerHTML += "<option value=\""+x+"\" selected>"+y+"</option>";
         } else {
             end_date.innerHTML += "<option value=\""+x+"\">"+y+"</option>";

@@ -162,6 +162,12 @@ trait ResponseRoutes
                     }
                 break;
 
+                case "lxt1":
+                    if ($this->stExec(Responses\Calculus::class, "lxt1", [$m[2]])) {
+                        return true;  
+                    }
+                break;
+
                 default:
                 break;
             }

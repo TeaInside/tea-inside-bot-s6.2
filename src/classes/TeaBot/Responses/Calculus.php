@@ -49,9 +49,39 @@ final class Calculus extends ResponseFoundation
      * @param string $expr
      * @return bool
      */
-    public function lxt0(string $expr): bool
+    public function lxt1(string $expr): bool
     {
         $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($expr);
+        $o = Exe::sendPhoto(
+            [
+                "chat_id" => $this->data["chat_id"],
+                "reply_to_message_id" => $this->data["msg_id"],
+                "photo" => $photo,
+                "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
+                "parse_mode" => "html"
+            ]
+        );
+        $o = json_decode($o["out"], true);
+        if (!$o["ok"]) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => "Syntax error detected!",
+                    "parse_mode" => "html"
+                ]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * @param string $expr
+     * @return bool
+     */
+    public function lxt0(string $expr): bool
+    {
+        $photo = "https://api.teainside.org/latex_x.php?d=600&exp=".urlencode($expr);
         $o = Exe::sendPhoto(
             [
                 "chat_id" => $this->data["chat_id"],

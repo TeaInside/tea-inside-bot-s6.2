@@ -6,7 +6,27 @@ require __DIR__."/../bootstrap/autoload.php";
 
 loadConfig("api");
 
-if ($_GET["key"] === SRABATSROBOT_API_KEY) {
+if ($_GET["key"] === "chart" && isset($_GET["action"])) {
+    switch ($_GET["action"]) {
+        case 'msg':
+            if (isset($_GET["start_date"], $_GET["end_date"]) &&
+                is_string($_GET["start_date"]) &&
+                is_string($_GET["end_date"])
+            ) {
+                TeaBot\API\Chart\Chart::messages($_GET["start_date"], $_GET["end_date"]);
+                exit;
+            }
+            break;
+        
+        default:
+            break;
+    }
+
+
+    exit;
+}
+
+if ($_GET["key"] === SRABATSROBOT_API_KEY && isset($_GET["action"])) {
     loadConfig("telegram_bot");
     switch ($_GET["action"]) {
         case "asl_msg":

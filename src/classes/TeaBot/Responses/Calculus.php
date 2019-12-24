@@ -105,7 +105,9 @@ final class Calculus extends ResponseFoundation
                 ],
                 $reply
             );
+
             $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($reply);
+            echo $reply."\n".$photo;
         } else {
             $reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
         }

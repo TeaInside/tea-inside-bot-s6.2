@@ -99,11 +99,11 @@ final class Calculus extends ResponseFoundation
             $reply = str_replace(
                 [
                     "\xe2\x88\x82",
-                    "\xce\xb5"
+                  //  "\xce\xb5"
                 ],
                 [
                     "\\partial ",
-                    "\\epsilon "
+                   // "\\epsilon "
                 ],
                 $reply
             );

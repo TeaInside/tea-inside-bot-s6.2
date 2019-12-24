@@ -10,7 +10,7 @@ loadConfig("telegram_bot");
 if ($_GET["key"] === "chart" && isset($_GET["action"])) {
     header("Access-Control-Allow-Origin: *");
     switch ($_GET["action"]) {
-        case 'msg':
+        case "msg":
             if (isset($_GET["start_date"], $_GET["end_date"]) &&
                 is_string($_GET["start_date"]) &&
                 is_string($_GET["end_date"])
@@ -19,7 +19,16 @@ if ($_GET["key"] === "chart" && isset($_GET["action"])) {
                 exit;
             }
             break;
-        
+        case "user_stats":
+            if (isset($_GET["start_date"], $_GET["end_date"]) &&
+                is_string($_GET["start_date"]) &&
+                is_string($_GET["end_date"])
+            ) {
+                TeaBot\API\Chart\UserStats::messages($_GET["start_date"], $_GET["end_date"]);
+                exit;
+            }
+            break;
+            break;
         default:
             break;
     }

@@ -139,13 +139,15 @@ trait ResponseRoutes
             if ($clean === "") {
                 $clean = "~";
             }
-            Exe::sendMessage(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => $clean
-                ]
-            );
+            if (!preg_match("/no_reply/", $m[1])) {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "reply_to_message_id" => $this->data["msg_id"],
+                        "text" => $clean
+                    ]
+                );
+            }
         }
 
         /**

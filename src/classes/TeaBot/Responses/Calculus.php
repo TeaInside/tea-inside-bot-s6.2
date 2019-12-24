@@ -67,7 +67,7 @@ final class Calculus extends ResponseFoundation
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => "Syntax error detected!",
+                    "text" => "Syntax error!",
                     "parse_mode" => "html"
                 ]
             );
@@ -97,7 +97,7 @@ final class Calculus extends ResponseFoundation
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => "Syntax error detected!",
+                    "text" => "Syntax error!",
                     "parse_mode" => "html"
                 ]
             );

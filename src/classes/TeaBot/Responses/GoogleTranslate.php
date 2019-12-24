@@ -39,7 +39,7 @@ final class GoogleTranslate extends ResponseFoundation
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
-                    "text" => $e->__toString(),
+                    "text" => $e->getMessage(),
                     "reply_to_message_id" => $this->data["msg_id"],
                 ]
             );

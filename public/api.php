@@ -8,6 +8,7 @@ loadConfig("api");
 loadConfig("telegram_bot");
 
 if ($_GET["key"] === "chart" && isset($_GET["action"])) {
+    header("Access-Control-Allow-Origin: *");
     switch ($_GET["action"]) {
         case 'msg':
             if (isset($_GET["start_date"], $_GET["end_date"]) &&

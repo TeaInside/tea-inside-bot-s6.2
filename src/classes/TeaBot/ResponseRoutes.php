@@ -109,16 +109,15 @@ trait ResponseRoutes
         /**
          * Google translate reply.
          */
-        var_dump($this->container["reply"], preg_match("/^(?:\/|\!|\~|\.)?(?:tl?r)\s(\S+)\s(\S+)$/Usi", $this->data["text"], $m));
         if (preg_match("/^(?:\/|\!|\~|\.)?(?:tl?r)\s(\S+)\s(\S+)$/Usi", $this->data["text"], $m) &&
             (
                 (
-                    isset($this->container["reply"]["message"]["text"]) &&
-                    ($m[3] = trim($this->container["reply"]["message"]["text"]))
+                    isset($this->data["reply"]["message"]["text"]) &&
+                    ($m[3] = trim($this->data["reply"]["message"]["text"]))
                 ) ||
                 (
-                    isset($this->container["reply"]["message"]["text"]) &&
-                    ($m[3] = trim($this->container["reply"]["message"]["caption"]))
+                    isset($this->data["reply"]["message"]["text"]) &&
+                    ($m[3] = trim($this->data["reply"]["message"]["caption"]))
                 )
             )
         ) {

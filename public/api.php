@@ -2,11 +2,12 @@
 
 header("Content-Type: application/json");
 
+require __DIR__."/../bootstrap/autoload.php";
 
 loadConfig("api");
 
 if ($_GET["key"] === SRABATSROBOT_API_KEY) {
-	require __DIR__."/../bootstrap/autoload.php";
+	
 	loadConfig("telegram_bot");
 	switch ($_GET["action"]) {
 		case "asl_msg":

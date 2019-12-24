@@ -49,9 +49,9 @@ if ($_GET["key"] === "fd2554a4ea62d1804805b89b2ea823a0ea17980fd56fadcbadac2f8d79
 				$cdir = "/tmp/telegram/captcha_handler/{$chatId}";
 				$dmsgdir = $cdir."/delete_msg_hash/{$chatId}/{$userId}";
 				$f = $dmsgdir."/".$msgId;
-				@file_put_contents($f, time());
+				file_put_contents($f, time());
 				unset($_GET["key"]);
-				echo json_encode(["result" => "ok", "data" => $_GET]);
+				echo json_encode(["result" => "ok", "data" => $_GET])."\n\n".$f;
 				exit;
 			}
 		break;

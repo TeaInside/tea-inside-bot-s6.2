@@ -92,10 +92,10 @@ async function userChart(){
         for (i in j) {
             if (j[i][0] == 1) {
                 rt += parseInt(j[i][5]);
-                r += '<tr><td align="center">'+(nr++)+'</td><td><img class="ppim" src="https://telegram-bot.teainside.org/storage/files/'+j[i][4]+'"/></td><td class="tdx">'+escapeHtml(j[i][2])+'</td><td align="center">'+j[i][5]+'</td></tr>';
+                r += '<tr><td align="center">'+(nr++)+'</td><td align="center"><img class="ppim" src="https://telegram-bot.teainside.org/storage/files/'+j[i][4]+'"/></td><td class="tdx">'+escapeHtml(j[i][2])+'</td><td align="center">'+j[i][5]+'</td></tr>';
             } else {
                 lt += parseInt(j[i][5]);
-                l += '<tr><td align="center">'+(nl++)+'</td><td><img class="ppim" src="https://telegram-bot.teainside.org/storage/files/'+j[i][4]+'"/></td><td class="tdx">'+escapeHtml(j[i][2])+'</td><td align="center">'+j[i][5]+'</td></tr>';
+                l += '<tr><td align="center">'+(nl++)+'</td><td align="center"><img class="ppim" src="https://telegram-bot.teainside.org/storage/files/'+j[i][4]+'"/></td><td class="tdx">'+escapeHtml(j[i][2])+'</td><td align="center">'+j[i][5]+'</td></tr>';
 
             }
         }

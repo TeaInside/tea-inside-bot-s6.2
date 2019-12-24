@@ -53,6 +53,7 @@
             padding-left: 5px;
         }
         .ppim {
+            border: 2px solid #000;
             border-radius: 100%;
             width: 50px;
             height: 50px;

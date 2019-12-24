@@ -13,7 +13,7 @@ class Chart
 	public static function messages(string $startDate, string $endDate)
 	{
 		$pdo = DB::pdo();
-		$st->prepare("
+		$st = $pdo->prepare("
 			SELECT 1 as `k`, COUNT(1) as `messages`, DATE(`tmsg_datetime`) as `date` FROM `groups_messages`
 			WHERE `group_id` = -1001162202776 AND
 			`tmsg_datetime` >= :start_date AND

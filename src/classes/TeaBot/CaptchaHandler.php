@@ -157,18 +157,27 @@ final class CaptchaHandler
             $cdata["pid"] = $pid;
             $cdata["captcha_msg"] = $captchaMsg;
             $cdata["welcome_msg"] = $this->welcomeMessages[$v["id"]] ?? null;
-            if (file_exists($fdc)) {
+            $fxc = file_exists($fdc);
+            if ($fxc) {
                 $ccdata = json_decode(file_get_contents($fdc), true);
                 posix_kill($ccdata["pid"], SIGKILL);
+                unlink($fdc);
+            }
+            file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
+            if ($fxc) {
                 Exe::deleteMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
                         "message_id" => $ccdata["captcha_msg"]
                     ]
                 );
-                unlink($fdc);
+                Exe::deleteMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $ccdata["welcome_msg"]
+                    ]
+                );
             }
-            file_put_contents($fdc, json_encode($cdata, JSON_UNESCAPED_SLASHES));
         }
     }
 

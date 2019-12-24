@@ -125,6 +125,7 @@ final class Calculus extends ResponseFoundation
                 ]
             );
             $o = json_decode($o["out"], true);
+            var_dump($o);
             if (!$o["ok"]) {
                  Exe::sendMessage(
                     [

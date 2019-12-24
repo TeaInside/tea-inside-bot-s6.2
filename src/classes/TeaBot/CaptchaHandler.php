@@ -263,7 +263,10 @@ final class CaptchaHandler
     {
         is_dir($this->deleteMsgHdir."/".$chatId) or mkdir($this->deleteMsgHdir."/".$chatId);
         is_dir($this->deleteMsgHdir."/".$chatId."/".$userId) or mkdir($this->deleteMsgHdir."/".$chatId."/".$userId);
-        file_put_contents($this->deleteMsgHdir."/".$chatId."/".$userId."/".$msgId, time());
+        $f = $this->deleteMsgHdir."/".$chatId."/".$userId."/".$msgId;
+        if (!file_exists($f.".lock")) {
+            file_put_contents($f, time());
+        }   
     }
 
     private function clearDelQueue($chatId, $userId)
@@ -275,7 +278,7 @@ final class CaptchaHandler
             $scan = array_reverse($scan);
             foreach ($scan as $msgId) {
                 unlink($dir."/".$msgId);
-                Exe::deleteMessage(
+                is_numeric($msgId) and Exe::deleteMessage(
                     [
                         "chat_id" => $chatId,
                         "message_id" => $msgId
@@ -289,7 +292,7 @@ final class CaptchaHandler
             $scan = array_reverse($scan);
             foreach ($scan as $msgId) {
                 unlink($dir."/".$msgId);
-                Exe::deleteMessage(
+                is_numeric($msgId) and Exe::deleteMessage(
                     [
                         "chat_id" => $chatId,
                         "message_id" => $msgId
@@ -302,7 +305,7 @@ final class CaptchaHandler
             $scan = array_reverse($scan);
             foreach ($scan as $msgId) {
                 unlink($dir."/".$msgId);
-                Exe::deleteMessage(
+                is_numeric($msgId) and Exe::deleteMessage(
                     [
                         "chat_id" => $chatId,
                         "message_id" => $msgId

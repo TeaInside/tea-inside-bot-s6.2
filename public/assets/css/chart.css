@@ -12,18 +12,26 @@ body {
     margin-top: 50px;
     width: 90%;
 }
-#user_chart_cage {
+#user_chart_cage, #words_cloud_cage {
     margin-top: 20px;
-    width: 80%;
+    width: 90%;
     padding: 0px 10px 35px 10px;
 }
+.scl {
+    display: inline-block;
+    margin: 0px;
+}
+#words_cloud_cage {
+    margin-bottom: 200px;
+}
+
 .rebdr {
     margin-top: 10px;
     background-color: #fff;
     border: 1px solid #000;
 }
 #selector {
-    width: 38%;
+    width: 60%;
     padding: 20px;
     padding-top: 0px;
 }

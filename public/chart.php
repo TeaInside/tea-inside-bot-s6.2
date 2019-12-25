@@ -14,7 +14,8 @@
     <div class="rebdr" id="selector">
         <h3>Select Date Range:</h3>
         <div>
-            Start Date: <select id="start_date"></select>&nbsp;&nbsp;&nbsp;End Date: <select id="end_date"></select>
+            <div style="margin-right:20px;" class="scl">Start Date: <select id="start_date"></select></div>
+            <div style="margin-left:20px;" class="scl">End Date: <select id="end_date"></select></div>
         </div>
         <div style="margin-top:10px;">
             <button style="cursor:pointer;" id="update_charts">Update Charts</button>
@@ -30,20 +31,31 @@
     </div>
 
     <div class="rebdr" id="user_chart_cage">
-        <h2>Users Stats</h2>
+        <h1>Users Stats</h1>
         <h1 id="user_chart_loading">Loading...</h1>
         <div style="display:none" id="user_char_ctx">
             <div class="ust">
                 <h3>Koding Teh</h3>
-                <table id="koding_teh_user_ctx" class="ustq" border="1">
-                    
-                </table>
+                <table id="koding_teh_user_ctx" class="ustq" border="1"></table>
             </div>
             <div class="ust">
                 <h3>Tea Inside Indonesia</h3>
-                <table id="tea_inside_user_ctx" class="ustq" border="1">
-                    <tr><th>No.</th><th>Name</th><th>Messages</th></tr>
-                </table>
+                <table id="tea_inside_user_ctx" class="ustq" border="1"></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="rebdr" id="words_cloud_cage">
+        <h1>Top 20 Words Cloud</h1>
+        <h1 id="words_cloud_loading">Loading...</h1>
+        <div style="display:none" id="words_cloud_ctx">
+            <div class="ust">
+                <h3>Koding Teh</h3>
+                <table id="koding_teh_words_ctx" class="ustq" border="1"></table>
+            </div>
+            <div class="ust">
+                <h3>Tea Inside Indonesia</h3>
+                <table id="tea_inside_words_ctx" class="ustq" border="1"></table>
             </div>
         </div>
     </div>

@@ -152,6 +152,12 @@ class Chart
 			GROUP BY `a`.`user_id`
 			ORDER BY `messages` DESC, `name` ASC LIMIT 50) y;
 		");
+		if (strlen($startDate) <= 7) {
+			$startDate .= " 00:00:00";
+		}
+		if (strlen($endDate) <= 7) {
+			$endDate .= " 23:59:59";
+		}
 		$st->execute(
 			[
 				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate) - $tz["sec"]),

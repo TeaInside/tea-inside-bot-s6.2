@@ -11,7 +11,7 @@ class Chart
 	 * @param string $startDate
 	 * @param string $endDate
 	 */
-	public static function messages(string $startDate, string $endDate)
+	public static function messages(string $startDate, string $endDate, float $timeZone = 7)
 	{
 		$pdo = DB::pdo();
 		$st = $pdo->prepare("
@@ -31,8 +31,8 @@ class Chart
 		");
 		$st->execute(
 			[
-				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate)),
-				":end_date" => date("Y-m-d 23:59:59", strtotime($endDate))
+				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate) - ($timeZone * 3600)),
+				":end_date" => date("Y-m-d 23:59:59", strtotime($endDate) - ($timeZone * 3600))
 			]
 		);
 		$res = [

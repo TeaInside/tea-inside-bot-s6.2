@@ -18,8 +18,8 @@ class Chart
 		$r["hz"] = sprintf(
 			"%s%02d:%02d",
 			$timeZone >= 0 ? "+" : "-",
-			abs($r["sec"]),
-			abs((($r["sec"] * 3600) % 3600) / 60)
+			abs($timeZone),
+			abs((($r["sec"]) % 3600) / 60)
 		);
 		return $r;
 	}

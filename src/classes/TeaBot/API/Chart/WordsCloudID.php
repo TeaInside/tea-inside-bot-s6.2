@@ -45,9 +45,13 @@ class WordsCloudID
 			}
 			$iptr++;
 		}
-		$insertQuery[strlen($insertQuery) - 1] = ";";
-		$exec[":created_at"] = date("Y-m-d H:i:s");
-		$pdo->prepare($insertQuery)->execute($exec);
+
+		if ($wptr > 0) {
+			$insertQuery[strlen($insertQuery) - 1] = ";";
+			$exec[":created_at"] = date("Y-m-d H:i:s");
+			$pdo->prepare($insertQuery)->execute($exec);
+		}
+		
 	ret:
 		echo "Total words: ".$wptr."\n";
 		echo "Total messages: ".$iptr."\n";

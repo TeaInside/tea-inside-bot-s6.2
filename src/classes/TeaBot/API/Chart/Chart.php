@@ -48,13 +48,12 @@ class Chart
 			`tmsg_datetime` <= :end_date
 			GROUP BY `date`
 		");
-		if (strlen($startDate) <= 7) {
+		if (strlen($startDate) <= 10) {
 			$startDate .= " 00:00:00";
 		}
-		if (strlen($endDate) <= 7) {
+		if (strlen($endDate) <= 10) {
 			$endDate .= " 23:59:59";
 		}
-		var_dump($startDate, $endDate, $tz);
 		$st->execute(
 			[
 				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - $tz["sec"]),
@@ -153,10 +152,10 @@ class Chart
 			GROUP BY `a`.`user_id`
 			ORDER BY `messages` DESC, `name` ASC LIMIT 50) y;
 		");
-		if (strlen($startDate) <= 7) {
+		if (strlen($startDate) <= 10) {
 			$startDate .= " 00:00:00";
 		}
-		if (strlen($endDate) <= 7) {
+		if (strlen($endDate) <= 10) {
 			$endDate .= " 23:59:59";
 		}
 		$st->execute(

@@ -21,7 +21,7 @@ class WordsCloudID
 			ON `a`.`id` = `b`.`group_message_id`
 			WHERE `a`.`group_id` = :group_id
 			AND `b`.`group_message_id` IS NULL
-			LIMIT 500;
+			LIMIT 3000;
 		");
 		$st->execute([":group_id" => $groupId]);
 		$iptr = 0;

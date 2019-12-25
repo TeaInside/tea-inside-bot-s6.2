@@ -29,10 +29,16 @@ class Chart
 			`tmsg_datetime` <= :end_date
 			GROUP BY `date`
 		");
+		if (strlen($startDate) <= 7) {
+			$startDate .= " 00:00:00";
+		}
+		if (strlen($endDate) <= 7) {
+			$endDate .= " 23:59:59";
+		}
 		$st->execute(
 			[
-				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate) - ($timeZone * 3600)),
-				":end_date" => date("Y-m-d 23:59:59", strtotime($endDate) - ($timeZone * 3600))
+				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - ($timeZone * 3600)),
+				":end_date" => date("Y-m-d H:i:s", strtotime($endDate) - ($timeZone * 3600))
 			]
 		);
 		$res = [

@@ -54,6 +54,7 @@ class Chart
 		if (strlen($endDate) <= 7) {
 			$endDate .= " 23:59:59";
 		}
+		var_dump($startDate, $endDate, $tz);
 		$st->execute(
 			[
 				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - $tz["sec"]),

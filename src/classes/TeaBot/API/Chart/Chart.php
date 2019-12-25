@@ -167,4 +167,56 @@ class Chart
 		echo json_encode($st->fetchAll(PDO::FETCH_NUM));
 		DB::close();
 	}
+
+	/**
+	 * @param string $startDate
+	 * @param string $endDate
+	 * @param float  $timeZone
+	 */
+	public static function wordsCloud(string $startDate, string $endDate, float $timeZone = 7)
+	{
+		$pdo = DB::pdo();
+		$tz = self::rTimezone($timeZone);
+		$st = $pdo->prepare("
+			SELECT * FROM (SELECT
+				1 as `k`,
+			 	`a`.`word`,
+				COUNT(1) AS `amount`
+			FROM `id_1n_words_cloud` AS `a`
+			INNER JOIN `groups_messages` AS `b`
+			ON `b`.`id` = `a`.`group_message_id`
+			WHERE `b`.`group_id` = -1001162202776
+				AND `tmsg_datetime` >= :start_date
+				AND `tmsg_datetime` <= :end_date
+			GROUP BY `word` ORDER BY `amount` DESC LIMIT 20) x
+
+			UNION
+
+			SELECT * FROM (SELECT
+				2 as `k`,
+			 	`a`.`word`,
+				COUNT(1) AS `amount`
+			FROM `id_1n_words_cloud` AS `a`
+			INNER JOIN `groups_messages` AS `b`
+			ON `b`.`id` = `a`.`group_message_id`
+			WHERE `b`.`group_id` = -1001120283944
+				AND `tmsg_datetime` >= :start_date
+				AND `tmsg_datetime` <= :end_date
+			GROUP BY `word` ORDER BY `amount` DESC LIMIT 20) y;
+		");
+		if (strlen($startDate) <= 10) {
+			$startDate .= " 00:00:00";
+		}
+		if (strlen($endDate) <= 10) {
+			$endDate .= " 23:59:59";
+		}
+		$st->execute(
+			[
+				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - $tz["sec"]),
+				":end_date" => date("Y-m-d H:i:s", strtotime($endDate) - $tz["sec"])
+			]
+		);
+		echo json_encode($st->fetchAll(PDO::FETCH_NUM));
+		DB::close();
+	}
 }

@@ -28,6 +28,14 @@ if ($_GET["key"] === "chart" && isset($_GET["action"])) {
                 exit;
             }
             break;
+        case "words_cloud":
+            if (isset($_GET["start_date"], $_GET["end_date"]) &&
+                is_string($_GET["start_date"]) &&
+                is_string($_GET["end_date"])
+            ) {
+                TeaBot\API\Chart\Chart::wordsCloud($_GET["start_date"], $_GET["end_date"]);
+                exit;
+            }
             break;
         default:
             break;

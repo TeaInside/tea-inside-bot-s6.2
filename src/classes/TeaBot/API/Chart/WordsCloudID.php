@@ -34,14 +34,18 @@ class WordsCloudID
 			}
 			$r[1] = preg_replace("/[^a-zA-Z0-9\s]/", " ", strtolower(trim($r[1])));
 			$r[1] = explode(" ", $r[1]);
-			$exec[":group_message_id_{$iptr}"] = $r[0];
+			$hasWord = false;
 			foreach ($r[1] as $v) {
 				if ((strlen($v) <= 3) || (strlen($v) > 64) || (array_search($v, self::STOPWORDS) !== false)) {
 					continue;
 				}
+				$hasWord = true;
 				$insertQuery .= "(:group_message_id_{$iptr}, :word_{$wptr}, :created_at),";
 				$exec[":word_{$wptr}"] = $v;
 				$wptr++;
+			}
+			if ($hasWord) {
+				$exec[":group_message_id_{$iptr}"] = $r[0];
 			}
 			$iptr++;
 		}

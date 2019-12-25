@@ -30,7 +30,7 @@ for (i = 0; i < 500; i++) {
     if (month.length == 1) month = '0'+month[0];
     x = year + "-" + month + "-" + day;
     y = year + " " + monthNames[parseInt(month) - 1] + " " + day;
-    if (i == 12) {
+    if (i == 21) {
         start_date.innerHTML += "<option value=\""+x+"\" selected>"+y+"</option>";
     } else {
         start_date.innerHTML += "<option value=\""+x+"\">"+y+"</option>";

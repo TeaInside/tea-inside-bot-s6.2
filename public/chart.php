@@ -60,6 +60,6 @@
         </div>
     </div>
 </center>
-<script type="text/javascript" src="/assets/js/r.js?x=1"></script>
+<script type="text/javascript" src="/assets/js/r.js?x=2"></script>
 </body>
 </html>

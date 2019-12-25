@@ -22,7 +22,7 @@ let dateObj = new Date(), month, day, year, x, y, i,
     user_chart_l = 0,
     words_cloud_l = 0;
 
-for (i = 0; i < 500; i++) {
+for (i = 0; i < 200; i++) {
     month = (dateObj.getMonth() + 1).toString();
     day = dateObj.getDate().toString();
     year = dateObj.getFullYear().toString();

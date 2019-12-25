@@ -3,7 +3,7 @@
 <head>
 	<script type="text/javascript" src="/assets/js/Chart.min.js"></script>
 	<title>Comparison Telegram Group Messages between Koding Teh and Tea Inside Indonesia</title>
-    <link rel="stylesheet" type="text/css" href="/assets/css/chart.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/chart.css?x=1"/>
 </head>
 <body>
 <center>
@@ -60,6 +60,6 @@
         </div>
     </div>
 </center>
-<script type="text/javascript" src="/assets/js/r.js"></script>
+<script type="text/javascript" src="/assets/js/r.js?x=1"></script>
 </body>
 </html>

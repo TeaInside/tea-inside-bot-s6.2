@@ -15,25 +15,20 @@ class Chart
 	{
 		$pdo = DB::pdo();
 		$st = $pdo->prepare("
-			SELECT
-				1 as `k`, COUNT(1) as `messages`,
-				DATE(CONVERT_TZ(`tmsg_datetime`, '+00:00','+07:00')) AS `date`
-			FROM `groups_messages`
+			SELECT 1 as `k`, COUNT(1) as `messages`, DATE(CONVERT_TZ(`tmsg_datetime`, '+00:00','+07:00')) as `date` FROM `groups_messages`
 			WHERE `group_id` = -1001162202776 AND
 			`tmsg_datetime` >= :start_date AND
 			`tmsg_datetime` <= :end_date
 			GROUP BY `date`
 
-			UNION
+			UNION 
 
-			SELECT
-				2 as `k`, COUNT(1) as `messages`,
-				DATE(CONVERT_TZ(`tmsg_datetime`, '+00:00','+07:00')) AS `date`
+			SELECT 2 as `k`, COUNT(1) as `messages`, DATE(CONVERT_TZ(`tmsg_datetime`, '+00:00','+07:00')) as `date` FROM `groups_messages`
 			WHERE `group_id` = -1001120283944 AND
 			`tmsg_datetime` >= :start_date AND
 			`tmsg_datetime` <= :end_date
-			GROUP BY `date`"
-		);
+			GROUP BY `date`
+		");
 		$st->execute(
 			[
 				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate)),

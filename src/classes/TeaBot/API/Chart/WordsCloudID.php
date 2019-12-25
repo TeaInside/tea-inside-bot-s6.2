@@ -29,7 +29,7 @@ class WordsCloudID
 		$insertQuery = "INSERT INTO `id_1n_words_cloud` (`group_message_id`, `word`, `created_at`) VALUES ";
 		$exec = [];
 		while ($r = $st->fetch(PDO::FETCH_NUM)) {
-			if ((!$r) && (!$iptr || !$wptr)) {
+			if ((!$r) && (!$iptr)) {
 				goto ret;
 			}
 			$r[1] = preg_replace("/[^a-zA-Z0-9\s]/", " ", strtolower(trim($r[1])));

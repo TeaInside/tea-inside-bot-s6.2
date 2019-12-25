@@ -33,7 +33,7 @@ class WordsCloudID
 			$r[1] = explode(" ", $r[1]);
 			$exec[":group_message_id_{$iptr}"] = $r[0];
 			foreach ($r[1] as $v) {
-				if ((strlen($v) <= 3) || (array_search($v, self::STOPWORDS) !== false)) {
+				if ((strlen($v) <= 3) || (strlen($v) > 64) || (array_search($v, self::STOPWORDS) !== false)) {
 					continue;
 				}
 				$insertQuery .= "(:group_message_id_{$iptr}, :word_{$wptr}, :created_at),";

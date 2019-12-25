@@ -170,25 +170,25 @@ trait ResponseRoutes
 
                 case "cr02":
                     if ($this->stExec(Responses\Calculus::class, "cr02", [$m[2]])) {
-                        return true;  
+                        return true;
                     }
                 break;
 
                 case "cyf4":
                     if ($this->stExec(Responses\Calculus::class, "cyf4", [$m[2]])) {
-                        return true;  
+                        return true;
                     }
                 break;
 
                 case "lxt0":
                     if ($this->stExec(Responses\Calculus::class, "lxt0", [$m[2]])) {
-                        return true;  
+                        return true;
                     }
                 break;
 
                 case "lxt1":
                     if ($this->stExec(Responses\Calculus::class, "lxt1", [$m[2]])) {
-                        return true;  
+                        return true;
                     }
                 break;
 

@@ -160,8 +160,8 @@ class Chart
 		}
 		$st->execute(
 			[
-				":start_date" => date("Y-m-d 00:00:00", strtotime($startDate) - $tz["sec"]),
-				":end_date" => date("Y-m-d 23:59:59", strtotime($endDate) - $tz["sec"])
+				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - $tz["sec"]),
+				":end_date" => date("Y-m-d H:i:s", strtotime($endDate) - $tz["sec"])
 			]
 		);
 		echo json_encode($st->fetchAll(PDO::FETCH_NUM));

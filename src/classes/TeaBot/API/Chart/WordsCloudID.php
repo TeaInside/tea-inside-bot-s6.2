@@ -29,6 +29,9 @@ class WordsCloudID
 		$insertQuery = "INSERT INTO `id_1n_words_cloud` (`group_message_id`, `word`, `created_at`) VALUES ";
 		$exec = [];
 		while ($r = $st->fetch(PDO::FETCH_NUM)) {
+			if ((!$r) && (!$iptr || !$wptr)) {
+				goto ret;
+			}
 			$r[1] = preg_replace("/[^a-zA-Z0-9\s]/", " ", strtolower(trim($r[1])));
 			$r[1] = explode(" ", $r[1]);
 			$exec[":group_message_id_{$iptr}"] = $r[0];
@@ -45,6 +48,7 @@ class WordsCloudID
 		$insertQuery[strlen($insertQuery) - 1] = ";";
 		$exec[":created_at"] = date("Y-m-d H:i:s");
 		$pdo->prepare($insertQuery)->execute($exec);
+	ret:
 		echo "Total words: ".$wptr."\n";
 		echo "Total messages: ".$iptr."\n";
 	}

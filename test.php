@@ -1,8 +1,25 @@
 <?php
 
-$a = explode("\n", trim(file_get_contents(__DIR__."/extras/stopwords_id.txt")));
-foreach ($a as $v) {
-	$v = strtolower(trim($v));
-	echo "\"{$v}\", ";
-}
+$st = new TeaBot\CaptchaThread;
+$st->run();
 
+
+$a = $st->dispatch(function () {
+	while (true) {
+		echo "aaa\n";
+		sleep(1);
+	}
+});
+$b = $st->dispatch(function () {
+	while (true) {
+		echo "bbb\n";
+		sleep(1);
+	}
+});
+
+echo $a." ".$b."\n";
+
+while (true) {
+	echo "ccc\n";
+	sleep(1);
+}

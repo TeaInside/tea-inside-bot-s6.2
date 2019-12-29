@@ -7,11 +7,23 @@
  * @license MIT
  * @version 6.2.0
  */
+#ifdef COMPILE_DL_TEABOT
+    #ifdef ZTS
+        ZEND_TSRMLS_CACHE_DEFINE()
+    #endif
+    ZEND_GET_MODULE(teabot)
+#endif
+
+
 ZEND_DECLARE_MODULE_GLOBALS(teabot);
 
-static zend_class_entry *teabot_class_entry;
-#define teabot_ce teabot_class_entry
+zend_class_entry *teabot_class_entry;
 
+const char langlist[][2] = {"en", "id", "jp"};
+
+/**
+ * TeaBot\Lang
+ */
 const zend_function_entry teabot_lang_class_methods[] = {
     PHP_ME(TeaBot_Lang, __construct, NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
     PHP_ME(TeaBot_Lang, init, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -23,12 +35,23 @@ const zend_function_entry teabot_lang_class_methods[] = {
 };
 
 /**
+ * TeaBot\CaptchaThread
+ */
+const zend_function_entry teabot_captchathread_class_methods[] = {
+    PHP_ME(TeaBot_CaptchaThread, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(TeaBot_CaptchaThread, run, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(TeaBot_CaptchaThread, dispatch, NULL, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
+/**
  * Init.
  */
 static PHP_MINIT_FUNCTION(teabot)
 {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "TeaBot", "Lang", teabot_lang_class_methods);
+    INIT_NS_CLASS_ENTRY(ce, "TeaBot", "CaptchaThread", teabot_captchathread_class_methods);
     teabot_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
     REGISTER_INI_ENTRIES();
 
@@ -50,156 +73,14 @@ static PHP_MINIT_FUNCTION(teabot)
         ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC
     );
 
+    zend_declare_property_long(
+        teabot_class_entry,
+        ZEND_STRL("tid"),
+        0,
+        ZEND_ACC_PUBLIC TSRMLS_CC
+    );
+
     return SUCCESS;
-}
-
-
-
-/**
- * TeaBot\Lang::__construct
- */
-PHP_METHOD(TeaBot_Lang, __construct)
-{
-    // This class should not be initialized.
-}
-
-/**
- * TeaBot\Lang::init
- *
- * @param string $lang
- * @return void
- */
-PHP_METHOD(TeaBot_Lang, init)
-{
-    char *lang;
-    size_t size;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_STRING(lang, size)
-    ZEND_PARSE_PARAMETERS_END();
-
-    zend_update_static_property_stringl(
-        teabot_ce,
-        "lang",
-        sizeof("lang")-1,
-        lang,
-        size TSRMLS_CC
-    );
-}
-
-/**
- * TeaBot\Lang::init
- *
- * @param string $lang
- * @return void
- */
-PHP_METHOD(TeaBot_Lang, setFallbackLang)
-{
-    char *lang;
-    size_t size;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_STRING(lang, size)
-    ZEND_PARSE_PARAMETERS_END();
-
-    zend_update_static_property_stringl(
-        teabot_ce,
-        "fallbackLang",
-        sizeof("fallbackLang")-1,
-        lang,
-        size TSRMLS_CC
-    );
-}
-
-/**
- * TeaBot\Lang::get
- *
- * @param string $key
- * @return string
- */
-PHP_METHOD(TeaBot_Lang, get)
-{
-    char *key;
-    char *ret;
-    size_t size;
-    zval *lang;
-    zval *fallbackLang;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_STRING(key, size)
-    ZEND_PARSE_PARAMETERS_END();
-
-    lang = zend_read_static_property(
-        teabot_ce,
-        "lang",
-        sizeof("lang")-1,
-        1 TSRMLS_CC
-    );
-
-    ret = NULL;
-
-    // English.
-    if (!strcmp(lang->value.str->val, "en")) {
-        GET_LANG(en, ret, key);
-    } else
-
-    // Indonesia.
-    if (!strcmp(lang->value.str->val, "id")) {
-        GET_LANG(id, ret, key);
-    }
-
-    if (ret == NULL) {
-        fallbackLang = zend_read_static_property(
-            teabot_ce,
-            "fallbackLang",
-            sizeof("fallbackLang")-1,
-            1 TSRMLS_CC
-        );
-        
-        GET_LANG_FALLBACK(fallbackLang->value.str->val, ret, key)
-    }
-
-    if (ret != NULL) {
-        RETURN_STRINGL(ret, strlen(ret))
-    }
-}
-
-/**
- * TeaBot\Lang::getLang
- *
- * @return string
- */
-PHP_METHOD(TeaBot_Lang, getLang)
-{
-    zval *lang;
-
-    lang = zend_read_static_property(
-        teabot_ce,
-        "lang",
-        sizeof("lang")-1,
-        1 TSRMLS_CC
-    );
-
-    RETURN_STRINGL(lang->value.str->val, strlen(lang->value.str->val))
-}
-
-/**
- * TeaBot\Lang::getFallbackLang
- *
- * @return string
- */
-PHP_METHOD(TeaBot_Lang, getFallbackLang)
-{
-    zval *fallbackLang;
-
-    fallbackLang = zend_read_static_property(
-        teabot_ce,
-        "fallbackLang",
-        sizeof("fallbackLang")-1,
-        1 TSRMLS_CC
-    );
-
-    RETURN_STRINGL(fallbackLang->value.str->val, strlen(fallbackLang->value.str->val))
 }
 
 /**

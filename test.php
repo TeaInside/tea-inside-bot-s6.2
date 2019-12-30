@@ -46,9 +46,9 @@ do {
     echo $buf."\n";
     $json = json_decode($buf, true);
 
-    if (isset($json["answer_ok"])) {
+    if (isset($json["answer_okx"])) {
        $st->cancel(
-            $json["answer_ok"],
+            $json["answer_okx"],
             $json["ok_msg_id"],
             $json["c_answer_id"]
         );

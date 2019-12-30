@@ -67,7 +67,7 @@ final class CaptchaHandler2
                 $o = json_decode($o, true);
                 self::socketDispatch(
                     [
-                        "answer_ok" => $d["tid"],
+                        "answer_okx" => $d["tid"],
                         "type" => $d["type"],
                         "ok_msg_id" => $o["result"]["message_id"],
                         "c_answer_id" => $data["msg_id"]

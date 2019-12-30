@@ -69,13 +69,16 @@ final class CaptchaHandler2
                 ENT_QUOTES, "UTF-8");
 
             $mention = "<a href=\"tg://user?id={$v["id"]}\">{$name}</a>";
-            $cdata["tg_msg"] = $mention."\n".$cdata["msg"];
             $cdata["photo"] = "https://api.teainside.org/latex_x.php?border=200&d=400&exp="
                 .urlencode($cdata["latex"]);
 
             if (isset($v["username"])) {
                 $mention .= " (@".$v["username"].")";
             }
+
+            $cdata["tg_msg"] = $mention.
+                "\n<b>Please solve the following captcha problem to make sure you are a human or you will be kicked in {$cdata["est_time"]} seconds.</b>\n\n".
+                $cdata["msg"];
 
             $sockData["captcha_msg_id"] = json_decode(Exe::sendPhoto(
                 [

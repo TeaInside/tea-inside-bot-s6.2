@@ -105,7 +105,7 @@ final class CaptchaHandler2
 
             file_put_contents(
                 self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
-                json_encode($sockData["mention"], JSON_UNESCAPED_SLASHES));
+                json_encode($sockData, JSON_UNESCAPED_SLASHES));
         }
     }
 

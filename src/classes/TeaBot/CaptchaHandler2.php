@@ -119,6 +119,21 @@ final class CaptchaHandler2
     private function calculusCaptcha()
     {
         foreach ($this->data["new_chat_members"] as $v) {
+
+            if (file_exists($f = self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/{$v["id"]}")) {
+                $d = json_decode(file_get_contents($f), true);
+                self::socketDispatch(
+                    [
+                        "answer_okx" => $d["tid"],
+                        "type" => $d["type"],
+                        "ok_msg_id" => $d["captcha_msg_id"],
+                        "c_answer_id" => $d["join_msg_id"],
+                        "cancel_sleep" => 0
+                    ]
+                );
+            }
+
             $sockData = [];
             $cdata = json_decode(file_get_contents("https://captcha.teainside.org/api.php?key=abc123&action=get_captcha&type=calculus"), true);
 

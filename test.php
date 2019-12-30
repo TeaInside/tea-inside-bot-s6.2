@@ -50,7 +50,8 @@ do {
        $st->cancel(
             $json["answer_okx"],
             $json["ok_msg_id"],
-            $json["c_answer_id"]
+            $json["c_answer_id"],
+            $json["cancel_sleep"] ?? 60
         );
     } else {
         $msg = (string)$st->dispatch(

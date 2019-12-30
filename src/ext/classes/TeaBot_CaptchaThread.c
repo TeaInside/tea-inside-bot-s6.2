@@ -44,6 +44,7 @@ typedef struct {
     zend_long welcome_msg_id;
     zend_long ok_msg_id;
     zend_long c_answer_id;
+    zend_long cancel_sleep;
     char *banned_hash;
     size_t banned_hash_len;
     char *mention;
@@ -150,17 +151,19 @@ PHP_METHOD(TeaBot_CaptchaThread, run)
  */
 PHP_METHOD(TeaBot_CaptchaThread, cancel)
 {
-    zend_long index, ok_msg_id, c_answer_id;
+    zend_long index, ok_msg_id, c_answer_id, cancel_sleep;
 
-    ZEND_PARSE_PARAMETERS_START(3, 3)
+    ZEND_PARSE_PARAMETERS_START(4, 4)
         Z_PARAM_LONG(index)
         Z_PARAM_LONG(ok_msg_id)
         Z_PARAM_LONG(c_answer_id)
+        Z_PARAM_LONG(cancel_sleep)
     ZEND_PARSE_PARAMETERS_END();
 
     if ((index >= 0) && (index < MAX_QUEUE)) {
         queues[index].c_answer_id = c_answer_id;
         queues[index].ok_msg_id = ok_msg_id;
+        queues[index].cancel_sleep = cancel_sleep;
         queues[index].cancel = true;
     }
 }
@@ -298,8 +301,6 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
 
         // Delete unused messages.
         clear_del_queue(qw);
-        sleep(2);
-        clear_del_queue(qw);
 
         // Delete captcha.
         sprintf(payload, "chat_id=%s&message_id=%d",
@@ -308,7 +309,7 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         debug_print("delete captcha msg: %s\n", res.data);
         free(res.data);
 
-        sleep(60);
+        sleep(qw->cancel_sleep);
 
         // Delete welcome message.
         if (((int)qw->welcome_msg_id) != -1) {

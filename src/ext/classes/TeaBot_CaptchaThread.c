@@ -188,7 +188,7 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
             debug_print("File does not exist\n");
             goto ret;
         } else {
-            debug_print("File exist\n");
+            debug_print("File exists\n");
         }
 
 

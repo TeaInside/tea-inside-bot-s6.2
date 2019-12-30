@@ -68,7 +68,7 @@ final class CaptchaHandler2
                 self::socketDispatch(
                     [
                         "answer_ok" => $d["tid"],
-                        "type" => $d["type"]
+                        "type" => $d["type"],
                         "ok_msg_id" => $o["result"]["message_id"],
                         "canswer" => $data["msg_id"]
                     ]

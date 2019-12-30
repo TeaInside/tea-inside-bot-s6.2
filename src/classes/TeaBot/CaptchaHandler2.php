@@ -28,7 +28,9 @@ final class CaptchaHandler2
     public $welcomeMessages = [];
 
     /**
-     * @param \TeaBot\Data
+     * @param \TeaBot\Data $data
+     * @param string       $type
+     * @param array        $welcomeMessage
      *
      * Constructor.
      */
@@ -38,6 +40,48 @@ final class CaptchaHandler2
         $this->type = $type;
         $this->welcomeMessages = $welcomeMessages;
         is_dir(self::CAPTCHA_DIR) or mkdir(self::CAPTCHA_DIR);
+    }
+
+    /**
+     * @param \TeaBot\Data $data
+     * @return bool
+     */
+    public static function havingCaptcha(Data $data): bool
+    {
+        if (isset($data["text"]) && file_exists($f = self::CAPTCHA_DIR.
+            "/{$data["chat_id"]}/{$data["user_id"]}")) {
+
+            $d = json_decode(file_get_contents($f), true);
+
+            if (trim($data["text"]) === (string)$d["correct_answer"]) {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $data["chat_id"],
+                        "reply_to_message_id" => $data["msg_id"]
+                        "text" => $d["mention"].
+                            " has answered the captcha correctly, welcome to the group!",
+                        "parse_mode" => "HTML"
+                    ]
+                );
+                unlink($f);
+            } else {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $data["chat_id"],
+                        "reply_to_message_id" => $data["msg_id"]
+                        "text" => "Wrong answer!"
+                    ]
+                );
+                file_put_contents(
+                    self::CAPTCHA_DIR.
+                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}",
+                    $data["msg_id"]);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -108,6 +152,12 @@ final class CaptchaHandler2
 
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
                 mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
+
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
 
             file_put_contents(
                 self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",

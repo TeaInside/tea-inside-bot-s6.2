@@ -345,12 +345,12 @@ static void clear_del_queue(captcha_queue *qw)
 
     bool got_ch;
     int i, n;
-    char cmpt[2048], delMsgDir[1024] = "testdir";
+    char cmpt[2048], delMsgDir[1024];
     struct del_msg_qw qww[del_thread_amt];
     struct dirent **namelist;
 
-    // sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
-    //     captcha_dir, qw->chat_id, qw->user_id);
+    sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
+        captcha_dir, qw->chat_id, qw->user_id);
     
     memset(&qww, 0, sizeof(qww));
 

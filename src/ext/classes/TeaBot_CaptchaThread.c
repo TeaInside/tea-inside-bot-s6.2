@@ -155,9 +155,10 @@ PHP_METHOD(TeaBot_CaptchaThread, cancel)
 
 static void *calculus_queue_dispatch(captcha_queue *qw)
 {
+    char *ptrx, *ptry, kick_msg_id[64], fdc[256],
+        tmp[2048], payload[sizeof(tmp) + 4096];
     tgcurl_res res;
     register unsigned char *ectmp;
-    char fdc[256];
 
     debug_print("qw->type = %s\n", qw->type);
     debug_print("qw->sleep_time = %d\n", (int)qw->sleep_time);
@@ -183,10 +184,6 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
     debug_print("Sleep done!\n");
 
     if (!qw->cancel) {
-        char *ptrx, *ptry,
-            kick_msg_id[64],
-            tmp[2048],
-            payload[sizeof(tmp) + 4096];
 
         sprintf(fdc, "%s/%s/%d", captcha_dir, qw->chat_id, (int)qw->user_id);
         debug_print("Checking fdc file %s...\n", fdc);

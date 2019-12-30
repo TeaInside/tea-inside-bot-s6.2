@@ -82,7 +82,7 @@ final class CaptchaHandler2
                 );
                 file_put_contents(
                     self::CAPTCHA_DIR.
-                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}",
+                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
                     $data["msg_id"]);
             }
 

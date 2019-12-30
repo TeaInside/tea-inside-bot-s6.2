@@ -46,7 +46,7 @@ final class CaptchaHandler2
     public function run(): void
     {
         switch ($this->type) {
-            case "calculus":
+            case "calculus2":
                 $this->calculusCaptcha();
                 break;
             

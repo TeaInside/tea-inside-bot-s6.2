@@ -27,7 +27,7 @@ extern zend_class_entry *teabot_ce;
 #else
     #define debug_print(...)
 #endif
-#define MAX_QUEUE 300
+#define MAX_QUEUE 500
 
 typedef struct {
     pthread_t thread;
@@ -281,6 +281,8 @@ ret:
         debug_print("Deleting calculus banned hash %s...\n", fdc);
         unlink(fdc);
     }
+
+    qw->busy = false;
 
     return NULL;
 }

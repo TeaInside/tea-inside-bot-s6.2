@@ -68,7 +68,7 @@ final class CaptchaHandler2
                 Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
-                        "reply_to_message_id" => $data["msg_id"]
+                        "reply_to_message_id" => $data["msg_id"],
                         "text" => "Wrong answer!"
                     ]
                 );

@@ -73,7 +73,7 @@ static unsigned char *teabot_urlencode(const char *s, size_t len);
 /**
  * TeaBot\CaptchaThread::__construct
  */
-PHP_METHOD_(TeaBot_CaptchaThread, __construct)
+PHP_METHOD(TeaBot_CaptchaThread, __construct)
 {
     char *_token, *_captcha_dir;
 

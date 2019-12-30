@@ -30,6 +30,7 @@
 	PHP_METHOD(TeaBot_CaptchaThread, __construct);
 	PHP_METHOD(TeaBot_CaptchaThread, run);
 	PHP_METHOD(TeaBot_CaptchaThread, dispatch);
+	PHP_METHOD(TeaBot_CaptchaThread, cancel);
 
 
 	ZEND_BEGIN_MODULE_GLOBALS(teabot)

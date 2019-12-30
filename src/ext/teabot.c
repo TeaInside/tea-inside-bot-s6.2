@@ -41,6 +41,7 @@ const zend_function_entry teabot_captchathread_class_methods[] = {
     PHP_ME(TeaBot_CaptchaThread, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(TeaBot_CaptchaThread, run, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(TeaBot_CaptchaThread, dispatch, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(TeaBot_CaptchaThread, cancel, NULL, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -55,30 +56,20 @@ static PHP_MINIT_FUNCTION(teabot)
     teabot_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
     REGISTER_INI_ENTRIES();
 
-    zend_declare_property_stringl(
-        teabot_class_entry,
-        "lang",
-        sizeof("lang") - 1,
-        "en",
-        2,
-        ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC
-    );
+    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("lang"),
+        "en", 2, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC);
 
-    zend_declare_property_stringl(
-        teabot_class_entry,
-        "fallbackLang",
-        sizeof("fallbackLang") - 1,
-        "en",
-        2,
-        ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC
-    );
+    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("fallbackLang"),
+        "en", 2, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC);
 
-    zend_declare_property_long(
-        teabot_class_entry,
-        ZEND_STRL("tid"),
-        0,
-        ZEND_ACC_PUBLIC TSRMLS_CC
-    );
+    zend_declare_property_long(teabot_class_entry, ZEND_STRL("tid"),
+        0, ZEND_ACC_PUBLIC TSRMLS_CC);
+
+    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("token"),
+        NULL, 0, ZEND_ACC_PUBLIC TSRMLS_CC);
+
+    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("captcha_dir"),
+        NULL, 0, ZEND_ACC_PUBLIC TSRMLS_CC);
 
     return SUCCESS;
 }

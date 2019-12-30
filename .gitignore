@@ -4,6 +4,7 @@
 *.swp
 *.tmp
 *.lock
+/testdir
 /build/
 /.phpintel/
 /config.php

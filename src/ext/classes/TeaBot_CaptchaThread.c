@@ -248,7 +248,6 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
 
         // Delete welcome message.
         if (((int)qw->welcome_msg_id) != -1) {
-            sleep(30);
             sprintf(payload,"chat_id=%s&message_id=%d",
                 qw->chat_id, (int)qw->welcome_msg_id);
             res = tgExe("deleteMessage", payload);
@@ -258,6 +257,13 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
             free(res.data);
         }
 
+        // Delete captcha.
+        sprintf(payload, "chat_id=%s&message_id=%d",
+            qw->chat_id, (int)qw->captcha_msg_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete captcha msg: %s\n", res.data);
+        free(res.data);
+
         // Unban user.
         sprintf(payload, "chat_id=%s&user_id=%d",
             qw->chat_id, (int)qw->user_id);
@@ -265,7 +271,8 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         debug_print("unban user: %s\n", res.data);
         free(res.data);
 
-        sleep(30);
+
+        sleep(60);
 
         // Delete join message.
         sprintf(payload, "chat_id=%s&message_id=%d",

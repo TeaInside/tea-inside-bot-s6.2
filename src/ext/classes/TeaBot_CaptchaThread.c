@@ -176,13 +176,12 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
     debug_print("Sleep done!\n");
 
     if (!qw->cancel) {
-        struct stat st;
-        char *ptrx, *ptry, *ptrz,
+        char *ptrx, *ptry,
             kick_msg_id[64],
             tmp[2048],
             payload[sizeof(tmp) + 4096];
 
-        sprintf(fdc, "%s/%s/%d", captcha_dir, qw->chat_id, qw->user_id);
+        sprintf(fdc, "%s/%s/%d", captcha_dir, qw->chat_id, (int)qw->user_id);
         debug_print("Checking fdc file %s...\n", fdc);
 
         if (access(fdc, F_OK) == -1) {
@@ -345,7 +344,7 @@ static void clear_del_queue(captcha_queue *qw)
     #define del_thread_amt 3
 
     bool got_ch;
-    int i, n, p = 0;
+    int i, n;
     char cmpt[2048], delMsgDir[1024] = "testdir";
     struct del_msg_qw qww[del_thread_amt];
     struct dirent **namelist;

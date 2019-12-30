@@ -48,6 +48,14 @@ final class CaptchaHandler2
      */
     public static function havingCaptcha(Data $data): bool
     {
+        var_dump(
+            isset($data["text"]),
+            file_exists($f = self::CAPTCHA_DIR.
+            "/{$data["chat_id"]}/{$data["user_id"]}"),
+            self::CAPTCHA_DIR.
+            "/{$data["chat_id"]}/{$data["user_id"]}"
+        );
+
         if (isset($data["text"]) && file_exists($f = self::CAPTCHA_DIR.
             "/{$data["chat_id"]}/{$data["user_id"]}")) {
 

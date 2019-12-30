@@ -69,6 +69,7 @@ final class CaptchaHandler2
                     self::CAPTCHA_DIR.
                     "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
                     $data["msg_id"]);
+                $this->socketDispatch(["cancel" => $d["tid"]]);
             } else {
                 Exe::sendMessage(
                     [
@@ -152,7 +153,7 @@ final class CaptchaHandler2
             $sockData["join_msg_id"] = $this->data["msg_id"];
             $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? -1;
             $sockData["mention"] = $mention;
-            $sockData["tid"] = $this->socketDispatch($sockData);
+            $sockData["tid"] = (int)$this->socketDispatch($sockData);
             $sockData["cdata"] = $cdata;
 
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or

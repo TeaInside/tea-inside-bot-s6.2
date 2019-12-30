@@ -46,19 +46,23 @@ do {
     echo $buf."\n";
     $json = json_decode($buf, true);
 
-    $msg = (string)$st->dispatch(
-        $json['type'],
-        (int)$json['sleep'],
-        (int)$json['user_id'],
-        $json['chat_id'],
-        (int)$json['join_msg_id'],
-        (int)$json['captcha_msg_id'],
-        (int)$json['welcome_msg_id'],
-        $json['banned_hash'],
-        $json['mention']
-    );
+    if (isset($json["cancel"])) {
+       $st->cancel($json["cancel"]);
+    } else {
+        $msg = (string)$st->dispatch(
+            $json['type'],
+            (int)$json['sleep'],
+            (int)$json['user_id'],
+            $json['chat_id'],
+            (int)$json['join_msg_id'],
+            (int)$json['captcha_msg_id'],
+            (int)$json['welcome_msg_id'],
+            $json['banned_hash'],
+            $json['mention']
+        );
 
-    socket_write($msgsock, $msg, strlen($msg));
+        socket_write($msgsock, $msg, strlen($msg));
+    }
 
     socket_close($msgsock);
 } while (true);

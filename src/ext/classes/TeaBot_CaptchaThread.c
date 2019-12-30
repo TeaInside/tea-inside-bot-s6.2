@@ -42,6 +42,8 @@ typedef struct {
     zend_long join_msg_id;
     zend_long captcha_msg_id;
     zend_long welcome_msg_id;
+    zend_long ok_msg_id;
+    zend_long c_answer_id;
     char *banned_hash;
     size_t banned_hash_len;
     char *mention;
@@ -135,12 +137,17 @@ PHP_METHOD(TeaBot_CaptchaThread, run)
  */
 PHP_METHOD(TeaBot_CaptchaThread, cancel)
 {
-    zend_long index;
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-         Z_PARAM_LONG(index)
+    zend_long index, ok_msg_id, c_answer_id;
+
+    ZEND_PARSE_PARAMETERS_START(3, 3)
+        Z_PARAM_LONG(index)
+        Z_PARAM_LONG(ok_msg_id)
+        Z_PARAM_LONG(c_answer_id)
     ZEND_PARSE_PARAMETERS_END();
 
     if ((index >= 0) && (index < MAX_QUEUE)) {
+        queues[index].c_answer_id = c_answer_id;
+        queues[index].ok_msg_id = ok_msg_id;
         queues[index].cancel = true;
     }
 }
@@ -271,6 +278,39 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
 
     } else {
         debug_print("Job cancelled!\n");
+
+        // Delete unused messages.
+        clear_del_queue(qw);
+        sleep(2);
+        clear_del_queue(qw);
+
+        // Delete welcome message.
+        if (((int)qw->welcome_msg_id) != -1) {
+            sleep(30);
+            sprintf(payload,"chat_id=%s&message_id=%d",
+                qw->chat_id, (int)qw->welcome_msg_id);
+            res = tgExe("deleteMessage", payload);
+
+            debug_print("delete_message: %s\n", res.data);
+
+            free(res.data);
+        }
+
+        sleep(30);
+
+        // Delete c_answer_id
+        sprintf(payload, "chat_id=%s&message_id=%d",
+            qw->chat_id, (int)qw->c_answer_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete c_answer_id: %s\n", res.data);
+        free(res.data);
+
+        // Delete ok_msg_id
+        sprintf(payload, "chat_id=%s&message_id=%d",
+            qw->chat_id, (int)qw->ok_msg_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete ok_msg_id: %s\n", res.data);
+        free(res.data);
     }
 
 

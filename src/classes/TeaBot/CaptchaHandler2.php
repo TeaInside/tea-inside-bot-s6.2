@@ -70,7 +70,7 @@ final class CaptchaHandler2
                         "answer_ok" => $d["tid"],
                         "type" => $d["type"],
                         "ok_msg_id" => $o["result"]["message_id"],
-                        "canswer" => $data["msg_id"]
+                        "c_answer_id" => $data["msg_id"]
                     ]
                 );
             } else {

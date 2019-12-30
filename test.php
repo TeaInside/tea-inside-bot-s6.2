@@ -47,7 +47,11 @@ do {
     $json = json_decode($buf, true);
 
     if (isset($json["answer_ok"])) {
-       $st->cancel($json["answer_ok"]);
+       $st->cancel(
+            $json["answer_ok"],
+            $json["ok_msg_id"],
+            $json["c_answer_id"]
+        );
     } else {
         $msg = (string)$st->dispatch(
             $json['type'],

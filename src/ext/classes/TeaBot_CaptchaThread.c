@@ -31,13 +31,10 @@ extern zend_class_entry *teabot_ce;
 
 typedef struct {
     pthread_t thread;
-
     bool busy;
     bool cancel;
-
     char *type;
     size_t type_len;
-
     zend_long sleep_time;
     zend_long user_id;
     char *chat_id;
@@ -45,10 +42,8 @@ typedef struct {
     zend_long join_msg_id;
     zend_long captcha_msg_id;
     zend_long welcome_msg_id;
-
     char *banned_hash;
     size_t banned_hash_len;
-
     char *mention;
     size_t mention_len;
 } captcha_queue;
@@ -282,26 +277,98 @@ static bool isinum(char *str)
 }
 
 
+struct del_msg_qw
+{
+    bool busy;
+    pthread_t thread;
+    struct dirent *file;
+    char *dir;
+    captcha_queue *qw;
+};
+
+static void *del_exmsg(void *ptr)
+{
+    #define ww ((struct del_msg_qw *)ptr)
+
+    tgcurl_res res;
+    char payload[1024];
+
+    sprintf(payload, "chat_id=%s&message_id=%s",
+        ww->qw->chat_id, ww->file->d_name);
+    res = tgExe("deleteMessage", payload);
+
+    printf("delete_message: %s\n", res.data);
+
+    sprintf(payload, "%s/%s", ww->dir, ww->file->d_name);
+    unlink(payload);
+
+    free(res.data);
+    free(ww->file);
+
+    ww->busy = false;
+
+    return NULL;
+    #undef ww
+}
+
+
 static void clear_del_queue(captcha_queue *qw)
 {
-    int n;
-    char delMsgDir[2048] = "testdir";
+    #define del_thread_amt 3
+
+    bool got_ch;
+    int i, n, p = 0;
+    char cmpt[1024], delMsgDir[1024] = "testdir";
+    struct del_msg_qw qww[del_thread_amt];
     struct dirent **namelist;
 
     // sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
     //     captcha_dir, qw->chat_id, qw->user_id);
 
-    printf("%s\n", delMsgDir);
+    printf("Dir: %s\n", delMsgDir);
     
+    memset(&qww, 0, sizeof(qww));
+
     n = scandir(delMsgDir, &namelist, NULL, alphasort);
     if (n == -1) return;
 
     while (n--) {
         if ((n > 1) && (isinum(namelist[n]->d_name))) {
+
+            got_ch = false;
+
+            while (!got_ch) {
+                for (i = 0; i < del_thread_amt; ++i) {
+                    if (!qww[i].busy) {
+                        qww[i].busy = true;
+                        got_ch = true;
+                        break;
+                    }
+                }
+                usleep(10000);
+            }
+
+            qww[i].dir = delMsgDir;
+            qww[i].file = namelist[n];
+            qww[i].qw = qw;
+
             printf("%s\n", namelist[n]->d_name);
+
+            pthread_create(&(qww[i].thread), NULL,
+                (void * (*)(void *))del_exmsg, (void *)&(qww[i]));
+            pthread_detach(qww[i].thread);
+        } else {
+
+            sprintf(cmpt, "%s/%s", delMsgDir, namelist[n]->d_name);
+            unlink(cmpt);
+
+            free(namelist[n]);
         }
-        free(namelist[n]);
     }
+
+    free(namelist);
+
+    #undef del_thread_amt
 }
 
 

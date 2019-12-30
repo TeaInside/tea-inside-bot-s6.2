@@ -91,6 +91,7 @@ PHP_METHOD(TeaBot_CaptchaThread, __construct)
  */
 PHP_METHOD(TeaBot_CaptchaThread, dispatch)
 {
+    char *chat_id, *banned_hash, *mention;
     register void* (*handler)(void *) = NULL;
     register uint16_t cpos = qpos++;
 
@@ -98,13 +99,25 @@ PHP_METHOD(TeaBot_CaptchaThread, dispatch)
         Z_PARAM_STRING(queues[cpos].type, queues[cpos].type_len)
         Z_PARAM_LONG(queues[cpos].sleep_time)
         Z_PARAM_LONG(queues[cpos].user_id)
-        Z_PARAM_STRING(queues[cpos].chat_id, queues[cpos].chat_id_len)
+        Z_PARAM_STRING(chat_id, queues[cpos].chat_id_len)
         Z_PARAM_LONG(queues[cpos].join_msg_id)
         Z_PARAM_LONG(queues[cpos].captcha_msg_id)
         Z_PARAM_LONG(queues[cpos].welcome_msg_id)
-        Z_PARAM_STRING(queues[cpos].banned_hash, queues[cpos].banned_hash_len)
-        Z_PARAM_STRING(queues[cpos].mention, queues[cpos].mention_len)
+        Z_PARAM_STRING(banned_hash, queues[cpos].banned_hash_len)
+        Z_PARAM_STRING(mention, queues[cpos].mention_len)
     ZEND_PARSE_PARAMETERS_END();
+
+    queues[cpos].chat_id = (char *)malloc(queues[cpos].chat_id_len + 1);
+    queues[cpos].banned_hash = (char *)malloc(queues[cpos].banned_hash_len + 1);
+    queues[cpos].mention = (char *)malloc(queues[cpos].mention_len + 1);
+
+    memcpy(queues[cpos].chat_id, chat_id, queues[cpos].chat_id_len);
+    memcpy(queues[cpos].banned_hash, banned_hash, queues[cpos].banned_hash_len);
+    memcpy(queues[cpos].mention, mention, queues[cpos].mention_len);
+
+    queues[cpos].chat_id[queues[cpos].chat_id_len] =
+    queues[cpos].banned_hash[queues[cpos].banned_hash_len] =
+    queues[cpos].mention[queues[cpos].mention_len] = '\0';
 
     if (!strcmp(queues[cpos].type, "calculus")) {
         handler = (void* (*)(void *))calculus_queue_dispatch;
@@ -317,6 +330,10 @@ ret:
         debug_print("Deleting calculus banned hash %s...\n", fdc);
         unlink(fdc);
     }
+
+    free(qw->chat_id);
+    free(qw->banned_hash);
+    free(qw->mention);
 
     qw->busy = false;
 

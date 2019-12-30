@@ -161,6 +161,7 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
     debug_print("qw->welcome_msg_id = %d\n", (int)qw->welcome_msg_id);
     debug_print("qw->banned_hash = %s\n", qw->banned_hash);
     debug_print("qw->mention = %s\n", qw->mention);
+
     debug_print("Sleeping for %d...\n", (int)qw->sleep_time);
 
     if (qw->sleep_time < 0) {
@@ -184,7 +185,7 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         sprintf(fdc, "%s/%s/%d", captcha_dir, qw->chat_id, qw->user_id);
         debug_print("Checking fdc file %s...\n", fdc);
 
-        if (stat(fdc, &st) < 0) {
+        if (access(fdc, F_OK) == -1) {
             debug_print("File does not exist\n");
             goto ret;
         } else {

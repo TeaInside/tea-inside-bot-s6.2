@@ -73,12 +73,22 @@ static unsigned char *teabot_urlencode(const char *s, size_t len);
 /**
  * TeaBot\CaptchaThread::__construct
  */
-PHP_METHOD(TeaBot_CaptchaThread, __construct)
+PHP_METHOD_(TeaBot_CaptchaThread, __construct)
 {
+    char *_token, *_captcha_dir;
+
     ZEND_PARSE_PARAMETERS_START(2, 2)
-        Z_PARAM_STRING(token, token_len)
-        Z_PARAM_STRING(captcha_dir, captcha_dir_len)
+        Z_PARAM_STRING(_token, token_len)
+        Z_PARAM_STRING(_captcha_dir, captcha_dir_len)
     ZEND_PARSE_PARAMETERS_END();
+
+    token = (char *)malloc(token_len + 1);
+    captcha_dir = (char *)malloc(captcha_dir_len + 1);
+
+    memcpy(token, _token, token_len);
+    memcpy(captcha_dir, _captcha_dir, captcha_dir_len);
+
+    token[token_len] = captcha_dir[captcha_dir_len] = '\0';
 
     zend_update_property_stringl(teabot_captchathread_ce, getThis(), ZEND_STRL("token"),
         token, token_len TSRMLS_CC);

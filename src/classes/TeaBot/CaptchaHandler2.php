@@ -69,7 +69,7 @@ final class CaptchaHandler2
                     self::CAPTCHA_DIR.
                     "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
                     $data["msg_id"]);
-                $this->socketDispatch(["cancel" => $d["tid"]]);
+                self::socketDispatch(["cancel" => $d["tid"]]);
             } else {
                 Exe::sendMessage(
                     [
@@ -147,13 +147,13 @@ final class CaptchaHandler2
             )["out"], true)["result"]["message_id"];
 
             $sockData["type"] = "calculus";
-            $sockData["sleep"] = $cdata["est_time"];
+            $sockData["sleep"] = 30; //$cdata["est_time"];
             $sockData["user_id"] = $v["id"];
             $sockData["chat_id"] = $this->data["chat_id"];
             $sockData["join_msg_id"] = $this->data["msg_id"];
             $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? -1;
             $sockData["mention"] = $mention;
-            $sockData["tid"] = (int)$this->socketDispatch($sockData);
+            $sockData["tid"] = self::socketDispatch($sockData);
             $sockData["cdata"] = $cdata;
 
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
@@ -175,7 +175,7 @@ final class CaptchaHandler2
      * @param array $sockData
      * @return int
      */
-    private function socketDispatch(array $sockData): int
+    private static function socketDispatch(array $sockData): int
     {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         $json = json_encode($sockData, JSON_UNESCAPED_SLASHES);

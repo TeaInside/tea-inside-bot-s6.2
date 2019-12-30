@@ -62,7 +62,8 @@ final class CaptchaHandler2
             $d = json_decode(file_get_contents($f), true);
 
             if (trim($data["text"]) === (string)$d["correct_answer"]) {
-                Exe::sendMessage(
+                unlink($f);
+                $o = Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
                         "reply_to_message_id" => $data["msg_id"],
@@ -70,8 +71,12 @@ final class CaptchaHandler2
                             " has answered the captcha correctly, welcome to the group!",
                         "parse_mode" => "HTML"
                     ]
-                );
-                unlink($f);
+                )["out"];
+                $o = json_decode($o, true);
+                file_put_contents(
+                    self::CAPTCHA_DIR.
+                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
+                    $data["msg_id"]);
             } else {
                 Exe::sendMessage(
                     [
@@ -153,7 +158,7 @@ final class CaptchaHandler2
             $sockData["user_id"] = $v["id"];
             $sockData["chat_id"] = $this->data["chat_id"];
             $sockData["join_msg_id"] = $this->data["msg_id"];
-            $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? null;
+            $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? -1;
             $sockData["mention"] = $mention;
             $sockData["tid"] = $this->socketDispatch($sockData);
             $sockData["cdata"] = $cdata;
@@ -181,9 +186,8 @@ final class CaptchaHandler2
     {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         $json = json_encode($sockData, JSON_UNESCAPED_SLASHES);
-        socket_connect($socket, '127.0.0.1', 10001);
-        socket_send($socket, sprintf("%07d",
-            $len = strlen($json)), 7, 0);
+        socket_connect($socket, "127.0.0.1", 10001);
+        socket_send($socket, sprintf("%07d", $len = strlen($json)), 7, 0);
         socket_send($socket, $json, $len, 0);
         socket_recv($socket, $buf, 100, 0);
         socket_close($socket);

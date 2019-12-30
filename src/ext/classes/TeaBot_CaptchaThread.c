@@ -351,6 +351,8 @@ static void clear_del_queue(captcha_queue *qw)
 
     sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
         captcha_dir, qw->chat_id, qw->user_id);
+
+    debug_print("Scanning msg queue: %s\n", delMsgDir);
     
     memset(&qww, 0, sizeof(qww));
 

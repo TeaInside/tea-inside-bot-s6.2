@@ -350,7 +350,7 @@ static void clear_del_queue(captcha_queue *qw)
     struct dirent **namelist;
 
     sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
-        captcha_dir, qw->chat_id, qw->user_id);
+        captcha_dir, qw->chat_id, (int)qw->user_id);
 
     debug_print("Scanning msg queue: %s\n", delMsgDir);
     

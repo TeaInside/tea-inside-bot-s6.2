@@ -122,7 +122,11 @@ final class Response
             }
 
             if ($r[1]) {
-                (new CaptchaHandler($this->data, $r[1], $welcomeMessages))->run();
+                if ($r[1] === "calculus2") {
+                    (new CaptchaHandler2($this->data, $r[1], $welcomeMessages))->run();
+                } else {
+                    (new CaptchaHandler($this->data, $r[1], $welcomeMessages))->run();
+                }
             }
         } else {
             foreach ($this->data["new_chat_members"] as $v) {

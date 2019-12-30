@@ -346,7 +346,7 @@ static void clear_del_queue(captcha_queue *qw)
 
     bool got_ch;
     int i, n, p = 0;
-    char cmpt[1024], delMsgDir[1024] = "testdir";
+    char cmpt[2048], delMsgDir[1024] = "testdir";
     struct del_msg_qw qww[del_thread_amt];
     struct dirent **namelist;
 

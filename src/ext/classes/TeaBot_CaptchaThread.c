@@ -301,9 +301,17 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         sleep(2);
         clear_del_queue(qw);
 
+        // Delete captcha.
+        sprintf(payload, "chat_id=%s&message_id=%d",
+            qw->chat_id, (int)qw->captcha_msg_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete captcha msg: %s\n", res.data);
+        free(res.data);
+
+        sleep(60);
+
         // Delete welcome message.
         if (((int)qw->welcome_msg_id) != -1) {
-            sleep(30);
             sprintf(payload,"chat_id=%s&message_id=%d",
                 qw->chat_id, (int)qw->welcome_msg_id);
             res = tgExe("deleteMessage", payload);
@@ -312,8 +320,6 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
 
             free(res.data);
         }
-
-        sleep(30);
 
         // Delete c_answer_id
         sprintf(payload, "chat_id=%s&message_id=%d",

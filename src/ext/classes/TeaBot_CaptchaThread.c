@@ -19,7 +19,7 @@
  * @license MIT
  */
 
-extern zend_class_entry *teabot_ce;
+extern zend_class_entry *teabot_captchathread_ce;
 
 #define DEBUG_CT 1
 #if DEBUG_CT
@@ -77,10 +77,10 @@ PHP_METHOD(TeaBot_CaptchaThread, __construct)
         Z_PARAM_STRING(captcha_dir, captcha_dir_len)
     ZEND_PARSE_PARAMETERS_END();
 
-    zend_update_property_stringl(teabot_ce, getThis(), ZEND_STRL("token"),
+    zend_update_property_stringl(teabot_captchathread_ce, getThis(), ZEND_STRL("token"),
         token, token_len TSRMLS_CC);
 
-    zend_update_property_stringl(teabot_ce, getThis(), ZEND_STRL("captcha_dir"),
+    zend_update_property_stringl(teabot_captchathread_ce, getThis(), ZEND_STRL("captcha_dir"),
         captcha_dir, captcha_dir_len TSRMLS_CC);
 }
 

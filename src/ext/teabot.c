@@ -17,7 +17,9 @@
 
 ZEND_DECLARE_MODULE_GLOBALS(teabot);
 
-zend_class_entry *teabot_class_entry;
+zend_class_entry
+    *teabot_lang_ce,
+    *teabot_captchathread_ce;
 
 const char langlist[][2] = {"en", "id", "jp"};
 
@@ -50,25 +52,37 @@ const zend_function_entry teabot_captchathread_class_methods[] = {
  */
 static PHP_MINIT_FUNCTION(teabot)
 {
-    zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, "TeaBot", "Lang", teabot_lang_class_methods);
-    INIT_NS_CLASS_ENTRY(ce, "TeaBot", "CaptchaThread", teabot_captchathread_class_methods);
-    teabot_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
+    zend_class_entry ce1, ce2;
+
+    INIT_NS_CLASS_ENTRY(ce1, "TeaBot", "Lang",
+        teabot_lang_class_methods);
+    teabot_lang_ce = zend_register_internal_class(&ce1 TSRMLS_CC);
+
+    INIT_NS_CLASS_ENTRY(ce2, "TeaBot", "CaptchaThread",
+        teabot_captchathread_class_methods);
+    teabot_captchathread_ce = zend_register_internal_class(&ce2 TSRMLS_CC);
+
     REGISTER_INI_ENTRIES();
 
-    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("lang"),
+    /**
+     * TeaBot\Lang
+     */
+    zend_declare_property_stringl(teabot_lang_ce, ZEND_STRL("lang"),
         "en", 2, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC);
 
-    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("fallbackLang"),
+    zend_declare_property_stringl(teabot_lang_ce, ZEND_STRL("fallbackLang"),
         "en", 2, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC);
 
-    zend_declare_property_long(teabot_class_entry, ZEND_STRL("tid"),
+    /**
+     * TeaBot\CaptchaThread
+     */
+    zend_declare_property_long(teabot_captchathread_ce, ZEND_STRL("tid"),
         0, ZEND_ACC_PUBLIC TSRMLS_CC);
 
-    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("token"),
+    zend_declare_property_stringl(teabot_captchathread_ce, ZEND_STRL("token"),
         NULL, 0, ZEND_ACC_PUBLIC TSRMLS_CC);
 
-    zend_declare_property_stringl(teabot_class_entry, ZEND_STRL("captcha_dir"),
+    zend_declare_property_stringl(teabot_captchathread_ce, ZEND_STRL("captcha_dir"),
         NULL, 0, ZEND_ACC_PUBLIC TSRMLS_CC);
 
     return SUCCESS;

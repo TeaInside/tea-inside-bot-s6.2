@@ -13,7 +13,7 @@
  * @license MIT
  */
 
-extern zend_class_entry *teabot_class_entry;
+extern zend_class_entry *teabot_captchathread_ce;
 
 struct captcha_queue {
 	bool busy;
@@ -74,7 +74,7 @@ PHP_METHOD(TeaBot_CaptchaThread, dispatch)
 
 	obj = getThis();
 	tid = zend_read_property(
-		teabot_class_entry,
+		teabot_captchathread_ce,
 		obj,
 		ZEND_STRL("tid"),
 		0,
@@ -90,7 +90,7 @@ PHP_METHOD(TeaBot_CaptchaThread, dispatch)
 	qptr++;
 
 	zend_update_property_long(
-		teabot_class_entry,
+		teabot_captchathread_ce,
 		obj,
 		ZEND_STRL("tid"),
 		tid->value.lval + 1

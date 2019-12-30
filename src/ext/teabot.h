@@ -44,5 +44,4 @@
 	#endif
 
 	#define phpext_teabot_ptr &teabot_module_entry
-	#define teabot_ce teabot_class_entry
 #endif

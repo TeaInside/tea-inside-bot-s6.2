@@ -11,7 +11,7 @@
  * @license MIT
  */
 
-extern zend_class_entry *teabot_class_entry;
+extern zend_class_entry *teabot_lang_ce;
 extern const char langlist[][2];
 
 /**
@@ -38,7 +38,7 @@ PHP_METHOD(TeaBot_Lang, init)
     ZEND_PARSE_PARAMETERS_END();
 
     zend_update_static_property_stringl(
-        teabot_ce,
+        teabot_lang_ce,
         "lang",
         sizeof("lang")-1,
         lang,
@@ -62,7 +62,7 @@ PHP_METHOD(TeaBot_Lang, setFallbackLang)
     ZEND_PARSE_PARAMETERS_END();
 
     zend_update_static_property_stringl(
-        teabot_ce,
+        teabot_lang_ce,
         "fallbackLang",
         sizeof("fallbackLang")-1,
         lang,
@@ -89,7 +89,7 @@ PHP_METHOD(TeaBot_Lang, get)
     ZEND_PARSE_PARAMETERS_END();
 
     lang = zend_read_static_property(
-        teabot_ce,
+        teabot_lang_ce,
         "lang",
         sizeof("lang")-1,
         1 TSRMLS_CC
@@ -109,7 +109,7 @@ PHP_METHOD(TeaBot_Lang, get)
 
     if (ret == NULL) {
         fallbackLang = zend_read_static_property(
-            teabot_ce,
+            teabot_lang_ce,
             "fallbackLang",
             sizeof("fallbackLang")-1,
             1 TSRMLS_CC
@@ -133,7 +133,7 @@ PHP_METHOD(TeaBot_Lang, getLang)
     zval *lang;
 
     lang = zend_read_static_property(
-        teabot_ce,
+        teabot_lang_ce,
         "lang",
         sizeof("lang")-1,
         1 TSRMLS_CC
@@ -152,7 +152,7 @@ PHP_METHOD(TeaBot_Lang, getFallbackLang)
     zval *fallbackLang;
 
     fallbackLang = zend_read_static_property(
-        teabot_ce,
+        teabot_lang_ce,
         "fallbackLang",
         sizeof("fallbackLang")-1,
         1 TSRMLS_CC

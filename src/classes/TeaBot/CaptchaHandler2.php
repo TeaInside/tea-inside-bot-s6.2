@@ -65,23 +65,31 @@ final class CaptchaHandler2
                     ]
                 )["out"];
                 $o = json_decode($o, true);
-                file_put_contents(
-                    self::CAPTCHA_DIR.
-                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
-                    $data["msg_id"]);
-                self::socketDispatch(["cancel" => $d["tid"]]);
+                self::socketDispatch(
+                    [
+                        "answer_ok" => $d["tid"],
+                        "type" => $d["type"]
+                        "ok_msg_id" => $o["result"]["message_id"],
+                        "canswer" => $data["msg_id"]
+                    ]
+                );
             } else {
-                Exe::sendMessage(
+                $o = Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
                         "reply_to_message_id" => $data["msg_id"],
                         "text" => "Wrong answer!"
                     ]
-                );
+                )["out"];
+                $o = json_decode($o, true);
+                file_put_contents(
+                    self::CAPTCHA_DIR.
+                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$o["result"]["message_id"]}",
+                    time());
                 file_put_contents(
                     self::CAPTCHA_DIR.
                     "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
-                    $data["msg_id"]);
+                    time());
             }
 
             return true;

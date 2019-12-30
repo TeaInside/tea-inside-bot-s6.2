@@ -149,7 +149,7 @@ PHP_METHOD(TeaBot_CaptchaThread, cancel)
 static void *calculus_queue_dispatch(captcha_queue *qw)
 {
     tgcurl_res res;
-    register char *ectmp;
+    register unsigned char *ectmp;
     char fdc[256];
 
     debug_print("qw->type = %s\n", qw->type);

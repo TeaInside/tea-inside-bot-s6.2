@@ -100,6 +100,9 @@ final class CaptchaHandler2
             $sockData["mention"] = $mention;
             $sockData["tid"] = $this->socketDispatch($sockData);
 
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
             file_put_contents(
                 self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
                 json_encode($sockData["mention"], JSON_UNESCAPED_SLASHES));

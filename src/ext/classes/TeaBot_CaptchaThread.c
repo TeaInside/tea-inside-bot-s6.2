@@ -444,6 +444,9 @@ static void clear_del_queue(captcha_queue *qw)
             while (!got_ch) {
                 for (i = 0; i < del_thread_amt; ++i) {
                     if (!qww[i].busy) {
+                        qww[i].dir = delMsgDir;
+                        qww[i].file = namelist[n];
+                        qww[i].qw = qw;
                         qww[i].busy = true;
                         got_ch = true;
                         break;
@@ -451,10 +454,6 @@ static void clear_del_queue(captcha_queue *qw)
                 }
                 usleep(10000);
             }
-
-            qww[i].dir = delMsgDir;
-            qww[i].file = namelist[n];
-            qww[i].qw = qw;
 
             // printf("%s\n", namelist[n]->d_name);
 
@@ -469,6 +468,18 @@ static void clear_del_queue(captcha_queue *qw)
 
             free(namelist[n]);
         }
+    }
+
+    while (true) {
+        got_ch = false;
+        for (i = 0; i < del_thread_amt; ++i) {
+            if (qww[i].busy) {
+                got_ch = true;
+                break;
+            }
+        }
+        if (!got_ch) break;
+        usleep(10000);
     }
 
     free(namelist);

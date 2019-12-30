@@ -48,14 +48,6 @@ final class CaptchaHandler2
      */
     public static function havingCaptcha(Data $data): bool
     {
-        var_dump(
-            isset($data["text"]),
-            file_exists($f = self::CAPTCHA_DIR.
-            "/{$data["chat_id"]}/{$data["user_id"]}"),
-            self::CAPTCHA_DIR.
-            "/{$data["chat_id"]}/{$data["user_id"]}"
-        );
-
         if (isset($data["text"]) && file_exists($f = self::CAPTCHA_DIR.
             "/{$data["chat_id"]}/{$data["user_id"]}")) {
 
@@ -135,7 +127,7 @@ final class CaptchaHandler2
 
             $minutes = $cdata["est_time"] / 60;
             $cdata["tg_msg"] = $mention.
-                "\n<b>Please solve the following captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
+                "\n<b>Please solve the this captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
 
             $sockData["banned_hash"] = md5($cdata["correct_answer"]);
 

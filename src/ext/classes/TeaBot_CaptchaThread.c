@@ -21,7 +21,7 @@
 
 extern zend_class_entry *teabot_ce;
 
-#define DEBUG_CT 0
+#define DEBUG_CT 1
 #if DEBUG_CT
     #define debug_print(...) printf(__VA_ARGS__)
 #else
@@ -55,20 +55,15 @@ typedef struct {
 } tgcurl_res;
 
 static const unsigned char hexchars[] = "0123456789ABCDEF";
-
 static char *token, *captcha_dir;
 static size_t token_len, captcha_dir_len;
 
 static uint16_t qpos = 0;
 static captcha_queue queues[MAX_QUEUE];
 
-static zend_fcall_info fci_exe;
-static zend_fcall_info_cache fci_cache_exe;
-
 static void clear_del_queue(captcha_queue *qw);
 static tgcurl_res tgExe(char *method, char *payload);
 static void *calculus_queue_dispatch(captcha_queue *qw);
-static void teabot_zend_release_fcall_info_cache(zend_fcall_info_cache *fcc);
 static unsigned char *teabot_urlencode(const char *s, size_t len);
 
 
@@ -77,13 +72,9 @@ static unsigned char *teabot_urlencode(const char *s, size_t len);
  */
 PHP_METHOD(TeaBot_CaptchaThread, __construct)
 {
-    fci_exe = empty_fcall_info;
-    fci_cache_exe = empty_fcall_info_cache;
-
-    ZEND_PARSE_PARAMETERS_START(3, 3)
+    ZEND_PARSE_PARAMETERS_START(2, 2)
         Z_PARAM_STRING(token, token_len)
         Z_PARAM_STRING(captcha_dir, captcha_dir_len)
-        Z_PARAM_FUNC(fci_exe, fci_cache_exe)
     ZEND_PARSE_PARAMETERS_END();
 
     zend_update_property_stringl(teabot_ce, getThis(), ZEND_STRL("token"),
@@ -154,18 +145,12 @@ PHP_METHOD(TeaBot_CaptchaThread, cancel)
     }
 }
 
-static const char fdc_form[] = "%s/%s/%d";
-static const char calculus_lock_form[] = "/tmp/telegram/calculus_lock/%s";
 
 static void *calculus_queue_dispatch(captcha_queue *qw)
 {
     tgcurl_res res;
     register char *ectmp;
     char fdc[256];
-
-    zend_object fci_obj;
-    zend_fcall_info fci = empty_fcall_info;
-    zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
 
     debug_print("qw->type = %s\n", qw->type);
     debug_print("qw->sleep_time = %d\n", (int)qw->sleep_time);
@@ -196,15 +181,15 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
             tmp[2048],
             payload[sizeof(tmp) + 4096];
 
-        sprintf(fdc, fdc_form, captcha_dir, qw->chat_id, qw->user_id);
+        sprintf(fdc, "%s/%s/%d", captcha_dir, qw->chat_id, qw->user_id);
         debug_print("Checking fdc file %s...\n", fdc);
 
-        // if (stat(fdc, &st) < 0) {
-        //     debug_print("File does not exist\n");
-        //     goto ret;
-        // } else {
-        //     debug_print("File exist\n");
-        // }
+        if (stat(fdc, &st) < 0) {
+            debug_print("File does not exist\n");
+            goto ret;
+        } else {
+            debug_print("File exist\n");
+        }
 
 
         // Kick user from the group.
@@ -224,9 +209,10 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
             "%s has been kicked from the group due to failed to answer the captcha.",
             qw->mention);
         ectmp = teabot_urlencode(tmp, strlen(tmp));
-        sprintf(payload, "chat_id=%s&parse_mode=HTML&text=%s", qw->chat_id, ectmp);
+        sprintf(payload, "chat_id=%s&parse_mode=HTML&text=%s",
+            qw->chat_id, ectmp);
         res = tgExe("sendMessage", payload);
-        printf("Kicked message: %s\n", res.data);
+        debug_print("Kick message: %s\n", res.data);
         free(ectmp);
 
 
@@ -238,7 +224,45 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         strcpy(kick_msg_id, ptrx);
         free(res.data);
 
+        // Delete unused messages.
         clear_del_queue(qw);
+        sleep(2);
+        clear_del_queue(qw);
+
+        // Delete welcome message.
+        if (((int)qw->welcome_msg_id) != -1) {
+            sleep(30);
+            sprintf(payload,"chat_id=%s&message_id=%d",
+                qw->chat_id, (int)qw->welcome_msg_id);
+            res = tgExe("deleteMessage", payload);
+
+            debug_print("delete_message: %s\n", res.data);
+
+            free(res.data);
+        }
+
+        // Unban user.
+        sprintf(payload, "chat_id=%s&user_id=%d",
+            qw->chat_id, (int)qw->user_id);
+        res = tgExe("unbanChatMember", payload);
+        debug_print("unban user: %s\n", res.data);
+        free(res.data);
+
+        sleep(30);
+
+        // Delete join message.
+        sprintf(payload, "chat_id=%s&message_id=%d",
+            qw->chat_id, (int)qw->join_msg_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete join message: %s\n", res.data);
+        free(res.data);
+
+        // Delete kick message.
+        sprintf(payload, "chat_id=%s&message_id=%s",
+            qw->chat_id, kick_msg_id);
+        res = tgExe("deleteMessage", payload);
+        debug_print("delete kick message: %s\n", res.data);
+        free(res.data);
 
         goto ret;
 
@@ -252,7 +276,7 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
 
 ret:
     if (qw->banned_hash) {
-        sprintf(fdc, calculus_lock_form, qw->banned_hash);
+        sprintf(fdc, "/tmp/telegram/calculus_lock/%s", qw->banned_hash);
         debug_print("Deleting calculus banned hash %s...\n", fdc);
         unlink(fdc);
     }
@@ -297,9 +321,10 @@ static void *del_exmsg(void *ptr)
         ww->qw->chat_id, ww->file->d_name);
     res = tgExe("deleteMessage", payload);
 
-    printf("delete_message: %s\n", res.data);
+    debug_print("delete_message: %s\n", res.data);
 
     sprintf(payload, "%s/%s", ww->dir, ww->file->d_name);
+    debug_print("deleting %s\n", payload);
     unlink(payload);
 
     free(res.data);
@@ -324,8 +349,6 @@ static void clear_del_queue(captcha_queue *qw)
 
     // sprintf(delMsgDir, "%s/%s/delete_msg_queue/%d",
     //     captcha_dir, qw->chat_id, qw->user_id);
-
-    printf("Dir: %s\n", delMsgDir);
     
     memset(&qww, 0, sizeof(qww));
 
@@ -336,7 +359,6 @@ static void clear_del_queue(captcha_queue *qw)
         if ((n > 1) && (isinum(namelist[n]->d_name))) {
 
             got_ch = false;
-
             while (!got_ch) {
                 for (i = 0; i < del_thread_amt; ++i) {
                     if (!qww[i].busy) {
@@ -352,11 +374,12 @@ static void clear_del_queue(captcha_queue *qw)
             qww[i].file = namelist[n];
             qww[i].qw = qw;
 
-            printf("%s\n", namelist[n]->d_name);
+            // printf("%s\n", namelist[n]->d_name);
 
             pthread_create(&(qww[i].thread), NULL,
                 (void * (*)(void *))del_exmsg, (void *)&(qww[i]));
             pthread_detach(qww[i].thread);
+
         } else {
 
             sprintf(cmpt, "%s/%s", delMsgDir, namelist[n]->d_name);
@@ -428,19 +451,6 @@ static tgcurl_res tgExe(char *method, char *payload)
 
     res.data[res.len] = 0;
     return res;
-}
-
-
-static void teabot_zend_release_fcall_info_cache(zend_fcall_info_cache *fcc)
-{
-    if (fcc->function_handler &&
-        (fcc->function_handler->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE)) {
-        if (fcc->function_handler->common.function_name) {
-            zend_string_release_ex(fcc->function_handler->common.function_name, 0);
-        }
-        zend_free_trampoline(fcc->function_handler);
-    }
-    fcc->function_handler = NULL;
 }
 
 

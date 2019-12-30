@@ -4,22 +4,7 @@ require __DIR__."/bootstrap/autoload.php";
 
 loadConfig("telegram_bot");
 
-function captchaThreadInternal(string $method, string $payload)
-{
-	echo $method." ".$payload.PHP_EOL;
-}
-
-$exe = function (string $method, string $payload) {
-	echo $method." ".$payload.PHP_EOL;
-	// echo "qwe";
-	// TeaBot\Exe::{$method}($payload);
-};
-
-$st = new TeaBot\CaptchaThread(
-	BOT_TOKEN,
-	"/tmp/telegram/captcha_handler",
-	$exe
-);
+$st = new TeaBot\CaptchaThread(BOT_TOKEN, "/tmp/telegram/captcha_handler");
 
 $type = "calculus";
 $userId = 123;
@@ -44,21 +29,6 @@ for ($i=0; $i < 1; $i++) {
 	);
 	var_dump($a);
 }
+
+echo "\ndone!";
 sleep(100);
-
-// $b = $st->dispatch(0, function () {
-// 	while (true) {
-// 		echo "*";
-// 		usleep(10000);
-// 	}
-// });
-
-// echo $a." ".$b.PHP_EOL;
-
-
-// $st->dispatch(0, function () {
-// 	while (true) {
-// 		echo "x";
-// 		usleep(10000);
-// 	}
-// });

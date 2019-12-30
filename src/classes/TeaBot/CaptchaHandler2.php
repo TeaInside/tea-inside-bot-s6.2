@@ -80,6 +80,12 @@ final class CaptchaHandler2
             $cdata["tg_msg"] = $mention.
                 "\n<b>Please solve the following captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
 
+            $sockData["banned_hash"] = md5($cdata["correct_answer"]);
+
+            file_put_contents(
+                "/tmp/telegram/calculus_lock/".$cdata["banned_hash"],
+                time());
+
             $sockData["captcha_msg_id"] = json_decode(Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
@@ -96,9 +102,9 @@ final class CaptchaHandler2
             $sockData["chat_id"] = $this->data["chat_id"];
             $sockData["join_msg_id"] = $this->data["msg_id"];
             $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? null;
-            $sockData["banned_hash"] = sha1($cdata["correct_answer"]);
             $sockData["mention"] = $mention;
             $sockData["tid"] = $this->socketDispatch($sockData);
+            $sockData["cdata"] = $cdata;
 
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
                 mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");

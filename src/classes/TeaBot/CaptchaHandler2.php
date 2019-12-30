@@ -53,7 +53,7 @@ final class CaptchaHandler2
 
             $d = json_decode(file_get_contents($f), true);
 
-            if (trim($data["text"]) === (string)$d["correct_answer"]) {
+            if (trim($data["text"]) === (string)$d["cdata"]["correct_answer"]) {
                 unlink($f);
                 $o = Exe::sendMessage(
                     [
@@ -133,7 +133,7 @@ final class CaptchaHandler2
             $sockData["banned_hash"] = md5($cdata["correct_answer"]);
 
             file_put_contents(
-                "/tmp/telegram/calculus_lock/".$cdata["banned_hash"],
+                "/tmp/telegram/calculus_lock/".$sockData["banned_hash"],
                 time());
 
             $sockData["captcha_msg_id"] = json_decode(Exe::sendPhoto(

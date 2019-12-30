@@ -155,7 +155,7 @@ final class CaptchaHandler2
             )["out"], true)["result"]["message_id"];
 
             $sockData["type"] = "calculus";
-            $sockData["sleep"] = 30; //$cdata["est_time"];
+            $sockData["sleep"] = $cdata["est_time"];
             $sockData["user_id"] = $v["id"];
             $sockData["chat_id"] = $this->data["chat_id"];
             $sockData["join_msg_id"] = $this->data["msg_id"];

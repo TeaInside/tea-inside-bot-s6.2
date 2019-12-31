@@ -151,7 +151,7 @@ final class CaptchaHandler2
 
             $minutes = $cdata["est_time"] / 60;
             $cdata["tg_msg"] = $mention.
-                "\n<b>Please solve the this captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
+                "\n<b>Please solve this captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
 
             $sockData["banned_hash"] = md5($cdata["correct_answer"]);
 

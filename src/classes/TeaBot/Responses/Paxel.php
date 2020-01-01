@@ -11,6 +11,8 @@ use TeaBot\Plugins\Paxel\Paxel as BasePaxel;
 is_dir(STORAGE_PATH."/paxel") or mkdir(STORAGE_PATH."/paxel");
 define("PAXEL_TG", STORAGE_PATH."/paxel/tg");
 define("PAXEL_DIR", STORAGE_PATH."/paxel/base_paxel");
+is_dir(PAXEL_TG) or mkdir(PAXEL_TG);
+is_dir(PAXEL_DIR) or mkdir(PAXEL_DIR);
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2

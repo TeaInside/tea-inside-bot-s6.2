@@ -4,6 +4,7 @@ namespace TeaBot\Responses;
 
 use TeaBot\Exe;
 use TeaBot\Lang;
+use TeaBot\Data;
 use TeaBot\ResponseFoundation;
 use TeaBot\Plugins\Paxel\Paxel as BasePaxel;
 

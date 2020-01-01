@@ -41,7 +41,7 @@ if ($newPackage !== $oldPackage) {
 	TeaBot\Exe::sendMessage(
 		[
 			"chat_id" => $groupId,
-			"text" => $newPackage,
+			"text" => $r,
 			"parse_mode" => "HTML"
 		]
 	);

@@ -33,6 +33,24 @@ final class Paxel extends ResponseFoundation
     }
 
     /**
+     * @return bool
+     */
+    private function checkU(): bool
+    {
+        if (!file_exists($this->ufile)) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => "You have not logged in yet!"
+                ]
+            );
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @param string $username
      * @param string $password
      * @return bool
@@ -75,25 +93,14 @@ final class Paxel extends ResponseFoundation
         return true;
     }
 
-
     /**
      * @return bool
      */
-    public function paxelPackage(): bool
+    public function package(): bool
     {
-        if (!file_exists($this->ufile)) {
-            Exe::sendMessage(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => "You have not logged in yet!"
-                ]
-            );
-            return true;
-        }
+        if (!$this->checkU()) return true;
 
         $u = json_decode(file_get_contents($this->ufile), true);
-
         $px = new BasePaxel($u["username"], $u["password"]);
         $package = $px->package();
 
@@ -108,4 +115,5 @@ final class Paxel extends ResponseFoundation
 
         return true;
     }
+
 }

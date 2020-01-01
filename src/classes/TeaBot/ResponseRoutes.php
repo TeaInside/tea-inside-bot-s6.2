@@ -161,6 +161,12 @@ trait ResponseRoutes
             }
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:pxg)$/")) {
+            if ($this->stExec(Responses\Paxel::class, "package", [])) {
+                return true;
+            }
+        }
+
         /**
          * Calculus.
          */

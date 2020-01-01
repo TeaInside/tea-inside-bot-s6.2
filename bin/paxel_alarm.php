@@ -34,7 +34,7 @@ while (true) {
 		$oPackage = json_decode($oldPackage, true);
 
 		foreach ($package["data"] as $k => $v) {
-			foreach ($oPackage as $kk => $vv) {
+			foreach ($oPackage["data"] as $kk => $vv) {
 				if (sha1(json_encode($v)) === sha1(json_encode($vv))) {
 					unset($package["data"][$k]);
 				}

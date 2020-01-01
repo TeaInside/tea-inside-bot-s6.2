@@ -12,7 +12,7 @@ define("PAXEL_DIR", STORAGE_PATH."/paxel/base_paxel");
 is_dir(PAXEL_TG) or mkdir(PAXEL_TG);
 is_dir(PAXEL_DIR) or mkdir(PAXEL_DIR);
 
-$groupId = -299838367;
+$groupId = -1001499943463;
 
 $u = json_decode(file_get_contents(PAXEL_TG."/976357499"), true);
 

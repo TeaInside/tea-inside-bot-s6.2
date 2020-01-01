@@ -69,6 +69,20 @@ class Paxel
     }
 
     /**
+     * @return bool|array
+     */
+    public function package()
+    {
+        if (!isset($this->userData["data"]["api_token"])) {
+            return false;
+        }
+
+        $o = $this->qurl("https://api.paxel.co/apg/api/v1/packaging-addon");
+        file_put_contents(PAXEL_DIR."/package.json", $o["out"]);
+        return json_decode($o["out"], true);
+    }
+
+    /**
      * @param string $url
      * @param array  $opt
      * @return array
@@ -89,6 +103,10 @@ class Paxel
                 "Accept-Encoding: gzip"
             ]
         ];
+
+        if (isset($this->userData["data"]["api_token"])) {
+            $optf[CURLOPT_HTTPHEADER][] = "authorization: Bearer {$this->userData["data"]["api_token"]}";
+        }
 
         foreach ($opt as $k => $v) {
             $optf[$k] = $v;

@@ -74,4 +74,38 @@ final class Paxel extends ResponseFoundation
 
         return true;
     }
+
+
+    /**
+     * @return bool
+     */
+    public function paxelPackage(): bool
+    {
+        if (!file_exists($this->ufile)) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => "You have not logged in yet!"
+                ]
+            );
+            return true;
+        }
+
+        $u = json_decode(file_get_contents($this->ufile), true);
+
+        $px = new BasePaxel($u["username"], $u["password"]);
+        $package = $px->package();
+
+        Exe::sendMessage(
+            [
+                "chat_id" => $this->data["chat_id"],
+                "reply_to_message_id" => $this->data["msg_id"],
+                "text" => json_encode($package,
+                    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+            ]
+        );
+
+        return true;
+    }
 }

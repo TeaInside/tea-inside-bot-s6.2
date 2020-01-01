@@ -73,6 +73,8 @@ class Paxel
      */
     public function package()
     {
+        var_dump($this->userData);
+
         if (!isset($this->userData["data"]["api_token"])) {
             return false;
         }

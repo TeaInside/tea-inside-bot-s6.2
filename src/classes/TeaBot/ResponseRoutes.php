@@ -161,7 +161,7 @@ trait ResponseRoutes
             }
         }
 
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:pxg)$/", $this->data["text"])) {
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:pxg)$/Ui", $this->data["text"])) {
             if ($this->stExec(Responses\Paxel::class, "package", [])) {
                 return true;
             }

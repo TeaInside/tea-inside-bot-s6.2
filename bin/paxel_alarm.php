@@ -31,6 +31,16 @@ while (true) {
 	if ($newPackage && ($newPackage !== $oldPackage)) {
 		$r = "[".date("d F Y H:i:s")."]\n\nSome changes on package list were made!\n\n";
 		$package = json_decode($newPackage, true);
+		$oPackage = json_decode($oldPackage, true);
+
+		foreach ($package["data"] as $k => $v) {
+			if (sha1(json_encode($v)) === sha1(json_encode($oldPackage[$k]))) {
+				unset($package["data"][$k]);
+			}
+		}
+
+		$package["data"] = array_values($package["data"]);
+
 		foreach ($package["data"] as $k => $v) {
 	        foreach ($v as $kk => $vv) {
 	            $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).

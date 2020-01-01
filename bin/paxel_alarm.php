@@ -26,7 +26,7 @@ while (true) {
 		$oldPackage = "";
 	}
 
-	if ($newPackage !== $oldPackage) {
+	if ($newPackage && ($newPackage !== $oldPackage)) {
 		$r = "Some changes on package list were made!\n\n";
 		$package = json_decode($newPackage, true);
 		foreach ($package["data"] as $k => $v) {

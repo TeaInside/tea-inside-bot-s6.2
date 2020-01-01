@@ -65,7 +65,7 @@ class Paxel
             $this->userFile, json_encode($json,
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-        return isset($json["data"]["api_token"];
+        return isset($json["data"]["api_token"]);
     }
 
     /**

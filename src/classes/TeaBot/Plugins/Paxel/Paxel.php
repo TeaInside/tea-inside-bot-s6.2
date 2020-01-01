@@ -59,7 +59,7 @@ class Paxel
                 ])
             ]
         );
-        $json = json_decode($o["out"], true);
+        $this->userData = $json = json_decode($o["out"], true);
 
         file_put_contents(
             $this->userFile, json_encode($json,

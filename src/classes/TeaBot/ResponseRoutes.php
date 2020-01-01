@@ -153,8 +153,10 @@ trait ResponseRoutes
         /**
          * Login Paxel
          */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:pxlogin\\n)(.*)(?:)(.*)$/Ui", $this->data["text"], $m)) {
-            if ($this->stExec(Responses\Paxel::class, "loginPaxel", [$m[1], $m[2], $m[3]])) {
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:pxlogin\\n)(.*)(?:\\n)(.*)$/Ui", $this->data["text"], $m)) {
+            $m[1] = trim($m[1]);
+            $m[2] = trim($m[2]);
+            if ($this->stExec(Responses\Paxel::class, "loginPaxel", [$m[1], $m[2]])) {
                 return true;
             }
         }

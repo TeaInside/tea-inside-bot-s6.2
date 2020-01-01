@@ -43,8 +43,8 @@ class Paxel
         $this->username = $username;
         $this->password = $password;
         $this->userFile = PAXEL_DIR."/".sha1($username.$password).".json";
-        $this->userData = file_exists($this->userData) ?
-            json_decode(file_get_contents($this->userData), true) :
+        $this->userData = file_exists($this->userFile) ?
+            json_decode(file_get_contents($this->userFile), true) :
             [];
     }
 

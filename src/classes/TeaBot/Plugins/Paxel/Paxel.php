@@ -69,17 +69,20 @@ class Paxel
     }
 
     /**
+     * @param bool $noStore
      * @return bool|array
      */
-    public function package()
+    public function package($noStore = false)
     {
         if (!isset($this->userData["data"]["api_token"])) {
             return false;
         }
 
         $o = $this->qurl("https://api.paxel.co/apg/api/v1/packaging-addon");
-        file_put_contents(PAXEL_DIR."/package.json", $o["out"]);
-        return json_decode($o["out"], true);
+        if (!$noStore) {
+            file_put_contents(PAXEL_DIR."/package.json", $o["out"]);
+        }
+        return $o["out"];
     }
 
     /**

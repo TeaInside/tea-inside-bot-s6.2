@@ -104,14 +104,23 @@ final class Paxel extends ResponseFoundation
 
         $u = json_decode(file_get_contents($this->ufile), true);
         $px = new BasePaxel($u["username"], $u["password"]);
-        $package = $px->package();
+        $package = json_decode($px->package(), true);
+
+        $r = "";
+        foreach ($package["data"] as $k => $v) {
+            foreach ($v as $kk => $vv) {
+                $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
+                    ": </b>".htmlspecialchars($vv, ENT_QUOTES);
+            }
+            $r .= "\n\n";
+        }
 
         Exe::sendMessage(
             [
                 "chat_id" => $this->data["chat_id"],
                 "reply_to_message_id" => $this->data["msg_id"],
-                "text" => json_encode($package,
-                    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+                "text" => $r,
+                "parse_mode" => "HTML"
             ]
         );
 

@@ -4,6 +4,8 @@ use TeaBot\Plugins\Paxel\Paxel as BasePaxel;
 
 require __DIR__."/../bootstrap/autoload.php";
 
+date_default_timezone_set("Asia/Jakarta");
+
 loadConfig("telegram_bot");
 
 is_dir(STORAGE_PATH."/paxel") or mkdir(STORAGE_PATH."/paxel");
@@ -27,14 +29,14 @@ while (true) {
 	}
 
 	if ($newPackage && ($newPackage !== $oldPackage)) {
-		$r = "Some changes on package list were made!\n\n";
+		$r = "[".date("d F Y H:i:s")."]\n\nSome changes on package list were made!\n\n";
 		$package = json_decode($newPackage, true);
 		foreach ($package["data"] as $k => $v) {
 	        foreach ($v as $kk => $vv) {
 	            $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).
 	                ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
 	        }
-	        $r .= "\n\n";
+	        $r .= "\n";
 	    }
 
 		file_put_contents(PAXEL_DIR."/package.json", $newPackage);

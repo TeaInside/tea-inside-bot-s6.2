@@ -31,8 +31,8 @@ if ($newPackage !== $oldPackage) {
 	$package = json_decode($newPackage, true);
 	foreach ($package["data"] as $k => $v) {
         foreach ($v as $kk => $vv) {
-            $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
-                ": </b>".htmlspecialchars($vv, ENT_QUOTES);
+            $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).
+                ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
         }
         $r .= "\n\n";
     }

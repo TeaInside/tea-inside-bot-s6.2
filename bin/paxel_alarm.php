@@ -47,5 +47,5 @@ if ($newPackage !== $oldPackage) {
 	);
 	echo "There are some changes!\n";
 } else {
-	echo "No changes!\n"
+	echo "No changes!\n";
 }

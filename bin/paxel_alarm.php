@@ -16,6 +16,7 @@ is_dir(PAXEL_DIR) or mkdir(PAXEL_DIR);
 
 $groupId = -1001491638996;
 
+$i = 0;
 $u = json_decode(file_get_contents(PAXEL_TG."/976357499"), true);
 
 while (true) {
@@ -59,11 +60,12 @@ while (true) {
                     "parse_mode" => "HTML"
                 ]
             );
-            echo "There are some changes!\n";
+            echo "[{$i}] There are some changes!\n";
         }
     } else {
-        echo "No changes!\n";
+        echo "[{$i}] No changes!\n";
     }
 
-    sleep(15);
+    sleep(5);
+    $i++;
 }

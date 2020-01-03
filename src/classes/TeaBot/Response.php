@@ -65,6 +65,8 @@ final class Response
                 }
             } else if (isset($this->data["new_chat_members"])) {
                 $this->sendWelcome();
+            } else if (isset($this->data["msg_id"])) {
+                CaptchaHandler2::havingCaptcha($this->data);
             }
         }
     }

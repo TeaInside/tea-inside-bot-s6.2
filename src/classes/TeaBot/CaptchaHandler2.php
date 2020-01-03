@@ -137,14 +137,30 @@ final class CaptchaHandler2
                     ]
                 )["out"];
                 $o = json_decode($o, true);
-                file_put_contents(
-                    self::CAPTCHA_DIR.
-                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$o["result"]["message_id"]}",
-                    time());
-                file_put_contents(
-                    self::CAPTCHA_DIR.
-                    "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
-                    time());
+                $d = json_decode(file_get_contents($f, LOCK_EX), true);
+                if ($d["spam"] >= 8) {
+                    Exe::deleteMessage(
+                        [
+                            "chat_id" => $data["chat_id"],
+                            "message_id" => $o["result"]["message_id"]
+                        ]
+                    );
+                    Exe::deleteMessage(
+                        [
+                            "chat_id" => $data["chat_id"],
+                            "message_id" => $data["msg_id"]
+                        ]
+                    );
+                } else {
+                    file_put_contents(
+                        self::CAPTCHA_DIR.
+                        "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$o["result"]["message_id"]}",
+                        time());
+                    file_put_contents(
+                        self::CAPTCHA_DIR.
+                        "/{$data["chat_id"]}/delete_msg_queue/{$data["user_id"]}/{$data["msg_id"]}",
+                        time());
+                }
             }
 
             return true;
@@ -183,7 +199,7 @@ final class CaptchaHandler2
 
             if (file_exists($f = self::CAPTCHA_DIR.
                 "/{$this->data["chat_id"]}/{$v["id"]}")) {
-                $d = json_decode(file_get_contents($f), true);
+                $d = json_decode(file_get_contents($f, LOCK_EX), true);
                 self::socketDispatch(
                     [
                         "answer_okx" => $d["tid"],

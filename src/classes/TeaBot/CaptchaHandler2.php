@@ -102,10 +102,12 @@ final class CaptchaHandler2
                             [
                                 "answer_okx" => $d["tid"],
                                 "type" => $d["type"],
-                                "ok_msg_id" => $o["result"]["message_id"],
-                                "c_answer_id" => $data["msg_id"]
+                                "ok_msg_id" => $d["captcha_msg_id"],
+                                "c_answer_id" => $d["join_msg_id"],
+                                "cancel_sleep" => 0
                             ]
                         );
+                        $unban = true;
                     }
                     Exe::deleteMessage(
                         [
@@ -113,6 +115,15 @@ final class CaptchaHandler2
                             "message_id" => $data["msg_id"]
                         ]
                     );
+                    if (isset($unban)) {
+                        sleep(30);
+                        Exe::unbanChatMember(
+                            [
+                                "chat_id" => $data["chat_id"],
+                                "user_id" => $data["user_id"]
+                            ]
+                        );
+                    }
                     return true;
                 }
 

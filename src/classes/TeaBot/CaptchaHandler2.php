@@ -89,7 +89,7 @@ final class CaptchaHandler2
                 fwrite($handle, json_encode($d, JSON_UNESCAPED_SLASHES));
                 fclose($handle);
 
-                if ($d["spam"] >= 5) {
+                if ($d["spam"] >= 8) {
                     if (!file_exists($f.".kicked")) {
                         touch($f.".kicked");
                         Exe::kickChatMember(
@@ -172,6 +172,12 @@ final class CaptchaHandler2
      */
     private function calculusCaptcha()
     {
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
+
         foreach ($this->data["new_chat_members"] as $v) {
 
             if (file_exists($f = self::CAPTCHA_DIR.
@@ -188,16 +194,14 @@ final class CaptchaHandler2
                 );
             }
 
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+            is_dir(self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
+                mkdir(self::CAPTCHA_DIR.
+                    "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
 
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
-
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
-
-            $handle = fopen(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}", "w+");
+            $handle = fopen(
+                self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
+                "w+");
             flock($handle, LOCK_EX);
 
             $sockData = [];

@@ -81,6 +81,7 @@ final class CaptchaHandler2
                 if (($data["date"] - $d["date"]) <= 2) {
                     $d["spam"]++;
                 }
+                $d["date"] = $data["date"];
                 $d["cycle"]++;
 
                 var_dump($data["date"], $d["date"], $d["spam"], $d["cycle"], "x");

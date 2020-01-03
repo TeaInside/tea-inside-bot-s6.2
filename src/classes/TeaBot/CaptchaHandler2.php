@@ -188,6 +188,15 @@ final class CaptchaHandler2
                 );
             }
 
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
+
+            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
+
             $handle = fopen(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}", "w+");
             flock($handle, LOCK_EX);
 
@@ -238,15 +247,6 @@ final class CaptchaHandler2
             $sockData["cycle"] = 0;
             $sockData["spam"] = 0;
             $sockData["date"] = 0;
-
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
-
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
-
-            is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
-                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
 
             fwrite($handle, json_encode($sockData, JSON_UNESCAPED_SLASHES));
             fclose($handle);

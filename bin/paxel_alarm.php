@@ -30,7 +30,7 @@ while (true) {
 
     if ($newPackage && ($newPackage !== $oldPackage)) {
         file_put_contents(PAXEL_DIR."/package.json", $newPackage);
-        $r = "[".date("d F Y H:i:s")."]\n\nSome changes on package list were made!\n\n";
+        $r = "<b>[".date("d F Y H:i:s")."]</b>\n\nSome changes on package list were made!\n\n";
         $package = json_decode($newPackage, true);
         $oPackage = json_decode($oldPackage, true);
 

@@ -51,7 +51,10 @@ final class CaptchaHandler2
         if (isset($data["text"]) && file_exists($f = self::CAPTCHA_DIR.
             "/{$data["chat_id"]}/{$data["user_id"]}")) {
 
-            $d = json_decode(file_get_contents($f), true);
+            $handle = fopen($f, "r+");
+            flock($handle, LOCK_EX);
+            $str = fgets($handle);
+            $d = json_decode(str_replace("\0", "", $str), true);
 
             if (trim($data["text"]) === (string)$d["cdata"]["correct_answer"]) {
                 unlink($f);
@@ -74,6 +77,27 @@ final class CaptchaHandler2
                     ]
                 );
             } else {
+
+                if (($data["date"] - $d["date"]) <= 2) {
+                    $d["spam"]++;
+                }
+                $d["cycle"]++;
+
+                ftruncate($handle, strlen($str));
+                rewind($handle);
+                fwrite($handle, json_encode($d, JSON_UNESCAPED_SLASHES));
+                fclose($handle);
+
+                if ($d["spam"] >= 5) {
+                    Exe::kickChatMember(
+                        [
+                            "chat_id" => $data["chat_id"],
+                            "user_id" => $data["user_id"]
+                        ]
+                    );
+                    return true;
+                }
+
                 $o = Exe::sendMessage(
                     [
                         "chat_id" => $data["chat_id"],
@@ -134,6 +158,9 @@ final class CaptchaHandler2
                 );
             }
 
+            $handle = fopen(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}", "w+");
+            flock($handle, LOCK_EX);
+
             $sockData = [];
             $cdata = json_decode(file_get_contents("https://captcha.teainside.org/api.php?key=abc123&action=get_captcha&type=calculus"), true);
 
@@ -178,6 +205,9 @@ final class CaptchaHandler2
             $sockData["mention"] = $mention;
             $sockData["tid"] = self::socketDispatch($sockData);
             $sockData["cdata"] = $cdata;
+            $sockData["cycle"] = 0;
+            $sockData["spam"] = 0;
+            $sockData["date"] = 0;
 
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
                 mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
@@ -188,9 +218,8 @@ final class CaptchaHandler2
             is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
                 mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
 
-            file_put_contents(
-                self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
-                json_encode($sockData, JSON_UNESCAPED_SLASHES));
+            fwrite($handle, json_encode($sockData, JSON_UNESCAPED_SLASHES));
+            fclose($handle);
         }
     }
 

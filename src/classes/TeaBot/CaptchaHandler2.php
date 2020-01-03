@@ -98,13 +98,14 @@ final class CaptchaHandler2
                                 "user_id" => $data["user_id"]
                             ]
                         );
+                        sleep(5);
                         self::socketDispatch(
                             [
                                 "answer_okx" => $d["tid"],
                                 "type" => $d["type"],
                                 "ok_msg_id" => $d["captcha_msg_id"],
                                 "c_answer_id" => $d["join_msg_id"],
-                                "cancel_sleep" => 0
+                                "cancel_sleep" => 15
                             ]
                         );
                         $unban = true;

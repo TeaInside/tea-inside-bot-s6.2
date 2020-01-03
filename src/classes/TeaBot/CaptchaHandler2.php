@@ -84,18 +84,33 @@ final class CaptchaHandler2
                 $d["date"] = $data["date"];
                 $d["cycle"]++;
 
-                var_dump($data["date"], $d["date"], $d["spam"], $d["cycle"], "x");
-
                 ftruncate($handle, strlen($str));
                 rewind($handle);
                 fwrite($handle, json_encode($d, JSON_UNESCAPED_SLASHES));
                 fclose($handle);
 
                 if ($d["spam"] >= 5) {
-                    Exe::kickChatMember(
+                    if (!file_exists($f.".kicked")) {
+                        Exe::kickChatMember(
+                            [
+                                "chat_id" => $data["chat_id"],
+                                "user_id" => $data["user_id"]
+                            ]
+                        );
+                        touch($f.".kicked");
+                        self::socketDispatch(
+                            [
+                                "answer_okx" => $d["tid"],
+                                "type" => $d["type"],
+                                "ok_msg_id" => $o["result"]["message_id"],
+                                "c_answer_id" => $data["msg_id"]
+                            ]
+                        );
+                    }
+                    Exe::deleteMessage(
                         [
                             "chat_id" => $data["chat_id"],
-                            "user_id" => $data["user_id"]
+                            "message_id" => $data["msg_id"]
                         ]
                     );
                     return true;

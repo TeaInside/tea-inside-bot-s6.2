@@ -29,6 +29,7 @@ while (true) {
     }
 
     if ($newPackage && ($newPackage !== $oldPackage)) {
+        file_put_contents(PAXEL_DIR."/package.json", $newPackage);
         $r = "[".date("d F Y H:i:s")."]\n\nSome changes on package list were made!\n\n";
         $package = json_decode($newPackage, true);
         $oPackage = json_decode($oldPackage, true);
@@ -41,25 +42,25 @@ while (true) {
             }
         }
 
-        $package["data"] = array_values($package["data"]);
-
-        foreach ($package["data"] as $k => $v) {
-            foreach ($v as $kk => $vv) {
-                $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).
-                    ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
+        if (count($package["data"])) {
+            $package["data"] = array_values($package["data"]);
+            foreach ($package["data"] as $k => $v) {
+                foreach ($v as $kk => $vv) {
+                    $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).
+                        ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
+                }
+                $r .= "\n";
             }
-            $r .= "\n";
-        }
 
-        file_put_contents(PAXEL_DIR."/package.json", $newPackage);
-        TeaBot\Exe::sendMessage(
-            [
-                "chat_id" => $groupId,
-                "text" => $r,
-                "parse_mode" => "HTML"
-            ]
-        );
-        echo "There are some changes!\n";
+            TeaBot\Exe::sendMessage(
+                [
+                    "chat_id" => $groupId,
+                    "text" => $r,
+                    "parse_mode" => "HTML"
+                ]
+            );
+            echo "There are some changes!\n";
+        }
     } else {
         echo "No changes!\n";
     }

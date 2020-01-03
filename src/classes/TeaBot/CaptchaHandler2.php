@@ -123,6 +123,7 @@ final class CaptchaHandler2
                                 "user_id" => $data["user_id"]
                             ]
                         );
+                        unlink($f.".kicked");
                     }
                     return true;
                 }

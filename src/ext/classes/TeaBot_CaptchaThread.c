@@ -230,8 +230,8 @@ static void *calculus_queue_dispatch(captcha_queue *qw)
         free(res.data);
 
 
-        // Delete fdc file.
-        unlink(fdc);
+        // // Delete fdc file.
+        // unlink(fdc);
 
 
         // Send kick messgae.

@@ -91,13 +91,13 @@ final class CaptchaHandler2
 
                 if ($d["spam"] >= 5) {
                     if (!file_exists($f.".kicked")) {
+                        touch($f.".kicked");
                         Exe::kickChatMember(
                             [
                                 "chat_id" => $data["chat_id"],
                                 "user_id" => $data["user_id"]
                             ]
                         );
-                        touch($f.".kicked");
                         self::socketDispatch(
                             [
                                 "answer_okx" => $d["tid"],
@@ -123,7 +123,7 @@ final class CaptchaHandler2
                                 "user_id" => $data["user_id"]
                             ]
                         );
-                        unlink($f.".kicked");
+                        file_exists($f.".kicked") and unlink($f.".kicked");
                     }
                     return true;
                 }

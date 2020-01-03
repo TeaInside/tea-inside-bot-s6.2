@@ -83,6 +83,8 @@ final class CaptchaHandler2
                 }
                 $d["cycle"]++;
 
+                var_dump($data["date"], $d["date"], $d["spam"], $d["cycle"], "x");
+
                 ftruncate($handle, strlen($str));
                 rewind($handle);
                 fwrite($handle, json_encode($d, JSON_UNESCAPED_SLASHES));

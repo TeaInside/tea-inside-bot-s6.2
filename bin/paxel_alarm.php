@@ -3,10 +3,21 @@
 use TeaBot\Plugins\Paxel\Paxel as BasePaxel;
 
 require __DIR__."/../bootstrap/autoload.php";
+require __DIR__."/paxel_extra.php";
 
 date_default_timezone_set("Asia/Jakarta");
 
 loadConfig("telegram_bot");
+
+const SKIP_ADD_ONS = [
+    "Box L",
+    "Box M",
+    "Box S",
+    "Berkahnya Sedekah",
+    "Kita Bahagia",
+    "Semua Bisa",
+    "Bagi Berkah"
+];
 
 is_dir(STORAGE_PATH."/paxel") or mkdir(STORAGE_PATH."/paxel");
 define("PAXEL_TG", STORAGE_PATH."/paxel/tg");
@@ -42,14 +53,24 @@ while (true) {
                     unset($package["data"][$k]);
                 }
             }
+
+            if (in_array($v["code"], SKIP_ADD_ONS)) {
+                unset($package["data"][$k]);
+            }
         }
 
         if (count($package["data"])) {
             $package["data"] = array_values($package["data"]);
             foreach ($package["data"] as $k => $v) {
                 foreach ($v as $kk => $vv) {
-                    $r .= "<b>".htmlspecialchars(ucfirst($kk), ENT_QUOTES).
+                    $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
                         ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
+                }
+                if (isset(PAXEL_EXTRA[$v["code"]])) {
+                    foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {
+                        $r .= "<b>".htmlspecialchars($kkk, ENT_QUOTES).
+                            ":</b> ".htmlspecialchars($vvv, ENT_QUOTES)."\n";
+                    }
                 }
                 $r .= "\n";
             }

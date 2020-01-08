@@ -48,6 +48,10 @@ while (true) {
         $package = json_decode($newPackage, true);
         $oPackage = json_decode($oldPackage, true);
 
+        if (!is_array($oPackage)) {
+            $oPackage = [];
+        }
+
         foreach ($package["data"] as $k => $v) {
             foreach ($oPackage["data"] as $kk => $vv) {
                 if (sha1(json_encode($v)) === sha1(json_encode($vv))) {

@@ -71,7 +71,7 @@ while (true) {
                     $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
                         ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
                 }
-                $r .= "\n";
+                $r .= "\n=======================\n";
                 if (isset(PAXEL_EXTRA[$v["code"]])) {
                     foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {
                         $r .= "<b>".htmlspecialchars($kkk, ENT_QUOTES).

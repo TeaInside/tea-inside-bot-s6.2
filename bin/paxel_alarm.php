@@ -17,7 +17,7 @@ const SKIP_ADD_ONS = [
     "Kita Bahagia",
     "Semua Bisa",
     "Bagi Berkah",
-    "Choayo1212",
+    " Choayo1212",
 ];
 
 is_dir(STORAGE_PATH."/paxel") or mkdir(STORAGE_PATH."/paxel");

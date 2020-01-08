@@ -16,7 +16,8 @@ const SKIP_ADD_ONS = [
     "Berkahnya Sedekah",
     "Kita Bahagia",
     "Semua Bisa",
-    "Bagi Berkah"
+    "Bagi Berkah",
+    "Choayo1212",
 ];
 
 is_dir(STORAGE_PATH."/paxel") or mkdir(STORAGE_PATH."/paxel");
@@ -54,7 +55,7 @@ while (true) {
                 }
             }
 
-            if (in_array($v["code"], SKIP_ADD_ONS)) {
+            if (in_array($v["code"], SKIP_ADD_ONS) || (stripos($v["code"], "sunfresh") !== false)) {
                 unset($package["data"][$k]);
             }
         }
@@ -64,7 +65,7 @@ while (true) {
             foreach ($package["data"] as $k => $v) {
                 foreach ($v as $kk => $vv) {
                     $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
-                        ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
+                        ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n\n";
                 }
                 if (isset(PAXEL_EXTRA[$v["code"]])) {
                     foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {

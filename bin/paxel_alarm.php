@@ -71,14 +71,14 @@ while (true) {
                     $r .= "<b>".htmlspecialchars($kk, ENT_QUOTES).
                         ":</b> ".htmlspecialchars($vv, ENT_QUOTES)."\n";
                 }
-                $r .= "\n=======================\n";
+                $r .= "\n";
                 if (isset(PAXEL_EXTRA[$v["code"]])) {
                     foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {
                         $r .= "<b>".htmlspecialchars($kkk, ENT_QUOTES).
                             ":</b> ".htmlspecialchars($vvv, ENT_QUOTES)."\n";
                     }
                 }
-                $r .= "\n\n";
+                $r .= "\n\n=======================\n";
             }
 
             TeaBot\Exe::sendMessage(

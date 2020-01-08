@@ -78,7 +78,7 @@ while (true) {
                             ":</b> ".htmlspecialchars($vvv, ENT_QUOTES)."\n";
                     }
                 }
-                $r .= "\n\n=======================\n";
+                $r .= "\n\n==============================\n";
             }
 
             TeaBot\Exe::sendMessage(

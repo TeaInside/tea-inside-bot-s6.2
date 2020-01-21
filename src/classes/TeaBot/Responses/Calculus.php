@@ -69,7 +69,7 @@ final class Calculus extends ResponseFoundation
                     "text" => "Due to excessive abuse, this feature can only be used in private message and part of internal TeaInside groups.\n\nIf you are an administrator of this group, you can ask to enable this feature for this group. Contact @TeaInside for details, thanks!"
                 ]
             )["out"], true);
-            sleep(3);
+            sleep(5);
             Exe::deleteMessage(
                 [
                     "chat_id" => $this->data["chat_id"],

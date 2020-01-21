@@ -23,6 +23,23 @@ final class Calculus extends ResponseFoundation
     private $token;
 
     /**
+     * @var bool
+     */
+    private $abuse = false;
+
+    /**
+     * @var array
+     */
+    private const ALLOWED_GROUPS = [
+        -1001120283944, // @TeaInside
+        -1001128531173, // Tea Inside
+        -1001162202776, // Koding Teh
+        -1001286444191, // Dark Tea Inside
+        -1001362276542, // PHP LTM
+        -1001128970273, // Private Cloud
+    ];
+
+    /**
      * @param \TeaBot\Data &$data
      *
      * Constructor.
@@ -31,6 +48,42 @@ final class Calculus extends ResponseFoundation
     {
         parent::__construct($data);
         loadConfig("calculus");
+
+        if (($data["chat_type"] === "group") &&
+            (!in_array($data["chat_id"], self::ALLOWED_GROUPS))) {
+            $this->abuse = true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function abuseCheck(): bool
+    {
+        if ($this->abuse) {
+            $o = json_decode(Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => "Due to excessive abuse, this feature can only be used in private message and part of internal TeaInside groups.\n\nIf you are an administrator of this group, you can ask to enable this feature for this group. Contact @TeaInside for details, thanks!"
+                ]
+            )["out"], true);
+            sleep(3);
+            Exe::deleteMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "message_id" => $this->data["msg_id"]
+                ]
+            );
+            Exe::deleteMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "message_id" => $o["result"]["message_id"]
+                ]
+            );
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -51,6 +104,8 @@ final class Calculus extends ResponseFoundation
      */
     public function lxt1(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($expr);
         $o = Exe::sendPhoto(
             [
@@ -81,6 +136,8 @@ final class Calculus extends ResponseFoundation
      */
     public function lxt0(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         $photo = "https://api.teainside.org/latex_x.php?d=600&exp=".urlencode($expr);
         $o = Exe::sendPhoto(
             [
@@ -111,6 +168,8 @@ final class Calculus extends ResponseFoundation
      */
     public function c001(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         if ($this->exprCheck($expr)) return true;
 
         $res = $this->execute($expr);
@@ -144,6 +203,8 @@ final class Calculus extends ResponseFoundation
      */
     public function c002(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         $res = $this->execute($expr);
 
         $photo = null;
@@ -213,6 +274,8 @@ final class Calculus extends ResponseFoundation
      */
     public function cr02(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         if (preg_match('/^(\-?[\d\.]+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)(?:i\s*\;\s*)(\-?[\d\.]+)(?:\s*(\+|\-)\s*)(\-?[\d\.]*)i$/', $expr, $m)) {
             $reMin = (float)$m[1];
             $imMin = ($m[3] === "" ? 1 : (float)$m[3]) * ($m[2] == "-" ? -1 : 1);
@@ -291,6 +354,8 @@ final class Calculus extends ResponseFoundation
      */
     public function cyf4(string $expr): bool
     {
+        if ($this->abuseCheck()) return true;
+
         $expr = "plot [//math:".$expr."//]";
         $hash = md5($expr);
         $baseDir = BASEPATH."/storage/telegram/rmq";

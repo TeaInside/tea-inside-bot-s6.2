@@ -248,7 +248,7 @@ final class Calculus extends ResponseFoundation
 
         if (isset($photo)) {
             $o = empty($this->data["chat_id"])
-            ? $this->answerInlineQueryPhoto($expr, $photo, $thumb, $reply)
+            ? $this->answerInlineQueryPhoto($expr, $photo, $thumb, "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>")
             : Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],

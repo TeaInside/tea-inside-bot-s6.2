@@ -11,4 +11,7 @@ define("TELEGRAM_BOT_DB_NAME", "teabot");
 define("TELEGRAM_BOT_SUDOERS", [243692601]);
 define("TELEGRAM_STORAGE_PATH", BASEPATH."/storage/telegram");
 
+define("CALCULUS_API_KEY", "... token ...");
+define("SRABATSROBOT_API_KEY", "... token ...");
+
 $ignoreAll = "*\n!.gitignore\n";

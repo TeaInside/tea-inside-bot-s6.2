@@ -4,6 +4,7 @@ namespace TeaBot;
 
 use ArrayAccess;
 use TeaBot\Lang;
+use TeaBot\Exe;
 
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
@@ -49,6 +50,43 @@ final class Data implements ArrayAccess
             $this->container["msg_id"]    = &$this->in["message"]["message_id"];
             $this->container["msg_type"] = "new_chat_member";
             $this->container["new_chat_members"] = $this->in["message"]["new_chat_members"];
+        }else if (isset($this->in["inline_query"])) {
+            $this->container["text"]       = &$this->in["inline_query"]["query"];
+            $this->container["msg_type"] = "query";
+            $this->buildSpecialMessage();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function buildSpecialMessage()
+    {
+        $this->container["event_type"] = "inline";
+
+        if (isset($this->in["inline_query"]["from"]["username"])) {
+            $this->container["username"] = &$this->in["inline_query"]["from"]["username"];
+        } else {
+            $this->container["username"] = null;
+        }
+
+        if (isset($this->in["inline_query"]["from"]["language_code"])) {
+            $this->container["lang"] = &$this->in["inline_query"]["from"]["language_code"];
+        } else {
+            $this->container["lang"] = null;
+            Lang::init("en");
+        }
+
+        $this->container["update_id"]    = &$this->in["update_id"];
+        $this->container["msg_id"]        = &$this->in["inline_query"]["id"];
+        $this->container["user_id"]        = &$this->in["inline_query"]["from"]["id"];
+        $this->container["is_bot"]        = &$this->in["inline_query"]["from"]["is_bot"];
+        $this->container["first_name"]    = &$this->in["inline_query"]["from"]["first_name"];
+
+        if (isset($this->in["inline_query"]["from"]["last_name"])) {
+            $this->container["last_name"] = &$this->in["inline_query"]["from"]["last_name"];
+        } else {
+            $this->container["last_name"] = null;
         }
     }
 
@@ -67,7 +105,7 @@ final class Data implements ArrayAccess
 
         if (isset($this->in["message"]["from"]["language_code"])) {
             $this->container["lang"] = &$this->in["message"]["from"]["language_code"];
-            Lang::init($this->container["lang"]);
+            // Lang::init($this->container["lang"]);
         } else {
             $this->container["lang"] = null;
             Lang::init("en");

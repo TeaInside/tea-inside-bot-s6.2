@@ -34,6 +34,9 @@ function build(bool $noExit = false): void
 
     // Build webhook endpoint.
     sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_webhook.php"));
+    
+    // Build longpoll endpoint.
+    sh(escapeshellarg(PHP_BINARY)." ".escapeshellarg(__DIR__."/bin/build_longpoll.php"));
 
     // Make lib dir.
     is_dir($libDir) or mkdir($libDir);

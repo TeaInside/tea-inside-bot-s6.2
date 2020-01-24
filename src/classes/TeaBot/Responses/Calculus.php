@@ -108,18 +108,22 @@ final class Calculus extends ResponseFoundation
         if ($this->abuseCheck()) return true;
 
         $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($expr);
-        $o = Exe::sendPhoto(
+        $thumb = "https://api.teainside.org/latex_x.php?border=0&d=140&exp=".urlencode($expr);
+        $o = empty($this->data["chat_id"])
+        ? $this->answerInlineQueryPhoto($expr, $photo, $thumb)
+        : Exe::sendPhoto(
             [
                 "chat_id" => $this->data["chat_id"],
                 "reply_to_message_id" => $this->data["msg_id"],
                 "photo" => $photo,
-                "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
                 "parse_mode" => "html"
             ]
         );
         $o = json_decode($o["out"], true);
         if (!$o["ok"]) {
-            Exe::sendMessage(
+            empty($this->data["chat_id"])
+            ? $this->answerInlineQueryArticle($expr, "Syntax error!")
+            : Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -139,19 +143,23 @@ final class Calculus extends ResponseFoundation
     {
         if ($this->abuseCheck()) return true;
 
-        $photo = "https://api.teainside.org/latex_x.php?d=600&exp=".urlencode($expr);
-        $o = Exe::sendPhoto(
+        $photo = "https://api.teainside.org/latex_x.php?border=2&d=600&exp=".urlencode($expr);
+        $thumb = "https://api.teainside.org/latex_x.php?border=10&d=140&exp=".urlencode($expr);
+        $o = empty($this->data["chat_id"])
+        ? $this->answerInlineQueryPhoto($expr, $photo, $thumb)
+        : Exe::sendPhoto(
             [
                 "chat_id" => $this->data["chat_id"],
                 "reply_to_message_id" => $this->data["msg_id"],
                 "photo" => $photo,
-                "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
                 "parse_mode" => "html"
             ]
         );
         $o = json_decode($o["out"], true);
         if (!$o["ok"]) {
-            Exe::sendMessage(
+            empty($this->data["chat_id"])
+            ? $this->answerInlineQueryArticle($expr, "Syntax error!")
+            : Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -187,7 +195,9 @@ final class Calculus extends ResponseFoundation
             $reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
         }
 
-        Exe::sendMessage(
+        empty($this->data["chat_id"])
+        ? $this->answerInlineQueryArticle($expr, $reply)
+        : Exe::sendMessage(
             [
                 "chat_id" => $this->data["chat_id"],
                 "reply_to_message_id" => $this->data["msg_id"],
@@ -231,12 +241,15 @@ final class Calculus extends ResponseFoundation
             );
 
             $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($reply);
+            $thumb = "https://api.teainside.org/latex_x.php?border=0&d=140&exp=".urlencode($reply);
         } else {
             $reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
         }
 
         if (isset($photo)) {
-            $o = Exe::sendPhoto(
+            $o = empty($this->data["chat_id"])
+            ? $this->answerInlineQueryPhoto($expr, $photo, $thumb, "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>")
+            : Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -247,7 +260,9 @@ final class Calculus extends ResponseFoundation
             );
             $o = json_decode($o["out"], true);
             if (!$o["ok"]) {
-                 Exe::sendMessage(
+                empty($this->data["chat_id"])
+                ? $this->answerInlineQueryArticle($expr, "Cannot render PNG image due internal error. Please report to @TeaInside.\n\nLaTex result:\n<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>")
+                : Exe::sendMessage(
                     [
                         "chat_id" => $this->data["chat_id"],
                         "reply_to_message_id" => $this->data["msg_id"],
@@ -257,7 +272,9 @@ final class Calculus extends ResponseFoundation
                 );
             }
         } else {
-            Exe::sendMessage(
+            empty($this->data["chat_id"])
+            ? $this->answerInlineQueryArticle($expr, $reply)
+            : Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -292,7 +309,8 @@ final class Calculus extends ResponseFoundation
 
             is_dir($baseDir) or mkdir($baseDir);
 
-            $oo = Exe::sendMessage(
+            $oo = empty($this->data["chat_id"])
+            ?: Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "text" => "Calculating...",
@@ -313,21 +331,28 @@ final class Calculus extends ResponseFoundation
             if ($err = curl_error($ch)) {
                 $ern = curl_errno($ch);
                 curl_close($ch);
-                $j = json_decode($oo["out"], true);
-                Exe::editMessageText(
-                    [
-                        "chat_id" => $this->data["chat_id"],
-                        "message_id" => $j["result"]["message_id"],
-                        "text" => "Error: ({$ern}) {$err}",
-                    ]
-                );
+                if(empty($this->data["chat_id"])){
+                    $this->answerInlineQueryArticle($expr, "Error: ({$ern}) {$err}");
+                } else {
+                    $j = json_decode($oo["out"], true);
+                    Exe::editMessageText(
+                        [
+                            "chat_id" => $this->data["chat_id"],
+                            "message_id" => $j["result"]["message_id"],
+                            "text" => "Error: ({$ern}) {$err}",
+                        ]
+                    );
+                }
                 return true;
             }
             curl_close($ch);
             file_put_contents($baseDir."/{$hash}.gif", $o);
 
             send_photo:
-            $o = Exe::sendPhoto(
+            $photo = self::curlFile($baseDir."/{$hash}.gif");
+            $o = empty($this->data["chat_id"])
+            ? $this->answerInlineQueryPhoto($expr, $photo, $photo, "<b>Re min, max:</b> {$reMin}, {$reMax}\n<b>Im min, max:</b> {$imMin}, {$imMax}")
+            : Exe::sendPhoto(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -337,7 +362,9 @@ final class Calculus extends ResponseFoundation
                 ]
             );
         } else {
-            Exe::sendMessage(
+            empty($this->data["chat_id"])
+            ? $this->answerInlineQueryArticle($expr, "Invalid format!\nUsage: <code>/cr02 min; max</code>\nWhere <code>min</code> and <code>max</code> are complex numbers.")
+            : Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
@@ -365,7 +392,8 @@ final class Calculus extends ResponseFoundation
             goto send_photo;
         }
 
-        $oo = Exe::sendMessage(
+        $oo = empty($this->data["chat_id"])
+        ?: Exe::sendMessage(
             [
                 "chat_id" => $this->data["chat_id"],
                 "text" => "Calculating...",
@@ -391,14 +419,18 @@ final class Calculus extends ResponseFoundation
         if ($err = curl_error($ch)) {
             $ern = curl_errno($ch);
             curl_close($ch);
-            $j = json_decode($oo["out"], true);
-            Exe::editMessageText(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "message_id" => $j["result"]["message_id"],
-                    "text" => "Error: ({$ern}) {$err}",
-                ]
-            );
+            if(empty($this->data['chat_id'])){
+                $this->answerInlineQueryArticle($expr, "Error: ({$ern}) {$err}");
+            }else{
+                $j = json_decode($oo["out"], true);
+                Exe::editMessageText(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $j["result"]["message_id"],
+                        "text" => "Error: ({$ern}) {$err}",
+                    ]
+                );
+            }
             return true;
         }
         curl_close($ch);
@@ -424,14 +456,18 @@ final class Calculus extends ResponseFoundation
         if ($err = curl_error($ch)) {
             $ern = curl_errno($ch);
             curl_close($ch);
-            $j = json_decode($oo["out"], true);
-            Exe::editMessageText(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "message_id" => $j["result"]["message_id"],
-                    "text" => "Error: ({$ern}) {$err}",
-                ]
-            );
+            if(empty($this->data['chat_id'])){
+                $this->answerInlineQueryArticle($expr, "Error: ({$ern}) {$err}");
+            }else{
+                $j = json_decode($oo["out"], true);
+                Exe::editMessageText(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $j["result"]["message_id"],
+                        "text" => "Error: ({$ern}) {$err}",
+                    ]
+                );
+            }
             echo "zc ".$o["out"];
             return true;
         }
@@ -458,21 +494,28 @@ final class Calculus extends ResponseFoundation
         if ($err = curl_error($ch)) {
             $ern = curl_errno($ch);
             curl_close($ch);
-            $j = json_decode($oo["out"], true);
-            $o = Exe::editMessageText(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "message_id" => $j["result"]["message_id"],
-                    "text" => "Error: ({$ern}) {$err}",
-                ]
-            );
+            if(empty($this->data['chat_id'])){
+                $this->answerInlineQueryArticle($expr, "Error: ({$ern}) {$err}");
+            }else{
+                $j = json_decode($oo["out"], true);
+                $o = Exe::editMessageText(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "message_id" => $j["result"]["message_id"],
+                        "text" => "Error: ({$ern}) {$err}",
+                    ]
+                );
+            }
             return true;
         }
         curl_close($ch);
         file_put_contents($baseDir."/{$hash}.gif", $o);
 
         send_photo:
-        $o = Exe::sendPhoto(
+        $photo = self::curlFile($baseDir."/{$hash}.gif");
+        $o = empty($this->data['chat_id'])
+        ? $this->answerInlineQueryPhoto($expr, $photo, $photo, "<pre>".htmlspecialchars($expr)."</pre>")
+        : Exe::sendPhoto(
             [
                 "chat_id" => $this->data["chat_id"],
                 "reply_to_message_id" => $this->data["msg_id"],
@@ -484,15 +527,49 @@ final class Calculus extends ResponseFoundation
         return true;
 
         invalid:
-        $j = json_decode($oo["out"], true);
-        $o = Exe::editMessageText(
-            [
-                "chat_id" => $this->data["chat_id"],
-                "message_id" => $j["result"]["message_id"],
-                "text" => "Invalid data!",
-            ]
-        );
+        if(empty($this->data['chat_id'])){
+            $this->answerInlineQueryArticle($expr, "Invalid data!");
+        }else{
+            $j = json_decode($oo["out"], true);
+            $o = Exe::editMessageText(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "message_id" => $j["result"]["message_id"],
+                    "text" => "Invalid data!",
+                ]
+            );
+        }
         return true;
+    }
+
+    /**
+     * @param string $pathFile
+     * @return string
+     */
+    private static function curlFile(string $pathFile) : string
+    {
+        if (function_exists('curl_file_create')) {
+            $cFile = curl_file_create($pathFile);
+        } else {
+            $cFile = "@$pathFile";
+        }
+          $post = array('files'=> $cFile);
+          $ch = curl_init('https://telegra.ph/upload');
+          $optf = [
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_SSL_VERIFYPEER => false,
+              CURLOPT_SSL_VERIFYHOST => false,
+              CURLOPT_POST => true,
+              CURLOPT_POSTFIELDS => $post
+          ];
+          curl_setopt_array($ch, $optf);
+          $r["out"] = curl_exec($ch);
+          $r["info"] = curl_getinfo($ch);
+          $r["error"] = curl_error($ch);
+          $r["errno"] = curl_error($ch);
+          curl_close($ch);
+          $file = json_decode($r["out"], True)[0]['src'];
+          return "https://telegra.ph{$file}";
     }
 
     /**
@@ -512,5 +589,59 @@ final class Calculus extends ResponseFoundation
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param string $expr
+     * @param string $photo
+     * @param string $thumb
+     * @param string $reply
+     * @return array
+     */
+    private function answerInlineQueryPhoto(string $expr, string $photo, string $thumb, string $reply = ""): array
+    {
+        $results[] = [
+            'type' => 'photo',
+            'id' => rand(),
+            'photo_url' => $photo,
+            'thumb_url' => $thumb,
+            'photo_width'=> 100,
+            'photo_height'=> 48,
+            'title' => $expr,
+            'description' => $reply,
+            'caption' => $reply,
+            'parse_mode' => "HTML"
+        ];
+        $o = Exe::answerInlineQuery([
+            'inline_query_id' => $this->data["msg_id"],
+            'results' => json_encode($results),
+            'cache_time' => 0
+        ]);
+        return $o;
+    }
+
+    /**
+     * @param string $expr
+     * @param string $reply
+     * @return bool
+     */
+    private function answerInlineQueryArticle(string $expr, string $reply): bool
+    {
+        $results[] = [
+            "type" => "article", 
+            "id" => "1", 
+            "title" => $expr,
+            "description" => $reply,
+            "input_message_content" => [
+                "message_text" => $reply, 
+                "parse_mode" => "HTML"
+            ]
+        ];
+        Exe::answerInlineQuery([
+            'inline_query_id' => $this->data["msg_id"],
+            'results' => json_encode($results),
+            'cache_time' => 0
+        ]);
+        return true;
     }
 }

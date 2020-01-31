@@ -254,7 +254,7 @@ final class Calculus extends ResponseFoundation
                     "{\\partial}",
                     "{\\epsilon}",
                     "{\\pi}",
-                    "erfi"
+                    "\\text{erfi}"
                 ],
                 $reply
             );

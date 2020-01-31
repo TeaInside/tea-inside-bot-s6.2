@@ -610,7 +610,7 @@ $params["content"] =
 
         curl_close($ch);
 
-        var_dump($ret);
+        // var_dump($ret);
         return $ret;
     }
 }

@@ -247,12 +247,14 @@ final class Calculus extends ResponseFoundation
                 [
                     "\xe2\x88\x82",
                     "\xce\xb5",
-                    "\xcf\x80"
+                    "\xcf\x80",
+                    "\\erfi"
                 ],
                 [
                     "{\\partial}",
                     "{\\epsilon}",
-                    "{\\pi}"
+                    "{\\pi}",
+                    "erfi"
                 ],
                 $reply
             );

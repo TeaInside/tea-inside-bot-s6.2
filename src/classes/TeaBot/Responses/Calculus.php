@@ -554,12 +554,29 @@ final class Calculus extends ResponseFoundation
 
     /**
      * @param array $params
+     * @param bool  $preamble
      * @return array
      */
-    public static function latexGen(array $params): array
+    public static function latexGen(array $params, $preamble = false): array
     {
         if (!isset($params["content"])) {
             throw new Exception("latexGen's parameter doesn't contain \"content\" parameter!");
+        }
+
+        if (!$preamble) {
+$params["content"] = 
+"\\documentclass[30pt]{article}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{amsfonts}
+\\usepackage{cancel}
+\\usepackage[utf8]{inputenc}
+\\thispagestyle{empty}
+\\begin{document}
+\\begin{align*}
+".$params["content"]."
+\\end{align*}
+\\end{document}";
         }
 
         $ch = curl_init("https://latex.teainside.org/api.php?action=tex2png");

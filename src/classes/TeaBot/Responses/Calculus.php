@@ -122,7 +122,7 @@ final class Calculus extends ResponseFoundation
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "photo" => $photo,
+                    "photo" => "https://latex.teainside.org/latex/png/".$rr["out"]["res"].".png",
                     "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
                     "parse_mode" => "html"
                 ]

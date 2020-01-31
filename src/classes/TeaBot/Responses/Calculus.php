@@ -112,7 +112,7 @@ final class Calculus extends ResponseFoundation
             [
                 "content" => $expr,
                 "d" => 600,
-                "border" => 200
+                "border" => "200"
             ]
         );
 
@@ -259,7 +259,7 @@ final class Calculus extends ResponseFoundation
                 [
                     "content" => $reply,
                     "d" => 600,
-                    "border" => 200
+                    "border" => "200"
                 ]
             );
 

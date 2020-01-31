@@ -3,6 +3,7 @@
 namespace TeaBot\Responses;
 
 use stdClass;
+use Exception;
 use TeaBot\Exe;
 use TeaBot\Data;
 use TeaBot\Lang;
@@ -107,18 +108,30 @@ final class Calculus extends ResponseFoundation
     {
         if ($this->abuseCheck()) return true;
 
-        $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($expr);
-        $o = Exe::sendPhoto(
+        $rr = self::latexGen(
             [
-                "chat_id" => $this->data["chat_id"],
-                "reply_to_message_id" => $this->data["msg_id"],
-                "photo" => $photo,
-                "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
-                "parse_mode" => "html"
+                "content" => $expr,
+                "d" => 600,
+                "border" => 200
             ]
         );
-        $o = json_decode($o["out"], true);
-        if (!$o["ok"]) {
+
+        $error = true;
+        if (isset($rr["out"]["status"]) && ($rr["out"]["status"] === "success")) {
+            $o = Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "photo" => $photo,
+                    "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
+                    "parse_mode" => "html"
+                ]
+            );
+            $o = json_decode($o["out"], true);
+            $error = !$o["ok"];
+        }
+
+        if ($error) {
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
@@ -139,18 +152,30 @@ final class Calculus extends ResponseFoundation
     {
         if ($this->abuseCheck()) return true;
 
-        $photo = "https://api.teainside.org/latex_x.php?d=600&exp=".urlencode($expr);
-        $o = Exe::sendPhoto(
+        $rr = self::latexGen(
             [
-                "chat_id" => $this->data["chat_id"],
-                "reply_to_message_id" => $this->data["msg_id"],
-                "photo" => $photo,
-                "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
-                "parse_mode" => "html"
+                "content" => $expr,
+                "d" => 600
             ]
         );
-        $o = json_decode($o["out"], true);
-        if (!$o["ok"]) {
+
+        $error = true;
+        if (isset($rr["out"]["status"]) && ($rr["out"]["status"] === "success")) {
+            $o = Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "photo" => "https://latex.teainside.org/latex/png/".$rr["out"]["res"].".png",
+                    "caption" => "<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>",
+                    "parse_mode" => "html"
+                ]
+            );
+
+            $o = json_decode($o["out"], true);
+            $error = !$o["ok"];
+        }
+
+        if ($error) {
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],
@@ -216,7 +241,7 @@ final class Calculus extends ResponseFoundation
             if ($res["solutions"][0]["entire_result"][0] === "=") {
                 $reply = $res["dym"]["originalEquation"].$res["solutions"][0]["entire_result"];
             } else {
-                $reply = "(".$res["dym"]["originalEquation"].") \\;\\Rightarrow\\; (".$res["solutions"][0]["entire_result"].")";
+                $reply = "\\left(".$res["dym"]["originalEquation"]."\\right) \\;\\Rightarrow\\; \\left(".$res["solutions"][0]["entire_result"]."\\right)";
             }
             $reply = str_replace(
                 [
@@ -224,13 +249,25 @@ final class Calculus extends ResponseFoundation
                     "\xce\xb5"
                 ],
                 [
-                    "\\partial ",
-                    "\\epsilon "
+                    "{\\partial}",
+                    "{\\epsilon}"
                 ],
                 $reply
             );
 
-            $photo = "https://api.teainside.org/latex_x.php?border=200&d=600&exp=".urlencode($reply);
+           $rr = self::latexGen(
+                [
+                    "content" => $reply,
+                    "d" => 600,
+                    "border" => 200
+                ]
+            );
+
+            if (isset($rr["out"]["status"]) && ($rr["out"]["status"] === "success")) {
+                $photo = "https://latex.teainside.org/latex/png/".$rr["out"]["res"].".png";
+            } else {
+                $reply = "Cannot render PNG image due internal error. Please report to @TeaInside.\n\nLaTex result:\n<pre>".htmlspecialchars($reply, ENT_QUOTES, "UTF-8")."</pre>";
+            }
         } else {
             $reply = isset($res["errorMessage"]) ? $res["errorMessage"] : "Couldn't get the result";
         }
@@ -261,7 +298,8 @@ final class Calculus extends ResponseFoundation
                 [
                     "chat_id" => $this->data["chat_id"],
                     "reply_to_message_id" => $this->data["msg_id"],
-                    "text" => $reply
+                    "text" => $reply,
+                    "parse_mode" => "html"
                 ]
             );
         }
@@ -512,5 +550,46 @@ final class Calculus extends ResponseFoundation
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    public static function latexGen(array $params): array
+    {
+        if (!isset($params["content"])) {
+            throw new Exception("latexGen's parameter doesn't contain \"content\" parameter!");
+        }
+
+        $ch = curl_init("https://latex.teainside.org/api.php?action=tex2png");
+        curl_setopt_array($ch,
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($params, JSON_UNESCAPED_SLASHES)
+            ]
+        );
+        $o = curl_exec($ch);
+        $ern = curl_errno($ch);
+        if ($err = curl_error($ch)) {
+            $ret = [
+                "error" => "({$ern}): {$err}",
+                "out" => null
+            ];
+        } else {
+            $ret = [
+                "error" => null,
+                "out" => json_decode($o, true)
+            ];
+        }
+        $ret["info"] = curl_getinfo($ch);
+
+        curl_close($ch);
+
+        var_dump($ret);
+        return $ret;
     }
 }

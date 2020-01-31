@@ -59,7 +59,7 @@ while (true) {
                 }
             }
 
-            if (in_array($v["code"], SKIP_ADD_ONS) || (stripos($v["code"], "sunfresh") !== false)) {
+            if (in_array($v["code"], SKIP_ADD_ONS)) {
                 unset($package["data"][$k]);
             }
         }

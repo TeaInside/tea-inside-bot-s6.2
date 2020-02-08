@@ -85,28 +85,26 @@ class Chart
 		];
 
 		$r = $st->fetchAll(PDO::FETCH_ASSOC);
-		for ($i=$startEpoch; $i < $endEpoch; $i+=(3600*24)) {
-			$res["labels"][] = date("d M Y", $i);
-			$res["datasets"][0]["data"][] = 0;
-			$res["datasets"][1]["data"][] = 0;
+		for ($j = 0, $k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
+			$curIt = date("d M Y", $i);
+			$res["labels"][] = $curIt;
+			$res["datasets"][0]["data"][$k] = 0;
+			$res["datasets"][1]["data"][$k] = 0;
+			if (($r[$j] == 1) && ($curIt === date("d M Y", strtotime($r[$j]["date"])))) {
+				$res["datasets"][0]["data"][$k] = $r[$j]["messages"];
+				unset($r[$j]);
+				$j++;
+			}
 		}
 
-		$i = 0;
-		$gotDiff = false;
-		foreach ($r as $k => $v) {
-			if ((!$gotDiff) && ($v["k"] != 1)) {
-				$gotDiff = true;
-				$i = 0;
+		for ($k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
+			if ($curIt === date("d M Y", strtotime($r[$j]["date"]))) {
+				$res["datasets"][1]["data"][$k] = $r[$j]["messages"];
+				unset($r[$j]);
+				$j++;
 			}
-			if ($res["labels"][$i] === date("d M Y", strtotime($v["date"]))) {
-				if ($v["k"] == 1) {
-					$res["datasets"][0]["data"][$i] = $v["messages"];
-				} else {
-					$res["datasets"][1]["data"][$i] = $v["messages"];
-				}		
-			}
-			$i++;
 		}
+
 		echo json_encode($res);
 		DB::close();
 	}

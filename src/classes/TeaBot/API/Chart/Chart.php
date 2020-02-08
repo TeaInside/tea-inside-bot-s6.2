@@ -93,6 +93,7 @@ class Chart
 
 		$i = 0;
 		foreach ($r as $k => $v) {
+			var_dump($res["labels"][$i], date("d M Y", strtotime($v["date"])));
 			if ($res["labels"][$i] === date("d M Y", strtotime($v["date"]))) {
 				if ($v["k"] == 1) {
 					$res["datasets"][0]["data"][$i] = $v["messages"];

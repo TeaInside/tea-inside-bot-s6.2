@@ -45,7 +45,7 @@ for (i = 0; i < 200; i++) {
 
 function msgChart() {
     msg_chart_container.innerHTML = "";
-    msg_chart_container.innerHTML = '<canvas style="display:none;" id="msg_chart_ctx" width="500" height="250"></canvas>';
+    msg_chart_container.innerHTML = '<canvas id="msg_chart_ctx" width="500" height="250"></canvas>';
     msg_chart_l = 0;
     msg_chart_container.style.display = "none";
     msg_chart_loading.style.display = "";

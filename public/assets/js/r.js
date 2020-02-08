@@ -11,8 +11,8 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 let dateObj = new Date(), month, day, year, x, y, i,
     start_date = document.getElementById("start_date"),
     end_date = document.getElementById("end_date"),
+    msg_chart_container = document.getElementById("msg_chart_container"),
     msg_chart_loading = document.getElementById("msg_chart_loading"),
-    msg_chart_ctx = document.getElementById("msg_chart_ctx"),
     user_chart_ctx  = document.getElementById("user_char_ctx"),
     user_chart_loading = document.getElementById("user_chart_loading"),
     update_charts = document.getElementById("update_charts"),
@@ -44,10 +44,13 @@ for (i = 0; i < 200; i++) {
 }
 
 function msgChart() {
+    msg_chart_container.innerHTML = "";
+    msg_chart_container.innerHTML = '<canvas style="display:none;" id="msg_chart_ctx" width="500" height="250"></canvas>';
     msg_chart_l = 0;
-    msg_chart_ctx.style.display = "none";
+    msg_chart_container.style.display = "none";
     msg_chart_loading.style.display = "";
-    let ch = new XMLHttpRequest;
+    let ch = new XMLHttpRequest,
+        msg_chart_ctx = document.getElementById("msg_chart_ctx");
     ch.onload = function () {
         let data = JSON.parse(this.responseText),
             myLineChart = new Chart(msg_chart_ctx.getContext('2d'), {
@@ -77,7 +80,7 @@ function msgChart() {
             }
         });
         msg_chart_l = 1;
-        msg_chart_ctx.style.display = "";
+        msg_chart_container.style.display = "";
         msg_chart_loading.style.display = "none";
     };
     ch.open("GET", "https://telegram-bot.teainside.org/api.php?key=chart&action=msg&start_date="+start_date.value+"&end_date="+end_date.value);

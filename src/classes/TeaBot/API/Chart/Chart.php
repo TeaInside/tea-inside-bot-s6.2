@@ -92,7 +92,12 @@ class Chart
 		}
 
 		$i = 0;
+		$gotDiff = false;
 		foreach ($r as $k => $v) {
+			if ((!$gotDiff) && ($v["k"] != 1)) {
+				$gotDiff = true;
+				$i === 0;
+			}
 			if ($res["labels"][$i] === date("d M Y", strtotime($v["date"]))) {
 				if ($v["k"] == 1) {
 					$res["datasets"][0]["data"][$i] = $v["messages"];

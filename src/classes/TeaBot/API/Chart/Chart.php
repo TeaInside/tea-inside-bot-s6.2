@@ -96,7 +96,7 @@ class Chart
 		foreach ($r as $k => $v) {
 			if ((!$gotDiff) && ($v["k"] != 1)) {
 				$gotDiff = true;
-				$i === 0;
+				$i = 0;
 			}
 			if ($res["labels"][$i] === date("d M Y", strtotime($v["date"]))) {
 				if ($v["k"] == 1) {

@@ -87,10 +87,10 @@ class Chart
 		$r = $st->fetchAll(PDO::FETCH_ASSOC);
 		for ($j = 0, $k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
 			$curIt = date("d M Y", $i);
-			$res["labels"][] = $curIt;
+			$res["labels"][$k] = $curIt;
 			$res["datasets"][0]["data"][$k] = 0;
 			$res["datasets"][1]["data"][$k] = 0;
-			if (($r[$j] == 1) && ($curIt === date("d M Y", strtotime($r[$j]["date"])))) {
+			if (($r[$j]["k"] == 1) && ($curIt === date("d M Y", strtotime($r[$j]["date"])))) {
 				$res["datasets"][0]["data"][$k] = $r[$j]["messages"];
 				unset($r[$j]);
 				$j++;
@@ -98,7 +98,7 @@ class Chart
 		}
 
 		for ($k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
-			if ($curIt === date("d M Y", strtotime($r[$j]["date"]))) {
+			if ($res["labels"][$k] === date("d M Y", strtotime($r[$j]["date"]))) {
 				$res["datasets"][1]["data"][$k] = $r[$j]["messages"];
 				unset($r[$j]);
 				$j++;

@@ -95,9 +95,9 @@ class Chart
 		foreach ($r as $k => $v) {
 			if ($res["labels"][$i] === date("d M Y", strtotime($v["date"]))) {
 				if ($v["k"] == 1) {
-					$res["datasets"][0]["data"][] = $v["messages"];
+					$res["datasets"][0]["data"][$i] = $v["messages"];
 				} else {
-					$res["datasets"][1]["data"][] = $v["messages"];
+					$res["datasets"][1]["data"][$i] = $v["messages"];
 				}		
 			}
 		}

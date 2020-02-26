@@ -174,7 +174,7 @@ trait ResponseRoutes
             $m[2] = str_replace("\n", " ", $m[2]);
             switch ($m[1]) {
 
-                case "clq":
+                case "clq0":
                     if ($this->stExec(Responses\Corona::class, "check", [])) {
                         return true;
                     }

@@ -19,6 +19,14 @@ final class Corona extends ResponseFoundation
      */
     public function check(): bool
     {
+        $msgId = json_decode(Exe::sendMessage(
+            [
+                "chat_id" => $this->data["chat_id"],
+                "text" => "Loading data...",
+                "reply_to_message_id" => $this->data["msg_id"]
+            ]
+        )["out"], true)["result"]["message_id"];
+
         $ch = curl_init("https://www.worldometers.info/coronavirus/");
         curl_setopt_array($ch,
             [
@@ -60,11 +68,11 @@ final class Corona extends ResponseFoundation
         $r .= "mean_total: ".(($sdt+$fst+$cmt)/3)."\n";
         $r .= "pt: ".(($sdt*$fst*$cmt)/3)."\n";
 
-        Exe::sendMessage(
+        Exe::editMessageText(
             [
+                "message_id" => $msgId,
                 "chat_id" => $this->data["chat_id"],
-                "text" => $r,
-                "reply_to_message_id" => $this->data["msg_id"]
+                "text" => $r
             ]
         );
 

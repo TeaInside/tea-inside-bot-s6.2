@@ -22,7 +22,7 @@ final class Corona extends ResponseFoundation
         $msgId = json_decode(Exe::sendMessage(
             [
                 "chat_id" => $this->data["chat_id"],
-                "text" => "Loading data...",
+                "text" => "Collecting data...",
                 "reply_to_message_id" => $this->data["msg_id"]
             ]
         )["out"], true)["result"]["message_id"];

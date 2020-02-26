@@ -79,5 +79,59 @@ final class Corona extends ResponseFoundation
 
         return true;
     }
+
+    /**
+     * @return bool
+     */
+    public function check2(): bool
+    {
+        $msgId = json_decode(Exe::sendMessage(
+            [
+                "chat_id" => $this->data["chat_id"],
+                "text" => "Collecting data...",
+                "reply_to_message_id" => $this->data["msg_id"]
+            ]
+        )["out"], true)["result"]["message_id"];
+
+        $ch = curl_init("https://www.worldometers.info/coronavirus/");
+        curl_setopt_array($ch,
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false
+            ]
+        );
+        $o = curl_exec($ch);
+
+        $sdt = $fst = $cmt = 0;
+
+        $r = "[Coronavirus vt (china only)]\ndatetime: ".gmdate("Y-m-d H:i:s")." (GMT +0 qmq)\n";
+
+        if (preg_match(
+            '/China <\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)</Ui',
+            $o, $m
+        )) {
+            $sdt = (int)str_replace(",", "", trim($m[3]));
+            $r .= "sdt: ".$sdt."\n";
+            $fst = (int)str_replace(",", "", trim($m[2]));
+            $r .= "fst: ".$fst."\n";
+            $cmt = (int)str_replace(",", "", trim($m[1]));
+            $r .= "cmt: ".$cmt."\n";
+        }
+
+        $r .= "percent fst: ".($fst/$cmt * 100)." %\n";
+        $r .= "mean_total: ".(($sdt+$fst+$cmt)/3)."\n";
+        $r .= "pt: ".(($sdt*$fst*$cmt)/3)."\n";
+
+        Exe::editMessageText(
+            [
+                "message_id" => $msgId,
+                "chat_id" => $this->data["chat_id"],
+                "text" => $r
+            ]
+        );
+
+        return true;
+    }
 }
 

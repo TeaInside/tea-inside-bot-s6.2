@@ -173,6 +173,12 @@ trait ResponseRoutes
             }
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq1)$/Ui", $this->data["text"])) {
+            if ($this->stExec(Responses\Corona::class, "check2", [])) {
+                return true;
+            }
+        }
+
         /**
          * Calculus.
          */

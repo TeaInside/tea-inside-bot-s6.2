@@ -65,6 +65,7 @@ final class Corona extends ResponseFoundation
             $r .= "cmt: ".$cmt."\n";
         }
 
+        $r .= "percent fst: ".($fst/$cmt * 100)." %\n";
         $r .= "mean_total: ".(($sdt+$fst+$cmt)/3)."\n";
         $r .= "pt: ".(($sdt*$fst*$cmt)/3)."\n";
 

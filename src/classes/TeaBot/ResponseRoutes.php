@@ -167,19 +167,18 @@ trait ResponseRoutes
             }
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq0)$/Ui", $this->data["text"])) {
+            if ($this->stExec(Responses\Corona::class, "check", [])) {
+                return true;
+            }
+        }
+
         /**
          * Calculus.
          */
         if (preg_match("/^(?:\/|\!|\~|\.)?([a-z\d]{4})(?:(?:[\\s\\n])+)(.+?)$/si", $this->data["text"], $m)) {
             $m[2] = str_replace("\n", " ", $m[2]);
             switch ($m[1]) {
-
-                case "clq0":
-                    if ($this->stExec(Responses\Corona::class, "check", [])) {
-                        return true;
-                    }
-                    break;
-
                 case "c001":
                     if ($this->stExec(Responses\Calculus::class, "c001", [$m[2]])) {
                         return true;

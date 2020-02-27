@@ -46,7 +46,7 @@ final class Corona extends ResponseFoundation
             $o, $m
         )) {
             $sdt = (int)str_replace(",", "", $m[1]);
-            $r .= "sdt: ".$sdt."\n";
+            $r .= "sdt: ".$trim($m[1])."\n";
         }
 
         if (preg_match(
@@ -54,7 +54,7 @@ final class Corona extends ResponseFoundation
             $o, $m
         )) {
             $fst = (int)str_replace(",", "", $m[1]);
-            $r .= "fst: ".$fst."\n";
+            $r .= "fst: ".trim($m[1])."\n";
         }
 
         if (preg_match(
@@ -62,12 +62,12 @@ final class Corona extends ResponseFoundation
             $o, $m
         )) {
             $cmt = (int)str_replace(",", "", $m[1]);
-            $r .= "cmt: ".$cmt."\n";
+            $r .= "cmt: ".trim($m[1])."\n";
         }
 
-        $r .= "percent fst: ".($fst/$cmt * 100)." %\n";
-        $r .= "mean_total: ".(($sdt+$fst+$cmt)/3)."\n";
-        $r .= "pt: ".(($sdt*$fst*$cmt)/3)."\n";
+        $r .= "percent fst: ".number_format($fst/$cmt * 100, 15)." %\n";
+        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 15)."\n";
+        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 15)."\n";
 
         Exe::editMessageText(
             [
@@ -111,17 +111,20 @@ final class Corona extends ResponseFoundation
             '/China <\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)</Ui',
             $o, $m
         )) {
+            $m[3] = trim($m[3]);
+            $m[2] = trim($m[2]);
+            $m[1] = trim($m[1]);
             $sdt = (int)str_replace(",", "", trim($m[3]));
-            $r .= "sdt: ".$sdt."\n";
+            $r .= "sdt: ".$m[3]."\n";
             $fst = (int)str_replace(",", "", trim($m[2]));
-            $r .= "fst: ".$fst."\n";
+            $r .= "fst: ".$m[2]."\n";
             $cmt = (int)str_replace(",", "", trim($m[1]));
-            $r .= "cmt: ".$cmt."\n";
+            $r .= "cmt: ".$m[1]."\n";
         }
 
-        $r .= "percent fst: ".($fst/$cmt * 100)." %\n";
-        $r .= "mean_total: ".(($sdt+$fst+$cmt)/3)."\n";
-        $r .= "pt: ".(($sdt*$fst*$cmt)/3)."\n";
+        $r .= "percent fst: ".number_format($fst/$cmt * 100, 15)." %\n";
+        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 15)."\n";
+        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 15)."\n";
 
         Exe::editMessageText(
             [

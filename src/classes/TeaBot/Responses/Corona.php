@@ -46,7 +46,7 @@ final class Corona extends ResponseFoundation
             $o, $m
         )) {
             $sdt = (int)str_replace(",", "", $m[1]);
-            $r .= "sdt: ".$trim($m[1])."\n";
+            $r .= "sdt: ".trim($m[1])."\n";
         }
 
         if (preg_match(

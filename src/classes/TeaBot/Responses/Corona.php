@@ -42,7 +42,7 @@ final class Corona extends ResponseFoundation
         $r = "[Coronavirus vt]\ndatetime: ".gmdate("Y-m-d H:i:s")." (GMT +0 qmq)\n";
 
         if (preg_match(
-            '/<h1>Recovered:<\/h1> <div class="maincounter-number" style="color:#8ACA2B "> <span>(.+?)</Usi',
+            '/<h1>Recovered:<\/h1> <div class="maincounter-number" style="color:#8ACA2B "> <span>([^\>\<]+?)</Usi',
             $o, $m
         )) {
             $sdt = (int)str_replace(",", "", $m[1]);
@@ -50,7 +50,7 @@ final class Corona extends ResponseFoundation
         }
 
         if (preg_match(
-            '/<h1>Deaths:<\/h1> <div class="maincounter-number"> <span>(.+?)</Usi',
+            '/<h1>Deaths:<\/h1> <div class="maincounter-number"> <span>([^\>\<]+?)</Usi',
             $o, $m
         )) {
             $fst = (int)str_replace(",", "", $m[1]);
@@ -58,7 +58,7 @@ final class Corona extends ResponseFoundation
         }
 
         if (preg_match(
-            '/<h1>Coronavirus Cases:<\/h1> <div class="maincounter-number"> <span style="color:#aaa">(.+?)</Usi',
+            '/<h1>Coronavirus Cases:<\/h1> <div class="maincounter-number"> <span style="color:#aaa">([^\>\<]+?)</Usi',
             $o, $m
         )) {
             $cmt = (int)str_replace(",", "", $m[1]);

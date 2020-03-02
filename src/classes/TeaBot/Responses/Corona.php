@@ -66,7 +66,7 @@ final class Corona extends ResponseFoundation
         }
 
         $r .= "percent fst: ".number_format($fst/$cmt * 100, 15)." %\n";
-        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 15)."\n";
+        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt), 15)."\n";
         $r .= "pt: ".number_format(($sdt*$fst*$cmt), 15)."\n";
 
         Exe::editMessageText(

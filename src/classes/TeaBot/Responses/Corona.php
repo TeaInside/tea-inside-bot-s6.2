@@ -162,7 +162,7 @@ final class Corona extends ResponseFoundation
         $r = "[Coronavirus vt (Indonesia only)]\ndatetime: ".gmdate("Y-m-d H:i:s")." (GMT +0 qmq)\n";
 
         if (preg_match(
-            '/Indonesia <\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)</Ui',
+            '/Indonesia <\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>[^\>\<]+?<\/td>\s<td[^\>]+?>([^\>\<]+?)</Ui',
             $o, $m
         )) {
             $m[3] = trim($m[3]);

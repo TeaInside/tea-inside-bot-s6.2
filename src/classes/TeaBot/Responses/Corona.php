@@ -41,9 +41,9 @@ final class Corona extends ResponseFoundation
         $cmt = $o["cmt"];
         $fst = $o["fst"];
         $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
-        $r .= "percent fst: ".number_format($fst/$cmt * 100, 15)." %\n";
-        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt), 15)."\n";
-        $r .= "pt: ".number_format(($sdt*$fst*$cmt), 15)."\n";
+        $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
+        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
+        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
 
         Exe::editMessageText(
             [
@@ -83,9 +83,9 @@ final class Corona extends ResponseFoundation
         $cmt = $o["cmt"];
         $fst = $o["fst"];
         $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
-        $r .= "percent fst: ".number_format($fst/$cmt * 100, 15)." %\n";
-        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt), 15)."\n";
-        $r .= "pt: ".number_format(($sdt*$fst*$cmt), 15)."\n";
+        $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
+        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
+        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
         Exe::editMessageText(
             [
                 "message_id" => $msgId,

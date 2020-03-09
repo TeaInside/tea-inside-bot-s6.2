@@ -174,13 +174,19 @@ trait ResponseRoutes
         }
 
         if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq1)$/Ui", $this->data["text"])) {
-            if ($this->stExec(Responses\Corona::class, "check2", [])) {
+            if ($this->stExec(Responses\Corona::class, "checkCountry", ["China"])) {
                 return true;
             }
         }
 
         if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq2)$/Ui", $this->data["text"])) {
-            if ($this->stExec(Responses\Corona::class, "checkIndonesia", [])) {
+            if ($this->stExec(Responses\Corona::class, "checkCountry", ["Indonesia"])) {
+                return true;
+            }
+        }
+
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq\?)\s(.+)$/Ui", $this->data["text"], $m)) {
+            if ($this->stExec(Responses\Corona::class, "checkCountry", [$m[1]])) {
                 return true;
             }
         }

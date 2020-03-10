@@ -186,7 +186,7 @@ trait ResponseRoutes
         }
 
         if (preg_match("/^(?:\/|\!|\~|\.)?(?:clq3)\s(.+)$/Ui", $this->data["text"], $m)) {
-            if ($this->stExec(Responses\Corona::class, "checkCountry", [$m[1]])) {
+            if ($this->stExec(Responses\Corona::class, "checkCountry", [trim($m[1])])) {
                 return true;
             }
         }

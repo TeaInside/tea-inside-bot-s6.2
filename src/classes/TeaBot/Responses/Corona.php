@@ -38,7 +38,8 @@ final class Corona extends ResponseFoundation
         $o = json_decode(curl_exec($ch), true);
 
         if (isset($o["sdt"], $o["cmt"], $o["fst"]) &&
-            ($o["sdt"] > 0) && ($o["cmt"] > 0) && ($o["fst"] > 0)) {
+            (($o["sdt"] > 0) || ($o["cmt"] > 0) || ($o["fst"] > 0))
+        ) {
             $r = "[Coronavirus vt (global)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
             $sdt = $o["sdt"];
             $cmt = $o["cmt"];
@@ -86,7 +87,8 @@ final class Corona extends ResponseFoundation
         $o = json_decode(curl_exec($ch), true);
 
         if (isset($o["sdt"], $o["cmt"], $o["fst"]) &&
-            ($o["sdt"] > 0) && ($o["cmt"] > 0) && ($o["fst"] > 0)) {
+            (($o["sdt"] > 0) || ($o["cmt"] > 0) || ($o["fst"] > 0))
+        ) {
             $r = "[Coronavirus vt ({$country} only)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
             $sdt = $o["sdt"];
             $cmt = $o["cmt"];

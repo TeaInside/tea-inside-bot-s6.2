@@ -36,14 +36,20 @@ final class Corona extends ResponseFoundation
             ]
         );
         $o = json_decode(curl_exec($ch), true);
-        $r = "[Coronavirus vt (global)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
-        $sdt = $o["sdt"];
-        $cmt = $o["cmt"];
-        $fst = $o["fst"];
-        $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
-        $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
-        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
-        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
+
+        if (isset($o["sdt"], $o["cmt"], $o["fst"]) &&
+            ($o["sdt"] > 0) && ($o["cmt"] > 0) && ($o["fst"] > 0)) {
+            $r = "[Coronavirus vt (global)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
+            $sdt = $o["sdt"];
+            $cmt = $o["cmt"];
+            $fst = $o["fst"];
+            $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
+            $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
+            $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
+            $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
+        } else {
+            $r = "Couldn't retrieve data from server!";
+        }
 
         Exe::editMessageText(
             [
@@ -78,14 +84,21 @@ final class Corona extends ResponseFoundation
             ]
         );
         $o = json_decode(curl_exec($ch), true);
-        $r = "[Coronavirus vt ({$country} only)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
-        $sdt = $o["sdt"];
-        $cmt = $o["cmt"];
-        $fst = $o["fst"];
-        $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
-        $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
-        $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
-        $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
+
+        if (isset($o["sdt"], $o["cmt"], $o["fst"]) &&
+            ($o["sdt"] > 0) && ($o["cmt"] > 0) && ($o["fst"] > 0)) {
+            $r = "[Coronavirus vt ({$country} only)]\nscraped_at: ".date("Y-m-d H:i:s", $o["scraped_at"])." (GMT +0)\n";
+            $sdt = $o["sdt"];
+            $cmt = $o["cmt"];
+            $fst = $o["fst"];
+            $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n";
+            $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
+            $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
+            $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
+        } else {
+            $r = "Couldn't retrieve data from server!";
+        }
+
         Exe::editMessageText(
             [
                 "message_id" => $msgId,

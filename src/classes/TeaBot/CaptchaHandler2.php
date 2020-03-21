@@ -10,7 +10,7 @@ namespace TeaBot;
  */
 final class CaptchaHandler2
 {
-    const CAPTCHA_DIR = "/tmp/telegram_captcha_handler";
+    const CAPTCHA_DIR = "/tmp/telegram/captcha_handler";
 
     /**
      * @var \TeaBot\Data
@@ -39,6 +39,7 @@ final class CaptchaHandler2
         $this->data = $data;
         $this->type = $type;
         $this->welcomeMessages = $welcomeMessages;
+        is_dir("/tmp/telegram") or mkdir("/tmp/telegram");
         is_dir(self::CAPTCHA_DIR) or mkdir(self::CAPTCHA_DIR);
     }
 

@@ -10,7 +10,7 @@ namespace TeaBot;
  */
 final class CaptchaHandler2
 {
-    const CAPTCHA_DIR = "/tmp/telegram/captcha_handler";
+    const CAPTCHA_DIR = "/tmp/telegram_captcha_handler";
 
     /**
      * @var \TeaBot\Data

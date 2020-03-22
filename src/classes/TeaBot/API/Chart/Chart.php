@@ -54,10 +54,12 @@ class Chart
 		if (strlen($endDate) <= 10) {
 			$endDate .= " 23:59:59";
 		}
+		$startEpoch = strtotime($startDate);
+		$endEpoch = strtotime($endDate);
 		$st->execute(
 			[
-				":start_date" => date("Y-m-d H:i:s", strtotime($startDate) - $tz["sec"]),
-				":end_date" => date("Y-m-d H:i:s", strtotime($endDate) - $tz["sec"])
+				":start_date" => date("Y-m-d H:i:s", $startEpoch - $tz["sec"]),
+				":end_date" => date("Y-m-d H:i:s", $endEpoch - $tz["sec"])
 			]
 		);
 		$res = [
@@ -81,15 +83,28 @@ class Chart
 				]
 			]
 		];
+
 		$r = $st->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($r as $k => $v) {
-			if ($v["k"] == 1) {
-				$res["labels"][] = date("d M Y", strtotime($v["date"]));
-				$res["datasets"][0]["data"][] = $v["messages"];
-			} else {
-				$res["datasets"][1]["data"][] = $v["messages"];
+		for ($j = 0, $k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
+			$curIt = date("d M Y", $i);
+			$res["labels"][$k] = $curIt;
+			$res["datasets"][0]["data"][$k] = 0;
+			$res["datasets"][1]["data"][$k] = 0;
+			if (($r[$j]["k"] == 1) && ($curIt === date("d M Y", strtotime($r[$j]["date"])))) {
+				$res["datasets"][0]["data"][$k] = $r[$j]["messages"];
+				unset($r[$j]);
+				$j++;
 			}
 		}
+
+		for ($k = 0, $i = $startEpoch; $i < $endEpoch; $i+=(3600*24), $k++) {
+			if ($res["labels"][$k] === date("d M Y", strtotime($r[$j]["date"]))) {
+				$res["datasets"][1]["data"][$k] = $r[$j]["messages"];
+				unset($r[$j]);
+				$j++;
+			}
+		}
+
 		echo json_encode($res);
 		DB::close();
 	}

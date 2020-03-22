@@ -26,7 +26,7 @@
         <h2>Messages Amount</h2>
         <div style="margin-top:30px;width:95%;">
             <h1 id="msg_chart_loading">Loading...</h1>
-            <canvas style="display:none;" id="msg_chart_ctx" width="500" height="250"></canvas>
+            <div id="msg_chart_container"></div>
         </div>
     </div>
 
@@ -60,6 +60,6 @@
         </div>
     </div>
 </center>
-<script type="text/javascript" src="/assets/js/r.js?x=3"></script>
+<script type="text/javascript" src="/assets/js/r.js?x=4"></script>
 </body>
 </html>

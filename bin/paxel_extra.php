@@ -27,7 +27,7 @@ const PAXEL_EXTRA = [
         "Ukuran" => "M (Medium)"
     ],
 
-    "Bunanik05" => [
+    "bunanik\d\d" => [
         "Lokasi" => "Paxel Home Panjang",
         "Words" => "Bu Nanik",
         "Pickup Selasa" => "Sabtu, 10.00 AM - 12.00 PM WIB",
@@ -39,7 +39,7 @@ const PAXEL_EXTRA = [
     "Rotinogat" => [
         "Lokasi" => "Paxel Home BSD",
         "Words" => "Roti Nogat",
-        "Pickup" => "Sabtu, 10.00 AM - 12.00 PM WIB",
+        "Pickup" => "Sabtu, 10.00 AM - 12.00 AM WIB",
         "Voucher" => "PAXEL4NOGAT",
         "Ukuran" => "M (Medium)"
     ],
@@ -62,7 +62,7 @@ const PAXEL_EXTRA = [
         "Ukuran" => "M (Medium)"
     ],
 
-    "Wingko Babad" => [
+    "Wingko\s?Babad" => [
         "Lokasi" => "Paxel Home Semarang",
         "Words" => "Wingko Babad",
         "Pickup" => "Sabtu, 04.00 PM - 06.00 PM WIB",
@@ -121,7 +121,7 @@ const PAXEL_EXTRA = [
     "lapisbunderbogor" => [
         "Lokasi" => "Paxel Home Bogor Paledang",
         "Words" => "Lapis Bogor Sangkuriang",
-        "Pickup" => "Selasa, 06:00 PM - 08:00 PM WIB",
+        "Pickup" => "Rabu, 06:00 PM - 08:00 PM WIB",
         "Voucher" => "PAXEL4BUNDER",
         "Ukuran" => "M (Medium)"
     ],
@@ -153,7 +153,7 @@ const PAXEL_EXTRA = [
     "bebeksinjay" => [
         "Lokasi" => "Paxel Home Surabaya",
         "Words" => "Bebek Sinjay",
-        "Pickup" => "Minggu 04:00 PM - 06:00 PM WIB",
+        "Pickup" => "Minggu, 04:00 PM - 06:00 PM WIB",
         "Voucher" => "PAXEL4BEBEK",
         "Ukuran" => "M (Medium)"
     ],
@@ -163,7 +163,7 @@ const PAXEL_EXTRA = [
         "Words" => "Moaci Gemini",
         "Pickup" => "Sabtu, 04:00 PM - 06:00 PM WIB",
         "Voucher" => "PAXEL4GEMINI",
-         "Ukuran" => "M (Medium)"
+        "Ukuran" => "M (Medium)"
     ],
 
     "pillowcake" => [
@@ -171,7 +171,7 @@ const PAXEL_EXTRA = [
         "Words" => "Pillow Cake",
         "Pickup" => "Jum'at, 08:00 PM - 10:00 PM",
         "Voucher" => "PAXEL4PILLOW",
-         "Ukuran" => "M (Medium)"
+        "Ukuran" => "M (Medium)"
     ],
 
     "Pie Eiji" => [
@@ -200,7 +200,7 @@ const PAXEL_EXTRA = [
     ],
 
     "Bakpiakukustugu" => [
-        "Lokasi" => "Paxel Home Jogja",
+        "Lokasi" => "Paxel Home Yogyakarta",
         "Words" => "Bakpia Kukus Tugu",
         "Pickup" => "Jum'at, 04:00 PM - 06:00 PM WIB",
         "Voucher" => "PAXEL4BAKPIA",
@@ -208,7 +208,7 @@ const PAXEL_EXTRA = [
     ],
 
     "gudegkaleng" => [
-        "Lokasi" => "Paxel Home Jogja",
+        "Lokasi" => "Paxel Home Yogyakarta",
         "Words" => "Gudeg Yu Djum",
         "Pickup" => "Jum'at, 04:00 PM - 06:00 PM WIB",
         "Voucher" => "PAXEL4GUDEG",
@@ -216,7 +216,7 @@ const PAXEL_EXTRA = [
     ],
 
     "bakpiakurniasari" => [
-        "Lokasi" => "Paxel Home Jogja",
+        "Lokasi" => "Paxel Home Yogyakarta",
         "Words" => "Bakpia Kurnia Sari",
         "Pickup" => "Kamis, 04:00 PM - 06:00 PM WIB",
         "Voucher" => "PAXEL4KURNIA",
@@ -238,5 +238,127 @@ const PAXEL_EXTRA = [
         "Pickup" => "Selasa, 02:00 PM - 04:00 PM WIB",
         "Voucher" => "PAXEL4PLUFFY",
         "Ukuran" => "M (Medium)"
-    ]
+    ],
+
+    "bbc seafood" => [
+        "Lokasi" => "Paxel Home Cikokol",
+        "Words" => "BBC Seafood",
+        "Pickup" => "Jum'at, 08:00 AM - 10:00 AM WIB",
+        "Voucher" => "PAXEL4BBC",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "Kacang Disco" => [
+        "Lokasi" => "Paxel Home Denpasar Bali",
+        "Words" => "Kacang Disco",
+        "Pickup" => "Minggu, 06:00 PM - 08:00 PM WIB",
+        "Voucher" => "PAXEL4RAJAWALI",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "Chocolate Monggo" => [
+        "Lokasi" => "Paxel Home Yogyakarta",
+        "Words" => "Chocolate Monggo",
+        "Pickup" => "Sabtu, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4MONGGO",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "burudysambalbawang" => [
+        "Lokasi" => "Paxel Home Surabaya",
+        "Words" => "Bu Rudy Sambal Bawang",
+        "Pickup" => "Minggu, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4BURUDY",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "Almond Crispy" => [
+        "Lokasi" => "Paxel Home Surabaya",
+        "Words" => "Almond Crispy",
+        "Pickup" => "Senin, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4WISATA",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "piamangkok" => [
+        "Lokasi" => "Paxel Home Malang",
+        "Words" => "Pia Mangkok Malang",
+        "Pickup" => "Senin, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4MANGKOK",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "Bluder Cokro" => [
+        "Lokasi" => "Paxel Home Bendungan Hilir",
+        "Words" => "Bluder Cokro",
+        "Pickup" => "Jum'at, 06:00 PM - 08:00 PM WIB",
+        "Voucher" => "PAXEL4COKRO",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "Keripik Paru Noeria" => [
+        "Lokasi" => "Paxel Home Solo",
+        "Words" => "Keripik Paru Noeria",
+        "Pickup" => "Jum'at, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4NOERIA",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "Banana Crispy Kartika Sari" => [
+        "Lokasi" => "Paxel Home Bandung Lemahnendeut",
+        "Words" => "Kartika Sari Banana Crispy",
+        "Pickup" => "Kamis, 08:00 PM - 10:00 PM WIB",
+        "Voucher" => "PAXEL4BANCRIS",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "JogjaScrummy" => [
+        "Lokasi" => "Paxel Home Yogyakarta",
+        "Words" => "Jogja Scrummy",
+        "Pickup" => "Kamis, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4SCRUMMY",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "Otak Otak Kering Omiyago" => [
+        "Lokasi" => "Paxel Home Bendungan Hilir",
+        "Words" => "Otak Otak Omiyago",
+        "Pickup" => "Jum'at, 12:00 PM - 02:00 PM WIB",
+        "Voucher" => "PAXEL4OMIYAGO",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "soloflossroll" => [
+        "Lokasi" => "Paxel Home Solo",
+        "Words" => "Solo Flossroll",
+        "Pickup" => "Kamis, 02:00 PM - 04:00 PM WIB",
+        "Voucher" => "PAXEL4FLOSS",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    "KueSemprongYuta" => [
+        "Lokasi" => "Paxel Home Semarang",
+        "Words" => "Kue Semprong Yuta",
+        "Pickup" => "Sabtu, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4YUTA",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "abonmesran" => [
+        "Lokasi" => "Paxel Home Solo",
+        "Words" => "Abon Mesran",
+        "Pickup" => "Rabu, 04:00 PM - 06:00 PM WIB",
+        "Voucher" => "PAXEL4MESRAN",
+        "Ukuran" => "S (Small)"
+    ],
+
+    "keripikcirengomiyago" => [
+        "Lokasi" => "Paxel Home Bendungan Hilir",
+        "Words" => "Keripik Cireng",
+        "Pickup" => "Senin, 12:00 PM - 02:00 PM WIB",
+        "Voucher" => "PAXEL4OMIYAGO",
+        "Ukuran" => "M (Medium)"
+    ],
+
+    ""
 ];

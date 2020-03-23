@@ -29,7 +29,9 @@ is_dir(PAXEL_DIR) or mkdir(PAXEL_DIR);
 $groupId = -1001491638996;
 
 $i = 0;
-$u = json_decode(file_get_contents(PAXEL_TG."/976357499"), true);
+#$u = json_decode(file_get_contents(PAXEL_TG."/243692601"), true);
+$u["username"] = "dickytobing";
+$u["password"] = "Dicky123";
 
 while (true) {
     $px = new BasePaxel($u["username"], $u["password"]);

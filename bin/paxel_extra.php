@@ -359,6 +359,4 @@ const PAXEL_EXTRA = [
         "Voucher" => "PAXEL4OMIYAGO",
         "Ukuran" => "M (Medium)"
     ],
-
-    ""
 ];

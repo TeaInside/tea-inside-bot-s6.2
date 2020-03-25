@@ -77,7 +77,7 @@ while (true) {
 
                 foreach (PAXEL_EXTRA as $kk => $vv) {
                     if (preg_match("/^".$kk."$/Usi", $v["code"])) {
-                        foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {
+                        foreach ($vv as $kkk => $vvv) {
                             $r .= "<b>".htmlspecialchars($kkk, ENT_QUOTES).
                                 ":</b> ".htmlspecialchars($vvv, ENT_QUOTES)."\n";
                         }

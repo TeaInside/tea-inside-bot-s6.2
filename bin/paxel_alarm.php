@@ -29,9 +29,7 @@ is_dir(PAXEL_DIR) or mkdir(PAXEL_DIR);
 $groupId = -1001491638996;
 
 $i = 0;
-#$u = json_decode(file_get_contents(PAXEL_TG."/243692601"), true);
-$u["username"] = "dickytobing";
-$u["password"] = "Dicky123";
+$u = json_decode(file_get_contents(PAXEL_TG."/976357499"), true);
 
 while (true) {
     $px = new BasePaxel($u["username"], $u["password"]);
@@ -77,13 +75,13 @@ while (true) {
 
                 foreach (PAXEL_EXTRA as $kk => $vv) {
                     if (preg_match("/^".$kk."$/Usi", $v["code"])) {
-                        foreach ($vv as $kkk => $vvv) {
+                        foreach (PAXEL_EXTRA[$v["code"]] as $kkk => $vvv) {
                             $r .= "<b>".htmlspecialchars($kkk, ENT_QUOTES).
                                 ":</b> ".htmlspecialchars($vvv, ENT_QUOTES)."\n";
                         }
                     }
                 }
-
+                
                 $r .= "\n\n==============================\n";
             }
 

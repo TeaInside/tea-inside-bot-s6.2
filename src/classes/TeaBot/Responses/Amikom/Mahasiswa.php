@@ -141,10 +141,10 @@ final class Mahasiswa extends ResponseFoundation
                 foreach ($data as $k => $v) {
                     $reply .=
                         "<b>[".$v["KrsId"]." ".$v["Kode"]."]</b>\n".
-                        "<b>(".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")." SKS)".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."</b>\n".
-                        "[<b>Kelas:</b> ".((int)$v["JmlPresensiKuliah"])."] ".
-                        "[<b> UTS:</b>".((int)$v["IsHadirMID"])."] ".
-                        "[<b> UAS:</b>".((int)$v["IsHadirUAS"])."]\n\n";
+                        "(".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")." SKS) ".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."\n".
+                        "[<b>Jumlah Presensi:</b> ".((int)$v["JmlPresensiKuliah"])."] ".
+                        "[<b>UTS:</b>".((int)$v["IsHadirMID"])."] ".
+                        "[<b>UAS:</b>".((int)$v["IsHadirUAS"])."]\n\n";
                 }
             } else {
                 $reply = "Internal server error!";

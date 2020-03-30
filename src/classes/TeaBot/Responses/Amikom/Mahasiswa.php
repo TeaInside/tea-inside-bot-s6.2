@@ -142,7 +142,7 @@ final class Mahasiswa extends ResponseFoundation
                     $reply .=
                         "<b>[".$v["KrsId"]." ".$v["Kode"]."]</b>\n".
                         "(".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")." SKS) ".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."\n".
-                        "[Jumlah Presensi: ".((int)$v["JmlPresensiKuliah"])."] ".
+                        "[Presensi: ".((int)$v["JmlPresensiKuliah"])."] ".
                         "[UTS: ".((int)$v["IsHadirMID"])."] ".
                         "[UAS: ".((int)$v["IsHadirUAS"])."]\n\n";
                 }

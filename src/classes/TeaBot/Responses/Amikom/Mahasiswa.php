@@ -141,9 +141,7 @@ final class Mahasiswa extends ResponseFoundation
                 foreach ($data as $k => $v) {
                     $reply .=
                         "<b>[".$v["KrsId"]." ".$v["Kode"]."]</b>\n".
-                        "<b>Nama Mata Kuliah:</b> ".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."\n".
-                        "<b>Nama Mata Kuliah (en):</b> ".htmlspecialchars($v["NamaMkEn"], ENT_QUOTES, "UTF-8")."\n".
-                        "<b>Jumlah SKS:</b> ".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")."\n".
+                        "<b>(".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")." SKS)".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."</b>\n".
                         "<b>Jumlah Presensi:</b> ".((int)$v["JmlPresensiKuliah"])."\n".
                         "<b>Kehadiran UTS:</b>".((int)$v["IsHadirMID"])."\n".
                         "<b>Kehadiran UAS:</b>".((int)$v["IsHadirUAS"])."\n\n";

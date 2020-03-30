@@ -112,6 +112,52 @@ final class Mahasiswa extends ResponseFoundation
     }
 
     /**
+     *
+     */
+    public function getPresensi(): bool
+    {
+        if (file_exists($this->storagePath."/auth.json")) {
+            $json = json_decode(file_get_contents($this->storagePath."/auth.json"), true);
+        } else {
+            $reply = "You have not logged in yet!";
+            goto ret;
+        }
+
+        $token = $this->getToken();
+
+        if (true) {
+            $reply = $this->curl("http://mhsmobile.amikom.ac.id/api/presensi/list_mk",
+                [
+                    CURLOPT_HTTPHEADER => [
+                        "Authorization: {$token}",
+                        "Content-Type: application/x-www-form-urlencoded"
+                    ],
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => "npm={$json["nim"]}&semester=2&tahun_akademik=2019%2F2020"
+                ]
+            )["out"];
+        } else {
+            $reply = "Invalid credentials!\n\nPlease login again!";
+        }
+
+
+
+
+        ret:
+        if (isset($reply)) {
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "text" => $reply,
+                    "parse_mode" => "HTML"
+                ]
+            );
+        }
+        return true;
+    }
+
+    /**
      * @param string $code
      * @param string $nim
      * @return string

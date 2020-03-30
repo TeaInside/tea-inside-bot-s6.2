@@ -98,6 +98,15 @@ trait ResponseRoutes
         }
 
         /**
+         * Cek presensi.
+         */
+        if (preg_match("/^(?:\/|\!|\~|\.)?(?:dqc)$/is", $this->data["text"])) {
+            if ($this->stExec(Responses\Amikom\Mahasiswa::class, "getPresensi", [])) {
+                return true;
+            }
+        }
+
+        /**
          * Google translate.
          */
         if (preg_match("/^(?:\/|\!|\~|\.)?(?:tr)\s(\S+)\s(\S+)\s(.+)$/Usi", $this->data["text"], $m)) {

@@ -126,7 +126,7 @@ final class Mahasiswa extends ResponseFoundation
         $token = $this->getToken();
 
         if (true) {
-            $reply = $this->curl("http://mhsmobile.amikom.ac.id/api/presensi/list_mk",
+            $data = json_decode($this->curl("http://mhsmobile.amikom.ac.id/api/presensi/list_mk",
                 [
                     CURLOPT_HTTPHEADER => [
                         "Authorization: {$token}",
@@ -135,7 +135,22 @@ final class Mahasiswa extends ResponseFoundation
                     CURLOPT_POST => true,
                     CURLOPT_POSTFIELDS => "npm={$json["nim"]}&semester=2&tahun_akademik=2019%2F2020"
                 ]
-            )->out;
+            )->out, true);
+            if (count($data)) {
+                $reply = "";
+                foreach ($data as $k => $v) {
+                    $reply .=
+                        "<b>[".$v["KrsId"]." ".$v["Kode"]."]</b>\n".
+                        "<b>Nama Mata Kuliah:</b> ".htmlspecialchars($v["NamaMk"], ENT_QUOTES, "UTF-8")."\n".
+                        "<b>Nama Mata Kuliah (en):</b> ".htmlspecialchars($v["NamaMkEn"], ENT_QUOTES, "UTF-8")."\n".
+                        "<b>Jumlah SKS:</b> ".htmlspecialchars($v["JmlSks"], ENT_QUOTES, "UTF-8")."\n".
+                        "<b>Jumlah Presensi:</b> ".((int)$v["JmlPresensiKuliah"])."\n".
+                        "<b>Kehadiran UTS:</b>".((int)$v["IsHadirMID"])."\n".
+                        "<b>Kehadiran UAS:</b>".((int)$v["IsHadirUAS"])."\n\n";
+                }
+            } else {
+                $reply = "Internal server error!";
+            }
         } else {
             $reply = "Invalid credentials!\n\nPlease login again!";
         }

@@ -137,7 +137,7 @@ final class Mahasiswa extends ResponseFoundation
                 ]
             )->out, true);
             if (count($data)) {
-                $reply = "Jumlah Presensi ".$json["nim"]."\n\n";
+                $reply = "Data Presensi ".$json["nim"]."\n\n";
                 foreach ($data as $k => $v) {
                     $reply .=
                         "<b>[".$v["KrsId"]." ".$v["Kode"]."]</b>\n".

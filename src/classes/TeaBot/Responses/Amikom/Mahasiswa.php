@@ -135,7 +135,7 @@ final class Mahasiswa extends ResponseFoundation
                     CURLOPT_POST => true,
                     CURLOPT_POSTFIELDS => "npm={$json["nim"]}&semester=2&tahun_akademik=2019%2F2020"
                 ]
-            )["out"];
+            )->out;
         } else {
             $reply = "Invalid credentials!\n\nPlease login again!";
         }

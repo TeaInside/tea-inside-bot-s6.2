@@ -216,7 +216,7 @@ final class Mahasiswa extends ResponseFoundation
             $r = "<b>Presensi Gagal!</b>";
         }
 
-        $r = "{$r}\n<b>({$nim})</b>\n\n".
+        $r = "{$r}\n<b>({$code};{$nim})</b>\n\n".
             "<b>Request Body:</b>\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
             "</pre>\n\n<b>Response Body:</b>\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
             "</pre>";

@@ -230,8 +230,36 @@ final class CaptchaHandler2
                 ENT_QUOTES, "UTF-8");
 
             $mention = "<a href=\"tg://user?id={$v["id"]}\">{$name}</a>";
-            $cdata["photo"] = "https://api.teainside.org/latex_x.php?border=200&d=400&exp="
-                .urlencode($cdata["latex"]);
+
+            $ch = curl_init("https://latex.teainside.org/api.php?action=tex2png");
+            curl_setopt_array($ch,
+                [
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => json_encode(
+[
+    "bcolor" => "white",
+    "border" => "50x20",
+    "content" => 
+'\documentclass[30pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{cancel}
+\usepackage[utf8]{inputenc}
+\thispagestyle{empty}
+\begin{document}
+\begin{align*}
+'.$cdata["latex"].'
+\end{align*}
+\end{document}',
+    "d" => "250"
+]
+                    )
+                ]
+            );
+            $o = json_decode(curl_exec($ch), true);
+            curl_close($ch);
+            $cdata["photo"] = "https://latex.teainside.org/latex/png/".$o["res"].".png";
 
             if (isset($v["username"])) {
                 $mention .= " (@".$v["username"].")";
@@ -239,7 +267,7 @@ final class CaptchaHandler2
 
             $minutes = $cdata["est_time"] / 60;
             $cdata["tg_msg"] = $mention.
-                "\n<b>Please solve this captcha problem to make sure you are a human or you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
+                "\n<b>Please solve this captcha problem to make sure you are a human otherwise you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
 
             $sockData["banned_hash"] = md5($cdata["correct_answer"]);
 

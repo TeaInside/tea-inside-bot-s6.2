@@ -235,6 +235,7 @@ final class CaptchaHandler2
             curl_setopt_array($ch,
                 [
                     CURLOPT_POST => true,
+                    CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_POSTFIELDS => json_encode(
 [
     "bcolor" => "white",

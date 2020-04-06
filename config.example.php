@@ -15,3 +15,6 @@ define("CALCULUS_API_KEY", "... token ...");
 define("SRABATSROBOT_API_KEY", "... token ...");
 
 $ignoreAll = "*\n!.gitignore\n";
+
+define("AMIKOM_SECRET_KEY", "");
+define("AMIKOM_X_API_KEY", "");

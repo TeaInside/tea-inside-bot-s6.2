@@ -8,6 +8,8 @@ use TeaBot\Data;
 use TeaBot\Lang;
 use TeaBot\ResponseFoundation;
 
+require BASEPATH."/bin/amikom_helpers.php";
+
 /**
  * @author Ammar Faizi <ammarfaizi2@gmail.com> https://www.facebook.com/ammarfaizi2
  * @license MIT
@@ -177,13 +179,15 @@ final class Mahasiswa extends ResponseFoundation
      */
     public function executePresensi(string $code, string $nim): string
     {
-        $data = json_encode(["data" => "{$code};{$nim}"]);
+        global $amikomXApiKey;
+        $data = json_encode(["data" => encryptPresensiKode($nim, $code)]);
         $o = $this->curl(
             "http://202.91.9.14:6000/api/presensi_mobile/validate_ticket",
             [
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => $data,
                 CURLOPT_HTTPHEADER => [
+                    "X-Api-Key: {$amikomXApiKey}",
                     "Content-Type: application/json",
                     "Connection" => "Keep-Alive",
                     "Accept-Encoding" => "gzip"
@@ -212,7 +216,7 @@ final class Mahasiswa extends ResponseFoundation
             $r = "<b>Presensi Gagal!</b>";
         }
 
-        $r = "{$r}\n\n".
+        $r = "{$r}\n<b>({$nim})</b>\n\n".
             "<b>Request Body:</b>\n<pre>".htmlspecialchars($data, ENT_QUOTES, "UTF-8").
             "</pre>\n\n<b>Response Body:</b>\n<pre>".htmlspecialchars($o->out, ENT_QUOTES, "UTF-8").
             "</pre>";

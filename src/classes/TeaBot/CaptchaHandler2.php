@@ -257,7 +257,16 @@ final class CaptchaHandler2
                     )
                 ]
             );
-            $o = json_decode(curl_exec($ch), true);
+            $o = curl_exec($ch);
+
+            Exe::sendMessage(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "text" => $o,
+                ]
+            );
+
+            $o = json_decode($o, true);
             curl_close($ch);
             $cdata["photo"] = "https://latex.teainside.org/latex/png/".$o["res"].".png";
 

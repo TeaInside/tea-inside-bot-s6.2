@@ -253,7 +253,7 @@ final class CaptchaHandler2
 '.$cdata["latex"].'
 \end{align*}
 \end{document}',
-    "d" => "250"
+    "d" => 250
 ]
                     )
                 ]

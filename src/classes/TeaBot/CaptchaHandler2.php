@@ -260,12 +260,12 @@ final class CaptchaHandler2
             );
             $o = curl_exec($ch);
 
-            Exe::sendMessage(
-                [
-                    "chat_id" => $this->data["chat_id"],
-                    "text" => $o,
-                ]
-            );
+            // Exe::sendMessage(
+            //     [
+            //         "chat_id" => $this->data["chat_id"],
+            //         "text" => $o,
+            //     ]
+            // );
 
             $o = json_decode($o, true);
             curl_close($ch);

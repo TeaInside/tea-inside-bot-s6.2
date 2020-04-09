@@ -51,32 +51,32 @@ trait ResponseRoutes
             }
         }
 
-        /**
-         * Login AMIKOM.
-         */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:amikom\s+login\s+)(\S+)(?:\s+)(\S+)$/i", $this->data["text"], $m)) {
-            if ($this->stExec(Responses\Amikom\Mahasiswa::class, "login", [$m[1], $m[2]])) {
-                return true;
-            }
-        }
+        // /**
+        //  * Login AMIKOM.
+        //  */
+        // if (preg_match("/^(?:\/|\!|\~|\.)?(?:amikom\s+login\s+)(\S+)(?:\s+)(\S+)$/i", $this->data["text"], $m)) {
+        //     if ($this->stExec(Responses\Amikom\Mahasiswa::class, "login", [$m[1], $m[2]])) {
+        //         return true;
+        //     }
+        // }
+        
+        // /**
+        //  * Jadwal Kuliah.
+        //  */
+        // if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal)$/i", $this->data["text"], $m)) {
+        //     if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal")) {
+        //         return true;
+        //     }
+        // }
 
-        /**
-         * Jadwal Kuliah.
-         */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal)$/i", $this->data["text"], $m)) {
-            if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal")) {
-                return true;
-            }
-        }
-
-        /**
-         * Jadwal Kuliah.
-         */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(senin|selasa|rabu|kamis|jum'?at|sabtu)$/i", $this->data["text"], $m)) {
-            if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal", [$m[1]])) {
-                return true;
-            }
-        }
+        // /**
+        //  * Jadwal Kuliah.
+        //  */
+        // if (preg_match("/^(?:\/|\!|\~|\.)?(?:jadwal\s+)(senin|selasa|rabu|kamis|jum'?at|sabtu)$/i", $this->data["text"], $m)) {
+        //     if ($this->stExec(Responses\Amikom\Mahasiswa::class, "jadwal", [$m[1]])) {
+        //         return true;
+        //     }
+        // }
 
         /**
          * Absen/Presensi
@@ -97,14 +97,14 @@ trait ResponseRoutes
             }
         }
 
-        /**
-         * Cek presensi.
-         */
-        if (preg_match("/^(?:\/|\!|\~|\.)?(?:dqc)$/is", $this->data["text"])) {
-            if ($this->stExec(Responses\Amikom\Mahasiswa::class, "getPresensi", [])) {
-                return true;
-            }
-        }
+        // /**
+        //  * Cek presensi.
+        //  */
+        // if (preg_match("/^(?:\/|\!|\~|\.)?(?:dqc)$/is", $this->data["text"])) {
+        //     if ($this->stExec(Responses\Amikom\Mahasiswa::class, "getPresensi", [])) {
+        //         return true;
+        //     }
+        // }
 
         /**
          * Google translate.

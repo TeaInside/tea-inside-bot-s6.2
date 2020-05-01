@@ -201,7 +201,7 @@ trait ResponseRoutes
         }
 
         if (preg_match("/^(?:\/|\!|\~|\.)cqx$/", $this->data["text"])) {
-            if ($this->container["chat_type"] === "group") {
+            if ($this->data["chat_type"] === "group") {
                 $this->data["new_chat_members"][] = [
                     "id" => $this->data["user_id"],
                     "first_name" => $this->data["first_name"],

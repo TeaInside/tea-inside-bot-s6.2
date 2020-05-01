@@ -201,7 +201,9 @@ trait ResponseRoutes
         }
 
         if (preg_match("/^(?:\/|\!|\~|\.)cqx$/", $this->data["text"])) {
-            (new CaptchaHandler2($this->data, "calculus2", $this->data["msg_id"]))->run();
+            (new CaptchaHandler2($this->data, "calculus2", [
+                $this->data["user_id"] => $this->data["msg_id"]
+            ]))->run();
             return true;
         }
 

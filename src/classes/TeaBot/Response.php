@@ -124,7 +124,7 @@ final class Response
             }
 
             if ($r[1]) {
-                if ($r[1] === "calculus2") {
+                if ($r[1] === "calculus2" || ($r[1] == "assembly")) {
                     (new CaptchaHandler2($this->data, $r[1], $welcomeMessages))->run();
                 } else {
                     (new CaptchaHandler($this->data, $r[1], $welcomeMessages))->run();

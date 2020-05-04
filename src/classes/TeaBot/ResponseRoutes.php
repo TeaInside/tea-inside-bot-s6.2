@@ -229,7 +229,7 @@ trait ResponseRoutes
                     "first_name" => $this->data["first_name"],
                     "last_name" => $this->data["last_name"]
                 ];
-                (new CaptchaHandler2($this->data, "calculus2", [
+                (new CaptchaHandler2($this->data, "assembly", [
                     $this->data["user_id"] => $this->data["msg_id"]
                 ]))->run();
             } else {

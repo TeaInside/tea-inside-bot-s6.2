@@ -244,7 +244,7 @@ final class CaptchaHandler2
 [
     "bcolor" => "white",
     "border" => "80x80",
-    "content" => 
+    "content" => $content =  
 <<<CONTENT
 \documentclass[30pt]{article}
 \usepackage{amsmath}
@@ -284,6 +284,7 @@ CONTENT,
                     )
                 ]
             );
+            var_dump($content);
             $o = curl_exec($ch);
 
             // Exe::sendMessage(

@@ -179,9 +179,162 @@ final class CaptchaHandler2
             case "calculus2":
                 $this->calculusCaptcha();
                 break;
+            case "assembly":
+                $this->assemblyCaptcha();
+                break;
             
             default:
                 break;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function assemblyCaptcha()
+    {
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
+
+        foreach ($this->data["new_chat_members"] as $v) {
+
+            if (file_exists($f = self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/{$v["id"]}")) {
+                $d = json_decode(file_get_contents($f, LOCK_EX), true);
+                self::socketDispatch(
+                    [
+                        "answer_okx" => $d["tid"],
+                        "type" => $d["type"],
+                        "ok_msg_id" => $d["captcha_msg_id"],
+                        "c_answer_id" => $d["join_msg_id"],
+                        "cancel_sleep" => 0
+                    ]
+                );
+            }
+
+            is_dir(self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
+                mkdir(self::CAPTCHA_DIR.
+                    "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
+
+            $handle = fopen(
+                self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
+                "w+");
+            flock($handle, LOCK_EX);
+
+            $sockData = [];
+            $cdata = json_decode(file_get_contents("https://captcha.teainside.org/api.php?key=abc123&action=get_captcha&type=assembly"), true);
+
+            $name = htmlspecialchars($v["first_name"].
+                (isset($v["last_name"]) ? " ".$v["last_name"] : ""),
+                ENT_QUOTES, "UTF-8");
+
+            $mention = "<a href=\"tg://user?id={$v["id"]}\">{$name}</a>";
+
+            $ch = curl_init("https://latex.teainside.org/api.php?action=tex2png");
+            curl_setopt_array($ch,
+                [
+                    CURLOPT_POST => true,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POSTFIELDS => json_encode(
+[
+    "bcolor" => "white",
+    "border" => "80x80",
+    "content" => 
+<<<CONTENT
+\documentclass[30pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\definecolor{bluekeywords}{rgb}{0,0,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.64,0.08,0.08}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\lstdefinelanguage
+   [x64]{Assembler}     % add a "x64" dialect of Assembler
+   [x86masm]{Assembler} % based on the "x86masm" dialect
+   % with these extra keywords:
+   {keywordstyle=\color{redstrings},
+basicstyle=\\ttfamily\small,
+stringstyle=\color{greencomments},
+morekeywords={CDQE,CQO,CMPSQ,CMPXCHG16B,JRCXZ,LODSQ,MOVSXD, %
+                  POPFQ,PUSHFQ,SCASQ,STOSQ,IRETQ,RDTSCP,SWAPGS, %
+                  rax,rdx,rcx,rbx,rsi,rdi,rsp,rbp, %
+                  r8,r8d,r8w,r8b,r9,r9d,r9w,r9b, %
+                  r10,r10d,r10w,r10b,r11,r11d,r11w,r11b, %
+                  r12,r12d,r12w,r12b,r13,r13d,r13w,r13b, %
+                  r14,r14d,r14w,r14b,r15,r15d,r15w,r15b}} % etc.
+\lstset{language=[x64]Assembler}
+\\thispagestyle{empty}
+\begin{document}
+{$cdata["latex"]}
+\end{document}
+CONTENT,
+    "d" => 250
+]
+                    )
+                ]
+            );
+            $o = curl_exec($ch);
+
+            // Exe::sendMessage(
+            //     [
+            //         "chat_id" => $this->data["chat_id"],
+            //         "text" => $o,
+            //     ]
+            // );
+
+            $o = json_decode($o, true);
+            curl_close($ch);
+            $cdata["photo"] = "https://latex.teainside.org/latex/png/".$o["res"].".png";
+
+            if (isset($v["username"])) {
+                $mention .= " (@".$v["username"].")";
+            }
+
+            $minutes = $cdata["est_time"] / 60;
+            $cdata["tg_msg"] = $mention.
+                "\n<b>Please solve this captcha problem to make sure you are a human otherwise you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
+
+            $sockData["banned_hash"] = md5($cdata["correct_answer"]);
+
+            file_put_contents(
+                "/tmp/telegram/calculus_lock/".$sockData["banned_hash"],
+                time());
+
+            $sockData["captcha_msg_id"] = json_decode(Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "caption" => $cdata["tg_msg"],
+                    "photo" => $cdata["photo"],
+                    "parse_mode" => "HTML"
+                ]
+            )["out"], true)["result"]["message_id"];
+
+            $sockData["type"] = "assembly";
+            $sockData["sleep"] = $cdata["est_time"];
+            $sockData["user_id"] = $v["id"];
+            $sockData["chat_id"] = $this->data["chat_id"];
+            $sockData["join_msg_id"] = $this->data["msg_id"];
+            $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? -1;
+            $sockData["mention"] = $mention;
+            $sockData["tid"] = self::socketDispatch($sockData);
+            $sockData["cdata"] = $cdata;
+            $sockData["cycle"] = 0;
+            $sockData["spam"] = 0;
+            $sockData["date"] = 0;
+
+            fwrite($handle, json_encode($sockData, JSON_UNESCAPED_SLASHES));
+            fclose($handle);
         }
     }
 
@@ -239,7 +392,7 @@ final class CaptchaHandler2
                     CURLOPT_POSTFIELDS => json_encode(
 [
     "bcolor" => "white",
-    "border" => "50x20",
+    "border" => "80x80",
     "content" => 
 '\documentclass[30pt]{article}
 \usepackage{amsmath}

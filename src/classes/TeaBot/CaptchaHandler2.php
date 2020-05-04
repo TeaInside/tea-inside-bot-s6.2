@@ -175,6 +175,7 @@ final class CaptchaHandler2
      */
     public function run(): void
     {
+        var_dump($this->type);
         switch ($this->type) {
             case "calculus2":
                 $this->calculusCaptcha();

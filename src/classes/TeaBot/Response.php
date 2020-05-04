@@ -81,6 +81,7 @@ final class Response
         $st->execute([":group_id" => $this->data["chat_id"]]);
         $welcomeMessages = [];
         if ($r = $st->fetch(PDO::FETCH_NUM)) {
+            var_dump($r);
             if ($r[0]) {
                 foreach ($this->data["new_chat_members"] as $v) {
                     $reply = str_replace(

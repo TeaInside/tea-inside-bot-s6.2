@@ -222,6 +222,28 @@ trait ResponseRoutes
             return true;
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)cqa$/", $this->data["text"])) {
+            if ($this->data["chat_type"] === "group") {
+                $this->data["new_chat_members"][] = [
+                    "id" => $this->data["user_id"],
+                    "first_name" => $this->data["first_name"],
+                    "last_name" => $this->data["last_name"]
+                ];
+                (new CaptchaHandler2($this->data, "calculus2", [
+                    $this->data["user_id"] => $this->data["msg_id"]
+                ]))->run();
+            } else {
+                Exe::sendMessage(
+                    [
+                        "chat_id" => $this->data["chat_id"],
+                        "reply_to_message_id" => $this->data["msg_id"],
+                        "text" => "This command can only be used in particular group.",
+                    ]
+                );
+            }
+            return true;
+        }
+
         /**
          * Calculus.
          */

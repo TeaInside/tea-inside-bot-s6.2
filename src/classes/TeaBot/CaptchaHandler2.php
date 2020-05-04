@@ -322,7 +322,7 @@ CONTENT,
                 ]
             )["out"], true)["result"]["message_id"];
 
-            $sockData["type"] = "assembly";
+            $sockData["type"] = "calculus";
             $sockData["sleep"] = $cdata["est_time"];
             $sockData["user_id"] = $v["id"];
             $sockData["chat_id"] = $this->data["chat_id"];

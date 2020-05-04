@@ -277,7 +277,7 @@ morekeywords={CDQE,CQO,CMPSQ,CMPXCHG16B,JRCXZ,LODSQ,MOVSXD, %
 \\thispagestyle{empty}
 \begin{document}
 {$cdata["latex"]}
-\end{document}
+\\end{document}
 CONTENT,
     "d" => 250
 ]

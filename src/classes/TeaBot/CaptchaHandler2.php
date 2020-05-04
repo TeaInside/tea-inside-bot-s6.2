@@ -57,7 +57,7 @@ final class CaptchaHandler2
             $str = fgets($handle);
             $d = json_decode(str_replace("\0", "", $str), true);
 
-            if (trim($data["text"]) === (string)$d["cdata"]["correct_answer"]) {
+            if (strtolower(trim($data["text"])) === (string)$d["cdata"]["correct_answer"]) {
                 unlink($f);
                 $o = Exe::sendMessage(
                     [

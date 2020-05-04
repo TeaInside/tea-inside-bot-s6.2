@@ -175,7 +175,6 @@ final class CaptchaHandler2
      */
     public function run(): void
     {
-        var_dump($this->type);
         switch ($this->type) {
             case "calculus2":
                 $this->calculusCaptcha();
@@ -284,7 +283,6 @@ CONTENT,
                     )
                 ]
             );
-            var_dump($content);
             $o = curl_exec($ch);
 
             // Exe::sendMessage(

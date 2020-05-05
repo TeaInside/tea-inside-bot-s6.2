@@ -124,7 +124,6 @@ final class Response
             }
 
             if ($r[1]) {
-                var_dump($r[1]);
                 if ($r[1] === "calculus2" || ($r[1] === "assembly") || ($r[1] === "cpp")) {
                     (new CaptchaHandler2($this->data, $r[1], $welcomeMessages))->run();
                 } else {

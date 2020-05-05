@@ -277,6 +277,8 @@ CONTENT,
             //     ]
             // );
 
+            var_dump($content);
+
             $o = json_decode($o, true);
             curl_close($ch);
             $cdata["photo"] = "https://latex.teainside.org/latex/png/".$o["res"].".png";

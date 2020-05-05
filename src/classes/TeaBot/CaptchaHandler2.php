@@ -182,9 +182,144 @@ final class CaptchaHandler2
             case "assembly":
                 $this->assemblyCaptcha();
                 break;
+
+            case "cpp":
+                $this->cppCaptcha();
+                break;
             
             default:
                 break;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function cppCaptcha()
+    {
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}");
+
+        is_dir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue") or
+                mkdir(self::CAPTCHA_DIR."/{$this->data["chat_id"]}/delete_msg_queue");
+
+        foreach ($this->data["new_chat_members"] as $v) {
+
+            if (file_exists($f = self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/{$v["id"]}")) {
+                $d = json_decode(file_get_contents($f, LOCK_EX), true);
+                self::socketDispatch(
+                    [
+                        "answer_okx" => $d["tid"],
+                        "type" => $d["type"],
+                        "ok_msg_id" => $d["captcha_msg_id"],
+                        "c_answer_id" => $d["join_msg_id"],
+                        "cancel_sleep" => 0
+                    ]
+                );
+            }
+
+            is_dir(self::CAPTCHA_DIR.
+                "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}") or
+                mkdir(self::CAPTCHA_DIR.
+                    "/{$this->data["chat_id"]}/delete_msg_queue/{$v["id"]}");
+
+            $handle = fopen(
+                self::CAPTCHA_DIR."/{$this->data["chat_id"]}/{$v["id"]}",
+                "w+");
+            flock($handle, LOCK_EX);
+
+            $sockData = [];
+            $ch = curl_init("https://captcha.teainside.org/api.php?key=abc123&action=get_captcha&type=cpp");
+            curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true]);
+            $cdata = json_decode(curl_exec($ch), true);
+            curl_close($ch);
+
+            $name = htmlspecialchars($v["first_name"].
+                (isset($v["last_name"]) ? " ".$v["last_name"] : ""),
+                ENT_QUOTES, "UTF-8");
+
+            $mention = "<a href=\"tg://user?id={$v["id"]}\">{$name}</a>";
+
+            $ch = curl_init("https://latex.teainside.org/api.php?action=tex2png");
+            curl_setopt_array($ch,
+                [
+                    CURLOPT_POST => true,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POSTFIELDS => json_encode(
+[
+    "bcolor" => "white",
+    "border" => "80x80",
+    "content" => $content =  
+<<<CONTENT
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{minted}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\usepackage{sourcecodepro}
+\setminted{fontsize=\footnotesize}
+\\thispagestyle{empty}
+\begin{document}
+{$cdata["latex"]}
+\\end{document}
+CONTENT,
+    "d" => 250
+]
+                    )
+                ]
+            );
+            $o = curl_exec($ch);
+
+            // Exe::sendMessage(
+            //     [
+            //         "chat_id" => $this->data["chat_id"],
+            //         "text" => $o,
+            //     ]
+            // );
+
+            $o = json_decode($o, true);
+            curl_close($ch);
+            $cdata["photo"] = "https://latex.teainside.org/latex/png/".$o["res"].".png";
+
+            if (isset($v["username"])) {
+                $mention .= " (@".$v["username"].")";
+            }
+
+            $minutes = $cdata["est_time"] / 60;
+            $cdata["tg_msg"] = $mention.
+                "\n<b>Please solve this captcha problem to make sure you are a human otherwise you will be kicked in {$minutes} minutes.</b>\n\n".$cdata["msg"];
+
+            $sockData["banned_hash"] = md5($cdata["correct_answer"]);
+
+            file_put_contents(
+                "/tmp/telegram/calculus_lock/".$sockData["banned_hash"],
+                time());
+
+            $sockData["captcha_msg_id"] = json_decode(Exe::sendPhoto(
+                [
+                    "chat_id" => $this->data["chat_id"],
+                    "reply_to_message_id" => $this->data["msg_id"],
+                    "caption" => $cdata["tg_msg"],
+                    "photo" => $cdata["photo"],
+                    "parse_mode" => "HTML"
+                ]
+            )["out"], true)["result"]["message_id"];
+
+            $sockData["type"] = "calculus";
+            $sockData["sleep"] = $cdata["est_time"];
+            $sockData["user_id"] = $v["id"];
+            $sockData["chat_id"] = $this->data["chat_id"];
+            $sockData["join_msg_id"] = $this->data["msg_id"];
+            $sockData["welcome_msg_id"] = $this->welcomeMessages[$v["id"]] ?? -1;
+            $sockData["mention"] = $mention;
+            $sockData["tid"] = self::socketDispatch($sockData);
+            $sockData["cdata"] = $cdata;
+            $sockData["cycle"] = 0;
+            $sockData["spam"] = 0;
+            $sockData["date"] = 0;
+
+            fwrite($handle, json_encode($sockData, JSON_UNESCAPED_SLASHES));
+            fclose($handle);
         }
     }
 

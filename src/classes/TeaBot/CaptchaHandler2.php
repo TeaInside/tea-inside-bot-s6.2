@@ -257,7 +257,7 @@ final class CaptchaHandler2
 \usepackage{minted}
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 \usepackage{sourcecodepro}
-\setminted{fontsize=\footnotesize}
+\setminted{fontsize=\\footnotesize}
 \\thispagestyle{empty}
 \begin{document}
 {$cdata["latex"]}

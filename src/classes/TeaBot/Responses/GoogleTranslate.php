@@ -27,7 +27,7 @@ final class GoogleTranslate extends ResponseFoundation
         try {
             $text = str_replace("\n", "#aaa#", $text);
             $st = new GoogleTranslateBase($source, $to, $text);
-            $res = str_replace("# aaa #", "\n", $st->execute());
+            $res = str_replace(["# aaa #", "# Aaa #"], "\n", $st->execute());
             Exe::sendMessage(
                 [
                     "chat_id" => $this->data["chat_id"],

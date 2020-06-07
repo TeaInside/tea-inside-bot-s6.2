@@ -134,7 +134,7 @@ final class Response
                 foreach ($welcomeMessages as $msgId) {
                     Exe::deleteMessage(
                         [
-                            "chat_id" => $data["chat_id"],
+                            "chat_id" => $this->data["chat_id"],
                             "message_id" => $msgId
                         ]
                     );

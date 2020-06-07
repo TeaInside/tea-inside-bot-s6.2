@@ -71,7 +71,7 @@ foreach ($jobs as $k => $callback) {
   $totalSize += $filesize;
 }
 $r .= "\n<b>Total time taken</b> = <code>".round(microtime(true) - $aStart, 6)."</code> s";
-$r2 .= "\n<b>Total file size</b> = <code>".$totalSize."</code> s";
+$r2 .= "\n<b>Total file size</b> = <code>".$totalSize."</code> bytes";
 
 TeaBot\Exe::sendMessage(
   [

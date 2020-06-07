@@ -68,7 +68,7 @@ foreach ($jobs as $k => $callback) {
 }
 $r .= "\nTotal time taken: <code>".round(microtime(true) - $aStart, 6)."</code>";
 
-var_dump(Exe::sendMessage(
+var_dump(\TeaBot\Exe::sendMessage(
   [
     "chat_id" => -1001261147301,
     "text" => $r,

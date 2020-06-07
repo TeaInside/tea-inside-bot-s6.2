@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(0);
+
 require __DIR__."/bootstrap/autoload.php";
 require __DIR__."/config.php";
 

@@ -5,7 +5,7 @@ require __DIR__."/bootstrap/autoload.php";
 loadConfig("telegram_bot");
 
 $now = date("Y_m_d__H_i_s");
-$filename = "/tmp/srabatsrobot_backup_v3_".$now.".tar.gz";
+$filename = "/tmp/srabatsrobot_v3_".$now.".tar.gz";
 
 echo "Compressing data...\n";
 shell_exec("cd /home/candragati; rm -vf v3.tar.gz; tar -c v3 | gzip -9 > v3.tar.gz; chown -R candragati:candragati v3.tar.gz; cp -vf v3.tar.gz ".escapeshellarg($filename));
@@ -13,8 +13,9 @@ shell_exec("cd /home/candragati; rm -vf v3.tar.gz; tar -c v3 | gzip -9 > v3.tar.
 
 if (file_exists($filename)) {
 
-  $caption = basename($filename).
-    "\n".date("Y-m-d H:i:s").
+  $caption =
+    "filename: "basename($filename).
+    "\ncreated_at: ".date("Y-m-d H:i:s").
     "\nmd5:".md5_file($filename).
     "\nsha1:".sha1_file($filename);
 

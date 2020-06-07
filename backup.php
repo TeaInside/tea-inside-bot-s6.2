@@ -28,7 +28,7 @@ if (file_exists($filename)) {
     CURLOPT_POST => true,
     CURLOPT_POSTFIELDS => [
       "caption" => $caption,
-      "chat_id" => -1001226735471,
+      "chat_id" => -1001261147301,
       "document" => new \CurlFile($filename)
     ]
   ];

@@ -130,7 +130,7 @@ final class Response
                     (new CaptchaHandler($this->data, $r[1], $welcomeMessages))->run();
                 }
             } else {
-                sleep(120);
+                sleep(5);
                 foreach ($welcomeMessages as $msgId) {
                     Exe::deleteMessage(
                         [

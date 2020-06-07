@@ -59,27 +59,35 @@ $jobs["thefox"] = function () {
 
 
 $aStart = microtime(true);
-$r = "Time taken for each job:\n";
-$r2 = "File size for each job:\n";
+$r = "<b>[Time taken for each job]</b>\n";
+$r2 = "<b>[File size for each job]</b>\n";
 $totalSize = 0;
 foreach ($jobs as $k => $callback) {
   $start = microtime(true);
   $filesize = $callback();
   $k = htmlspecialchars($k, ENT_QUOTES, "UTF-8");
   $r .= "<b>{$k}</b> = <code>".round(microtime(true) - $start, 6)."</code> s\n";
-  $r .= "<b>{$k}</b> = <code>".$filesize."</code> bytes\n";
+  $r2 .= "<b>{$k}</b> = <code>".$filesize."</code> bytes\n";
   $totalSize += $filesize;
 }
-$r .= "\nTotal time taken: <code>".round(microtime(true) - $aStart, 6)."</code> s";
+$r .= "\n<b>Total time taken</b> = <code>".round(microtime(true) - $aStart, 6)."</code> s";
+$r2 .= "\n<b>Total file size</b> = <code>".$totalSize."</code> s";
 
-var_dump(\TeaBot\Exe::sendMessage(
+TeaBot\Exe::sendMessage(
   [
     "chat_id" => -1001261147301,
     "text" => $r,
     "parse_mode" => "HTML"
   ]
-)["out"]);
+);
 
+TeaBot\Exe::sendMessage(
+  [
+    "chat_id" => -1001261147301,
+    "text" => $r2,
+    "parse_mode" => "HTML"
+  ]
+);
 
 function sendFile($filename)
 {

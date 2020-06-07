@@ -129,6 +129,16 @@ final class Response
                 } else {
                     (new CaptchaHandler($this->data, $r[1], $welcomeMessages))->run();
                 }
+            } else {
+                sleep(120);
+                foreach ($welcomeMessages as $msgId) {
+                    Exe::deleteMessage(
+                        [
+                            "chat_id" => $data["chat_id"],
+                            "message_id" => $msgId
+                        ]
+                    );
+                }
             }
         } else {
             foreach ($this->data["new_chat_members"] as $v) {

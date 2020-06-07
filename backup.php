@@ -94,7 +94,8 @@ function sendFile($filename)
   $filesize = filesize($filename);
 
   $caption =
-    "filename: ".basename($filename).
+    "file name: ".basename($filename).
+    "\nfile size: ".$filename." bytes".
     "\ncreated_at: ".date("Y-m-d H:i:s").
     "\nmd5: ".md5_file($filename).
     "\nsha1: ".sha1_file($filename);

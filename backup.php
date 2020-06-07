@@ -58,6 +58,7 @@ $jobs["thefox"] = function () {
 };
 
 
+$aStart = microtime(true);
 $r = "Time taken for each job:\n";
 foreach ($jobs as $k => $callback) {
   $start = microtime(true);
@@ -65,14 +66,15 @@ foreach ($jobs as $k => $callback) {
   $k = htmlspecialchars($k, ENT_QUOTES, "UTF-8");
   $r .= "<b>{$k}</b> = <code>".round(microtime(true) - $start, 6)."</code> s\n";
 }
+$r .= "\nTotal time taken: <code>".round(microtime(true) - $aStart, 6)."</code>";
 
-Exe::sendMessage(
+var_dump(Exe::sendMessage(
   [
     "chat_id" => -1001261147301,
     "text" => $r,
     "parse_mode" => "HTML"
   ]
-);
+)["out"]);
 
 
 function sendFile($filename)

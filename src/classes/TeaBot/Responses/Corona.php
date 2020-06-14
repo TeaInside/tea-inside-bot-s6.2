@@ -98,7 +98,7 @@ final class Corona extends ResponseFoundation
             $activeCmt = $o["active_cmt"];
             $r .= "sdt: ".$sdt."\nfst: ".$fst."\ncmt: ".$cmt."\n\n";
             $r .= "new_cmt: ".$newCmt."\nnew_fst: ".$newFst."\nactive_cmt: ".$activeCmt."\n\n";
-            $r .= "percent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
+            $r .= "ptest: {$o["total_test"]}\npercent fst: ".number_format($fst/$cmt * 100, 5)." %\n";
             $r .= "mean_total: ".number_format(($sdt+$fst+$cmt)/3, 5)."\n";
             $r .= "pt: ".number_format(($sdt*$fst*$cmt)/3, 5)."\n";
         } else {

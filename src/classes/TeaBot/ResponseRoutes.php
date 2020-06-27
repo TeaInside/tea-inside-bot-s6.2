@@ -244,6 +244,17 @@ trait ResponseRoutes
             return true;
         }
 
+        if (preg_match("/^(?:\/|\!|\~|\.)(?:me)/Ui", $this->data["text"])) {
+          Exe::sendMessage(
+            [
+              "chat_id" => $this->data["chat_id"],
+              "text" => "There is no data stored for this user.",
+              "reply_to_message_id" => $this->data["msg_id"]
+            ]
+          );
+          return true;
+        }
+
         if (preg_match("/^(?:\/|\!|\~|\.)cqp$/", $this->data["text"])) {
             if ($this->data["chat_type"] === "group") {
                 $this->data["new_chat_members"][] = [

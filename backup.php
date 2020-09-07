@@ -41,11 +41,11 @@ $jobs["rsudciamis"] = function () {
   return sendFile($filename);
 };
 
-
 $jobs["srabatsrobot_v3"] = function () {
   $now = date("Y_m_d__H_i_s");
   $filename = "/tmp/srabatsrobot_v3_".$now.".tar.gz";
-  shell_exec("cd /home/candragati; rm -vf v3.tar.gz; tar -c v3 | gzip -9 > v3.tar.gz; chown -R candragati:candragati v3.tar.gz; cp -vf v3.tar.gz ".escapeshellarg($filename)." 2>&1");
+  shell_exec("cd /home/candragati; sqlite3 v3/database .dump > v3/database.sql;");
+  shell_exec("cd /home/candragati; rm -vf v3.tar.gz; tar -c \$(find v3/ -name '*.py' -o -name 'database.sql') | gzip -9 > v3.tar.gz; chown -R candragati:candragati v3.tar.gz; cp -vf v3.tar.gz ".escapeshellarg($filename)." 2>&1");
   shell_exec("kill -9 \$(ps aux | grep python | grep timerbot | awk '{print \$2}')");
   shell_exec("su - candragati -c \"nohup sh -c 'cd /home/candragati/v3; python3 timerbot31.py >> /dev/null 2>&1 &' >> /dev/null 2>&1 &\";");
   return sendFile($filename);
@@ -121,3 +121,4 @@ function sendFile($filename)
 
   return $filesize;
 }
+

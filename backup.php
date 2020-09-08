@@ -91,6 +91,10 @@ TeaBot\Exe::sendMessage(
   ]
 );
 
+TeaBot\Exe::sendMessage(
+  [                                                            "chat_id" => -1001261147301,                               "text" => "============",                                             "parse_mode" => "HTML"
+  ]                                                        );
+
 function sendFile($filename)
 {
   $filesize = filesize($filename);
